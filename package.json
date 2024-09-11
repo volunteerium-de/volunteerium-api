@@ -1,0 +1,42 @@
+{
+  "name": "volunteerium-api",
+  "version": "1.0.0",
+  "description": "restful-api Volunteerium",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/volunteerium-de/volunteerium-api.git"
+  },
+  "author": "info.volunteerium@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/volunteerium-de/volunteerium-api/issues"
+  },
+  "homepage": "https://github.com/volunteerium-de/volunteerium-api#readme",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.649.0",
+    "aws-sdk": "^2.1691.0",
+    "connect-mongo": "^5.1.0",
+    "cors": "^2.8.5",
+    "cron": "^3.1.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.20.0",
+    "express-async-errors": "^3.1.1",
+    "express-session": "^1.18.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.8.1",
+    "mongoose": "^8.6.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "redoc-express": "^2.1.0",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1",
+    "validator": "^13.12.0"
+  }
+}
