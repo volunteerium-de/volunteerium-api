@@ -33,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 // Middlewares
 
 // - Logger
+app.use(require("./src/middlewares/logger"));
 
 // - Authentication
 
