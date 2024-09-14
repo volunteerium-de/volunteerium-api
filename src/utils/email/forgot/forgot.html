@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+        rel="stylesheet">
+    <title>Password Reset Request</title>
+    <style>
+        body {
+            width: 100%;
+            font-family: "Poppins", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f3f4f7;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            padding-bottom: 25px;
+        }
+
+        .logo img {
+            width: 120px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 20px 0;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #10054D;
+            margin: 0;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            background-color: #DCE6E0;
+            color: #1e1e2d;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        a.es-button,
+        button.es-button {
+            padding: 12px 30px;
+            display: inline-block;
+            background: #69957B;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        a.es-button:hover {
+            background-color: #4B6D59;
+        }
+
+        .company {
+            text-align: center;
+            color: #10054D;
+            margin-top: 20px;
+        }
+
+        .company p {
+            margin: 0;
+        }
+
+        /* RESPONSIVE STYLES */
+        @media only screen and (max-width: 600px) {
+            h2 {
+                font-size: 24px;
+            }
+
+            a.es-button,
+            button.es-button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+
+            .highlight {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://demo.stripocdn.email/content/guids/b5e1822e-789b-4797-8c14-7dbeca07480e/images/logo.png"
+                alt="Logo">
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="text-align: center;">
+            <h2>Hello {{firstName}},</h2>
+            <h3>We got a request to reset your password</h3>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <img src="https://demo.stripocdn.email/content/guids/b5e1822e-789b-4797-8c14-7dbeca07480e/images/forgotpassword.png"
+                alt="Forgot Password" style="max-height: 300px;">
+        </div>
+
+        <div style="text-align: center;">
+            <p>Forgot your password? No problem - it happens to everyone!</p>
+        </div>
+
+        <div class="highlight" style="text-align: center;">
+            <p>The verification code is - <strong>{{1-2-3-4-5-6}}</strong></p>
+            <p><strong>Note: The code is valid for 2 minutes from the time of this email. Please submit another request
+                    if the code has expired</strong></p>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{{client_URL}}/reset-password/verify/{{resetPasswordToken}}" class="es-button">Reset
+                Your Password</a>
+        </div>
+
+        <div style="text-align: center; color: #10054D;">
+            <p>If you ignore this message, your password won't be changed.</p>
+        </div>
+
+        <div class="company">
+            <p><strong>Your Volunteerium Team</strong></p>
+        </div>
+    </div>
+</body>
+
+</html>

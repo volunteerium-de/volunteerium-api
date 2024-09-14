@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Feedback</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            line-height: 1.6;
+            border-radius: 1rem;
+            margin: auto;
+
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 1rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #10054D;
+            text-align: center;
+
+        }
+
+
+        h1 {
+            color: #10054D;
+        }
+
+        .logo {
+            text-align: center;
+            padding-bottom: 25px;
+        }
+
+        .logo img {
+            width: 100px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #7f9d9d;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section p {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://demo.stripocdn.email/content/guids/b5e1822e-789b-4797-8c14-7dbeca07480e/images/logo.png"
+                alt="Logo" title="Logo">
+        </div>
+        <div class="divider"></div>
+        <div>
+            <h1>Feedback Received</h1>
+        </div>
+        <div class="section">
+            <p><strong>Name:</strong> {{name}}</p>
+        </div>
+        <div class="section">
+            <p><strong>Email:</strong> {{email}}</p>
+        </div>
+        <div class="section">
+            <p><strong>Subject:</strong> {{subject}}</p>
+        </div>
+        <div class="section">
+            <p><strong>Feedback:</strong>{{feedback}}</p>
+        </div>
+    </div>
+</body>
+
+</html>

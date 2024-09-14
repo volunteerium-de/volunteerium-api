@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Password Reset Confirmation</title>
+
+    <style>
+        /* IMPORTANT STYLES */
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        body {
+            font-weight: 500;
+            font-style: normal;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            display: flex;
+            justify-content: center;
+            line-height: 1.6;
+            margin: 0;
+            /* min-height: 100vh; */
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            border-radius: 1rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 36px;
+            color: #10054D;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            text-align: center;
+            padding-bottom: 25px;
+        }
+
+        .logo img {
+            width: 100px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #7f9d9d;
+        }
+
+        /* Responsive Styles */
+        @media only screen and (max-width: 600px) {
+            h2 {
+                font-size: 24px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://demo.stripocdn.email/content/guids/b5e1822e-789b-4797-8c14-7dbeca07480e/images/logo.png"
+                alt="Logo" title="Logo">
+        </div>
+        <div class="divider"></div>
+
+
+        <h2>Hello {{firstName}},</h2>
+        <p>Your password has been successfully reset.</p>
+        <p>If you did not perform this action, please contact us immediately.</p>
+
+        <p><strong>Your Volunteerium Team</strong></p>
+    </div>
+</body>
+
+</html>
