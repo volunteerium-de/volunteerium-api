@@ -36,8 +36,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(require("./src/middlewares/logger"));
 
 // - Authentication
+app.use(require("./src/middlewares/authentication"));
 
 // - QueryHandler
+app.use(require("./src/middlewares/queryHandler"));
 
 // Routes
 // app.use(`/api/${VERSION}`, require("./src/routes"));
@@ -63,5 +65,6 @@ app.use((req, res, next) => {
 });
 
 // Error Handler Middleware
+app.use(require("./src/middlewares/errorHandler"));
 
 app.listen(PORT, () => console.log(`server running on http://${HOST}:${PORT}`));
