@@ -1,14 +1,13 @@
 const fs = require("fs");
 const path = require("path");
+const { CLIENT_URL } = require("../../../../setups");
 
-const getForgotPasswordEmailHtml = (firstName, token) => {
-  let html = fs.readFileSync(
-    path.join(__dirname, "forgotPassword.html"),
-    "utf8"
-  );
+const getForgotPasswordEmailHtml = (firstName, token, resetCode) => {
+  let html = fs.readFileSync(path.join(__dirname, "forgot.html"), "utf8");
   html = html.replace(/{{firstName}}/g, firstName);
   html = html.replace(/{{token}}/g, token);
-  html = html.replace(/{{clientUrl}}/g, process.env.CLIENT_URL);
+  html = html.replace(/{{resetCode}}/g, resetCode);
+  html = html.replace(/{{clientUrl}}/g, CLIENT_URL);
   return html;
 };
 
