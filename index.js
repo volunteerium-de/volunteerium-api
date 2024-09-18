@@ -57,11 +57,6 @@ app.all("/", (req, res) => {
   });
 });
 
-// auth:
-app.use("/auth", require("./src/routes/authRouter"));
-// user:
-app.use("/users", require("./src/routes/userRouter"));
-
 app.use((req, res, next) => {
   res.status(404).send({
     error: true,
