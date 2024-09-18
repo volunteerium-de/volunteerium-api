@@ -2,14 +2,14 @@
 
 const { CustomError } = require("../errors/customError");
 const { NODE_ENV } = require("../../setups");
-const User = require("../models/user");
-const Event = require("../models/event");
-const EventParticipant = require("../models/eventParticipant");
-const EventFeedback = require("../models/eventFeedback");
-const Interest = require("../models/interest");
-const Notification = require("../models/notification");
-const Message = require("../models/message");
-const Conversation = require("../models/conversation");
+const User = require("../models/Model");
+const Event = require("../models/eventModel");
+const EventParticipant = require("../models/eventParticipantModel");
+const EventFeedback = require("../models/eventFeedbackModel");
+const Interest = require("../models/interestModel");
+const Notification = require("../models/notificationModel");
+const Message = require("../models/messageModel");
+const Conversation = require("../models/conversationModel");
 
 module.exports = {
   isLogin: (req, res, next) => {
@@ -22,7 +22,7 @@ module.exports = {
   },
   isAdmin: (req, res, next) => {
     if (!NODE_ENV) return next();
-    if (req.user && req.user?.userType?.toLowerCase() === "Admin") {
+    if (req.user && req.user?.userType?.toLowerCase() === "admin") {
       next();
     } else {
       throw new CustomError("NoPermission: You must be an Admin.", 403);
@@ -30,7 +30,7 @@ module.exports = {
   },
   isIndividualUser: (req, res, next) => {
     // if (!NODE_ENV) return next();
-    if (req.user && req.user?.userType?.toLowerCase() === "Individual") {
+    if (req.user && req.user?.userType?.toLowerCase() === "individual") {
       next();
     } else {
       throw new CustomError(
@@ -41,7 +41,7 @@ module.exports = {
   },
   isOrganization: (req, res, next) => {
     // if (!NODE_ENV) return next();
-    if (req.user && req.user?.userType?.toLowerCase() === "Organization") {
+    if (req.user && req.user?.userType?.toLowerCase() === "organization") {
       next();
     } else {
       throw new CustomError("NoPermission: You must be an Organization.", 403);
@@ -51,8 +51,8 @@ module.exports = {
     // if (!NODE_ENV) return next();
     if (
       req.user &&
-      (req.user?.userType?.toLowerCase() === "Organization" ||
-        req.user?.userType?.toLowerCase() === "Admin")
+      (req.user?.userType?.toLowerCase() === "organization" ||
+        req.user?.userType?.toLowerCase() === "admin")
     ) {
       next();
     } else {
@@ -65,11 +65,11 @@ module.exports = {
   canManageEvent: async (req, res, next) => {
     // if (!NODE_ENV) return next();
     const event = await Event.findById(req.params.id);
-    if (req.user?.userType?.toLowerCase() === "Admin") {
+    if (req.user?.userType?.toLowerCase() === "admin") {
       next(); // Admin can manage any event
     } else if (
-      req.user?.userType?.toLowerCase() === "Organization" &&
-      event.organizerId.equals(req.user._id)
+      req.user?.userType?.toLowerCase() === "organization" &&
+      String(event.createdBy._id) === String(req.user._id)
     ) {
       next(); // Organization can manage their own events
     } else {
@@ -83,13 +83,13 @@ module.exports = {
     // if (!NODE_ENV) return next();
     const event = await Event.findById(req.params.id);
     if (
-      req.user?.userType?.toLowerCase() === "Individual" &&
-      req.user?.userType?.toLowerCase() === "Admin"
+      req.user?.userType?.toLowerCase() === "individual" &&
+      req.user?.userType?.toLowerCase() === "admin"
     ) {
       next(); // Admin and individual users can access any event
     } else if (
-      req.user?.userType?.toLowerCase() === "Organization" &&
-      event.organizerId.equals(req.user._id)
+      req.user?.userType?.toLowerCase() === "organization" &&
+      String(event.createdBy._id) === String(req.user._id)
     ) {
       next(); // Organization can access their own events
     } else {
@@ -102,8 +102,8 @@ module.exports = {
   canCreateVolunteeringEvent: (req, res, next) => {
     // if (!NODE_ENV) return next();
     if (
-      req.user?.userType?.toLowerCase() === "Individual" ||
-      req.user?.userType?.toLowerCase() === "Organization"
+      req.user?.userType?.toLowerCase() === "individual" ||
+      req.user?.userType?.toLowerCase() === "organization"
     ) {
       next(); // Both Individual users and Organizations can create volunteering events
     } else {
@@ -118,7 +118,7 @@ module.exports = {
     // if (!NODE_ENV) return next();
     const user = await User.findById(req.params.id);
     if (
-      req.user?.userType?.toLowerCase() === "Admin" ||
+      req.user?.userType?.toLowerCase() === "admin" ||
       String(user._id) === String(req.user._id)
     ) {
       next(); // Admins or the user themselves can access user details
@@ -134,8 +134,8 @@ module.exports = {
     // if (!NODE_ENV) return next();
     const event = await Event.findById(req.params.id);
     if (
-      req.user?.userType?.toLowerCase() === "Admin" ||
-      String(event.createdBy) === String(req.user._id)
+      req.user?.userType?.toLowerCase() === "admin" ||
+      String(event.createdBy._id) === String(req.user._id)
     ) {
       next(); // User must be the owner of the event or an admin
     } else {
@@ -219,7 +219,7 @@ module.exports = {
   canSendMessage: async (req, res, next) => {
     // if (!NODE_ENV) return next();
     if (
-      req.user?.userType?.toLowerCase() === "Admin" ||
+      req.user?.userType?.toLowerCase() === "admin" ||
       String(req.user._id) === String(req.body.senderId)
     ) {
       next(); // Admins or the sender themselves can send messages
@@ -235,8 +235,8 @@ module.exports = {
     // if (!NODE_ENV) return next();
     const conversation = await Conversation.findById(req.params.id);
     if (
-      req.user?.userType?.toLowerCase() === "Admin" ||
-      String(conversation.createdBy) === String(req.user._id)
+      req.user?.userType?.toLowerCase() === "admin" ||
+      String(conversation.createdBy._id) === String(req.user._id)
     ) {
       next(); // User must be the owner of the conversation or an admin
     } else {
