@@ -2,11 +2,14 @@
 const { mongoose } = require("../configs/dbConnection");
 
 const userSchema = new mongoose.Schema({
-  usertype: {
+  userType: {
     type: String,
-    enum: ["admin", "user"],
-    required: true,
-    default: "user",
+    enum: {
+      values: ["admin", "individual", "organization"],
+      message:
+        "Invalid userType. Valid values are: admin, individual, organization.",
+    },
+    required: [true, "UserType is required."],
   },
   googleId: {
     type: String,
@@ -30,7 +33,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
   },
   isActive: {
     type: Boolean,
