@@ -28,5 +28,4 @@ module.exports = {
   VERSION: process.env.VERSION,
   NODEMAILER_EMAIL: process.env.NODEMAILER_EMAIL,
   NODEMAILER_PASSWORD: process.env.NODEMAILER_PASSWORD,
-  JWT_SECRET: process.env.JWT_SECRET,
 };
