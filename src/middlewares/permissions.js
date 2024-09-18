@@ -2,7 +2,7 @@
 
 const { CustomError } = require("../errors/customError");
 const { NODE_ENV } = require("../../setups");
-const User = require("../models/Model");
+const User = require("../models/userModel");
 const Event = require("../models/eventModel");
 const EventParticipant = require("../models/eventParticipantModel");
 const EventFeedback = require("../models/eventFeedbackModel");
