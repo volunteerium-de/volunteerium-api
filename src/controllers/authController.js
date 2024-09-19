@@ -3,16 +3,15 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
+const UserDetails = require("../models/userDetailsModel");
 const Token = require("../models/tokenModel");
 const { CustomError } = require("../errors/customError");
 const { sendEmail } = require("../utils/email/emailService");
-const { getWelcomeEmailHtml } = require("../utils/email/welcome/welcomeEmail");
+const { getWelcomeEmailHtml } = require("../utils/email/welcome/welcome.js");
 const {
   getForgotPasswordEmailHtml,
-} = require("../utils/email/forgot/forgotPassword");
-const {
-  getResetPasswordEmailHtml,
-} = require("../utils/email/reset/resetPassword");
+} = require("../utils/email/forgot/forgot.js");
+const { getResetPasswordEmailHtml } = require("../utils/email/reset/reset.js");
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -73,11 +72,23 @@ module.exports = {
       email,
       userType,
       password: hashedPassword,
-      isActive: false, // user will active his account via verification email
+      isActive: true,
+      isProfileSetup: false,
+      isEmailVerified: false, // user will active his account via verification email
     });
 
     // Save new user to the database
     const newUser = await user.save();
+
+    // Create new user details
+    const userDetails = new UserDetails({
+      userId: newUser._id,
+    });
+    const newUserDetails = await userDetails.save();
+
+    // Update userDetails for new user
+    newUser.userDetailsId = newUserDetails._id;
+    await newUser.save();
 
     const verifyEmailToken = generateVerifyEmailToken(newUser);
 
@@ -156,7 +167,7 @@ module.exports = {
     );
   },
   // POST
-  verifyAccount: async (req, res) => {
+  verifyEmail: async (req, res) => {
     /*
       #swagger.tags = ['Authentication']
       #swagger.summary = 'Verification'
@@ -180,13 +191,13 @@ module.exports = {
         return redirectWithError(
           res,
           `${CLIENT_URL}/verify-email/failed`,
-          400,
+          301,
           "Invalid or expired verification link! Please request verification link again."
         );
         // return res.redirect(
         //   `${CLIENT_URL}/verify-email/failed?payload=${encodeURIComponent(
         //     JSON.stringify({
-        //       statusCode: 400,
+        //       statusCode: 301,
         //       message:
         //         "Invalid or expired verification link! Please request verification link again.",
         //     })
@@ -195,35 +206,37 @@ module.exports = {
       }
 
       // Find user
-      const user = await User.findById(verifyData.userId);
+      const user = await User.findById(verifyData.userId).populate(
+        "userDetailsId"
+      );
 
       if (!user) {
         return redirectWithError(
           res,
           `${CLIENT_URL}/verify-email/failed`,
-          404,
+          301,
           "No account found! Please sign up."
         );
       }
 
       if (verifyData.email === email) {
-        if (user.isActive) {
+        if (user.isEmailVerified) {
           return redirectWithError(
             res,
             `${CLIENT_URL}/verify-email/failed`,
-            400,
+            301,
             "Account is already verifed! Please log in."
           );
         } else {
           // Activate user status
-          user.isActive = true;
+          user.isEmailVerified = true;
           await user.save();
         }
       } else {
         return redirectWithError(
           res,
           `${CLIENT_URL}/verify-email/failed`,
-          400,
+          301,
           "Invalid request. Please try again!"
         );
       }
@@ -234,7 +247,7 @@ module.exports = {
       // Success response
       res.status(200).send({
         error: false,
-        message: `Hey ${data.fullName.split(" ")[0]}, you're verified! 🎉`,
+        message: "Successfully verified!",
         bearer: {
           access: accessToken,
           refresh: refreshToken,
@@ -250,12 +263,12 @@ module.exports = {
         return redirectWithError(
           res,
           `${CLIENT_URL}/verify-email/failed`,
-          404,
+          301,
           "No account found! Please sign up."
         );
       }
 
-      if (!user.isActive) {
+      if (!user.isEmailVerified) {
         // Generate new verification token
         const verifyEmailToken = generateVerifyEmailToken(user);
 
@@ -284,7 +297,7 @@ module.exports = {
         return redirectWithError(
           res,
           `${CLIENT_URL}/verify-email/failed`,
-          400,
+          301,
           "Account is already verified. Please log in!"
         );
       }
@@ -292,7 +305,7 @@ module.exports = {
       return redirectWithError(
         res,
         `${CLIENT_URL}/not-found`,
-        404,
+        301,
         "Invalid request. Please try again!"
       );
     }
@@ -313,9 +326,7 @@ module.exports = {
               "password": "Test@1234",
           }
       }
-    */
-    const { email, password } = req.body;
-    // console.log("Login attempt:", email, password);
+      */
 
     const validationError = await validateLoginPayload(req.body);
 
@@ -323,8 +334,11 @@ module.exports = {
       throw new CustomError(validationError, 400);
     }
 
+    const { email, password } = req.body;
+    // console.log("Login attempt:", email, password);
+
     if (email && password) {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email }).populate("userDetailsId");
       // console.log("User found:", user);
 
       if (!user) {
@@ -553,13 +567,13 @@ module.exports = {
       throw new CustomError("No user found with this email", 404);
     }
 
-    const validationError = await validateRegisterPayload({
-      password: newPassword,
-    });
+    // const validationError = await validateRegisterPayload({
+    //   password: newPassword,
+    // });
 
-    if (validationError) {
-      throw new CustomError(validationError, 400);
-    }
+    // if (validationError) {
+    //   throw new CustomError(validationError, 400);
+    // }
 
     const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
     user.password = hashedNewPassword;
@@ -608,8 +622,8 @@ module.exports = {
           const user = await User.findOne({ userId });
 
           if (user) {
-            // Check if the user is active
-            if (user.isActive) {
+            // Check if the user is verification status
+            if (user.isEmailVerified) {
               // Generate a new JWT access token
               const accessToken = generateAccessToken(user);
 

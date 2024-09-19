@@ -1,3 +1,5 @@
+const yup = require("yup");
+
 const validateSchema = async (schema, data) => {
   try {
     await schema.validate(data, { abortEarly: true });

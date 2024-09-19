@@ -41,8 +41,8 @@ app.use(require("./src/middlewares/authentication"));
 // - QueryHandler
 app.use(require("./src/middlewares/queryHandler"));
 
-// Routes
-// app.use(`/api/${VERSION}`, require("./src/routes"));
+// Routes;
+app.use(`/api/${VERSION}`, require("./src/routes"));
 
 app.all("/", (req, res) => {
   res.send({

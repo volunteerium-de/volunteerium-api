@@ -6,11 +6,13 @@ const router = require("express").Router();
 // URL: /
 
 // token:
-router.use("/tokens", require("./token"));
+router.use("/tokens", require("./tokenRouter"));
 // auth:
-app.use("/auth", require("./src/routes/authRouter"));
+router.use("/auth", require("./authRouter"));
 // user:
-app.use("/users", require("./src/routes/userRouter"));
+router.use("/users", require("./userRouter"));
+// userDetails:
+// router.use("/users/detail", require("./userDetailsRouter"));
 
 /* ------------------------------------------------------- */
 module.exports = router;
