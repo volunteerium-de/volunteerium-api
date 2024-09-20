@@ -228,7 +228,7 @@ module.exports = {
             "Account is already verifed! Please log in."
           );
         } else {
-          // Activate user status
+          // Verify user email
           user.isEmailVerified = true;
           await user.save();
         }

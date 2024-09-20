@@ -7,6 +7,7 @@ const { sendFeedbackEmail } = require("../utils/email/emailService");
 const { AWS_S3_BASE } = require("../../setups");
 const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
 const { extractDateNumber } = require("../utils/functions");
+const { validateUserUpdatePayload } = require("../validators/userValidator");
 
 module.exports = {
   // GET
@@ -30,7 +31,22 @@ module.exports = {
     //   listFilter._id = req.user._id;
     // }
 
-    const data = await res.getModelList(User, listFilter, "userDetailsId");
+    const data = await res.getModelList(User, listFilter, [
+      {
+        path: "userDetailsId",
+        populate: [
+          {
+            path: "interestIds",
+            select: "name _id",
+          },
+          {
+            path: "addressId",
+            select: "-createdAt -updatedAt -__v",
+          },
+        ],
+      },
+      // { path: "documentIds", select: "-__v" },
+    ]);
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(User),
@@ -50,10 +66,22 @@ module.exports = {
       }
     */
 
-    const data = await User.findOne({ _id: req.params.id }).populate(
-      "userDetailsId",
-      "documentIds"
-    );
+    const data = await User.findOne({ _id: req.params.id }).populate([
+      {
+        path: "userDetailsId",
+        populate: [
+          {
+            path: "interestIds",
+            select: "name _id",
+          },
+          {
+            path: "addressId",
+            select: "-createdAt -updatedAt -__v",
+          },
+        ],
+      },
+      // { path: "documentIds", select: "-__v" },
+    ]);
     res.status(200).send({
       error: false,
       data,
@@ -79,7 +107,7 @@ module.exports = {
       }
     */
 
-    const validationError = await validateRegisterPayload(req.body);
+    const validationError = await validateUserUpdatePayload(req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);
@@ -99,10 +127,11 @@ module.exports = {
       delete req.body.isEmailVerified;
       delete req.body.isProfileSetup;
       delete req.body.userType;
+      delete req.body.googleId;
     }
 
     const customFilter =
-      req.user?.userType.toLowerCase() !== "admin"
+      req.user?.userType.toLowerCase() === "admin"
         ? { _id: req.params.id }
         : { _id: req.user?._id };
 
@@ -148,22 +177,52 @@ module.exports = {
 
     const data = await User.findOneAndUpdate(customFilter, req.body, {
       runValidators: true,
-    }).populate("userDetailsId"); // returns data
+    }).populate([
+      {
+        path: "userDetailsId",
+        populate: [
+          {
+            path: "interestIds",
+            select: "name _id",
+          },
+          {
+            path: "addressId",
+            select: "-createdAt -updatedAt -__v",
+          },
+        ],
+      },
+      // { path: "documentIds", select: "-__v" },
+    ]); // returns data
 
     let message;
 
     if (req.body.password) {
-      message = "Your password has been updated successfully.";
+      message = "Password has been updated successfully.";
     } else if (req.body.email || req.body.fullName) {
-      message = "Your profile information has been updated successfully.";
+      message = "Profile information has been updated successfully.";
     } else {
-      message = "Your changes have been saved successfully.";
+      message = "Changes have been saved successfully.";
     }
 
     res.status(202).send({
       error: false,
       message,
-      new: await User.findOne(customFilter).populate("userDetailsId"),
+      new: await User.findOne(customFilter).populate([
+        {
+          path: "userDetailsId",
+          populate: [
+            {
+              path: "interestIds",
+              select: "name _id",
+            },
+            {
+              path: "addressId",
+              select: "-createdAt -updatedAt -__v",
+            },
+          ],
+        },
+        { path: "documentIds", select: "-__v" },
+      ]),
       data,
     });
   },

@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema(
     userDetailsId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "UserDetails",
-      default: null,
     },
     fullName: {
       type: String,

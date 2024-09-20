@@ -12,7 +12,7 @@ router.use("/auth", require("./authRouter"));
 // user:
 router.use("/users", require("./userRouter"));
 // userDetails:
-// router.use("/users/detail", require("./userDetailsRouter"));
+router.use("/details/users", require("./userDetailsRouter"));
 
 /* ------------------------------------------------------- */
 module.exports = router;

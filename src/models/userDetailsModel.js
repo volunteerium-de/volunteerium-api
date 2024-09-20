@@ -54,12 +54,12 @@ const userDetailsSchema = new mongoose.Schema(
       default: 0,
       min: [0, "Total point cannot be negative"],
     },
-    // interestIds: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Interest",
-    //   },
-    // ],
+    interestIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Interest",
+      },
+    ],
     organizationName: {
       type: String,
       trim: true,
@@ -76,17 +76,6 @@ const userDetailsSchema = new mongoose.Schema(
     organizationUrl: {
       type: String,
       trim: true,
-      validate: {
-        validator: (v) => {
-          try {
-            new URL(v);
-            return true;
-          } catch {
-            return false;
-          }
-        },
-        message: "Invalid URL format.",
-      },
     },
     // addressId: {
     //   type: mongoose.Schema.Types.ObjectId,
@@ -98,20 +87,20 @@ const userDetailsSchema = new mongoose.Schema(
 
 // Pre-update middleware to validate required fields based on userType
 userDetailsSchema.pre("findOneAndUpdate", async function (next) {
-  // Fetch the User associated with this UserDetails
-  const user = await mongoose
-    .model("User")
-    .findById(this._conditions.userId)
-    .exec();
+  const userId = this._conditions.userId || this.getUpdate().userId;
+
+  if (!userId) {
+    return next(new CustomError("UserId is missing in the update query", 400));
+  }
+
+  const user = await mongoose.model("User").findById(userId).exec();
 
   if (!user) {
     return next(new CustomError("Associated user not found", 404));
   }
 
-  // Get the update object
   const update = this.getUpdate();
 
-  // Check userType and validate fields
   if (user.userType === "organization") {
     const requiredFields = {
       organizationName: "organizationName is required for organizations",
@@ -121,7 +110,7 @@ userDetailsSchema.pre("findOneAndUpdate", async function (next) {
     };
 
     for (const [field, message] of Object.entries(requiredFields)) {
-      if (isEmpty(update[field])) {
+      if (!update[field]) {
         return next(new CustomError(message, 400));
       }
     }

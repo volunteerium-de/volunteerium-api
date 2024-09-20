@@ -1,21 +1,17 @@
-// "use strict";
+"use strict";
 
-// const router = require("express").Router();
-// const userDetailsController = require("../controllers/userDetailsController");
-// const idValidation = require("../middlewares/idValidation");
+const router = require("express").Router();
+const userDetailsController = require("../controllers/userDetailsController");
+const idValidation = require("../middlewares/idValidation");
 
-// // URL: /users/detail
+// URL: /details/users
 
-// router
-//   .route("/")
-//   .get(userDetailsController.list)
-//   .post(userDetailsController.create);
-// router
-//   .route("/:id")
-//   .all(idValidation)
-//   .get(userDetailsController.read)
-//   .put(userDetailsController.updateUser)
-//   .patch(userDetailsController.updateUser)
-//   .delete(userDetailsController.delete);
+router.route("/").get(userDetailsController.list);
+router
+  .route("/:id")
+  // .all(idValidation)
+  .get(userDetailsController.read)
+  .put(userDetailsController.update)
+  .patch(userDetailsController.update);
 
-// module.exports = router;
+module.exports = router;

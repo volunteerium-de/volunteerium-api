@@ -33,7 +33,7 @@ const generateAccessToken = (user) => {
     key: ACCESS_KEY,
     time: ACCESS_EXP || "1d",
     data: {
-      userId: user._id,
+      _id: user._id,
       email: user.email,
     },
   };
@@ -52,7 +52,7 @@ const generateRefreshToken = (user) => {
     key: REFRESH_KEY,
     time: REFRESH_EXP || "2d",
     data: {
-      userId: user._id,
+      _id: user._id,
     },
   };
 
