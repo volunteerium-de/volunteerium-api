@@ -34,6 +34,7 @@ const generateAccessToken = (user) => {
     time: ACCESS_EXP || "1d",
     data: {
       _id: user._id,
+      userType: user.userType,
       email: user.email,
     },
   };

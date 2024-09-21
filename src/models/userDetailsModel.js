@@ -54,12 +54,12 @@ const userDetailsSchema = new mongoose.Schema(
       default: 0,
       min: [0, "Total point cannot be negative"],
     },
-    interestIds: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Interest",
-      },
-    ],
+    // interestIds: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Interest",
+    //   },
+    // ],
     organizationName: {
       type: String,
       trim: true,
