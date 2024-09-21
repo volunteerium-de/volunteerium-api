@@ -15,8 +15,9 @@ const languagesData = JSON.parse(
 const languageCodes = languagesData.map((lang) => lang.code);
 
 const updateUserSchema = yup.object().shape({
-  fullName: yup.string().optional(),
-  email: yup.string().email("Must be a valid email address!").optional(),
+  fullName: yup.string().trim().optional(),
+  organizationName: yup.string().trim().optional(),
+  email: yup.string().trim().email("Must be a valid email address!").optional(),
   password: yup
     .string()
     .min(6, "Password must be at least 8 characters long!")
@@ -47,7 +48,6 @@ const updateUserDetailsSchema = yup.object().shape({
         .matches(/^[0-9a-fA-F]{24}$/, "InterestIds must be a valid ObjectId")
     )
     .optional(),
-  organizationName: yup.string().trim().optional(),
   organizationLogo: yup.string().trim().optional(),
   organizationDesc: yup.string().max(1000).trim().optional(),
   organizationUrl: yup

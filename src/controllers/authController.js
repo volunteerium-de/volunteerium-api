@@ -68,7 +68,7 @@ module.exports = {
     // Create new user
     const hashedPassword = bcrypt.hashSync(password, 10);
     user = new User({
-      fullName,
+      [userType === "organization" ? "organizationName" : "fullName"]: fullName,
       email,
       userType,
       password: hashedPassword,

@@ -143,6 +143,17 @@ module.exports = {
     // Fetch current user from database
     const user = await User.findOne(customFilter);
 
+    // Handle fullName or organizationName update
+    if (req.body.fullName) {
+      if (user.userType === "organization") {
+        req.body.organizationName = req.body.fullName;
+        delete req.body.fullName; // delete fullName for organizations
+      } else {
+        req.body.fullName = req.body.fullName; 
+        delete req.body.organizationName; // delete organizationName for individuals
+      }
+    }
+
     // Check if password is being updated
     if (req.body.password) {
       const oldPassword = req.body.oldPassword;

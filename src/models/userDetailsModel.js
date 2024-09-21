@@ -60,10 +60,6 @@ const userDetailsSchema = new mongoose.Schema(
     //     ref: "Interest",
     //   },
     // ],
-    organizationName: {
-      type: String,
-      trim: true,
-    },
     organizationLogo: {
       type: String,
       trim: true,
@@ -103,7 +99,6 @@ userDetailsSchema.pre("findOneAndUpdate", async function (next) {
 
   if (user.userType === "organization") {
     const requiredFields = {
-      organizationName: "organizationName is required for organizations",
       organizationDesc: "organizationDesc is required for organizations",
       organizationLogo: "organizationLogo is required for organizations",
       addressId: "addressId is required for organizations",

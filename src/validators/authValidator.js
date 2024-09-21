@@ -4,11 +4,17 @@ const validateSchema = require("./validator");
 const registerSchema = yup.object().shape({
   fullName: yup
     .string()
+    .trim()
     .min(3, "FullName must be at least 3 characters long!")
-    .max(30, "FullName can be at most 50 characters long!")
-    .required("Full name is required!"),
+    .max(30, "FullName can be at most 50 characters long!"),
+  organizationName: yup
+    .string()
+    .trim()
+    .min(3, "Organization Name must be at least 3 characters long!")
+    .max(30, "Organization Name can be at most 50 characters long!"),
   email: yup
     .string()
+    .trim()
     .email("Must be a valid email address!")
     .required("Email is required!"),
   password: yup
