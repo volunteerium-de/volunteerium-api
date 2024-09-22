@@ -23,6 +23,14 @@ module.exports = {
             <li>URL/?<b>page=2&limit=1</b></li>
         </ul>
       `
+      #swagger.responses[200] = {
+        description: 'List of users retrieved successfully',
+        schema: {
+          error: false,
+          details: { type: 'array', items: { type: 'object' } },
+          data: [{ _id: 'user-id', email: 'user-email', fullName: 'User Name', userType: 'user', ...other }]
+        }
+      }
     */
 
     let listFilter = {};
@@ -66,6 +74,13 @@ module.exports = {
         required: true,
         type: 'string'
       }
+      #swagger.responses[200] = {
+        description: 'User retrieved successfully',
+        schema: {
+          error: false,
+          data: { _id: 'user-id', email: 'user-email', fullName: 'User Name', userType: 'user', ...other }
+        }
+      }
     */
 
     const data = await User.findOne({ _id: req.params.id }).populate(
@@ -103,13 +118,36 @@ module.exports = {
         description: 'User ID',
         required: true,
         type: 'string'
-      }      
+      }
       #swagger.parameters['body'] = {
           in: 'body',
           required: true,
           schema: {
-              $ref: "#/definitions/User'
+              $ref: "#/definitions/User"
           }
+      }
+      #swagger.responses[202] = {
+        description: 'User updated successfully',
+        schema: {
+          error: false,
+          message: 'Profile information has been updated successfully.',
+          new: { _id: 'user-id', email: 'user-email', fullName: 'User Name', userType: 'user', ...other },
+          data: { _id: 'user-id', email: 'user-email', fullName: 'User Name', userType: 'user' }
+        }
+      }
+      #swagger.responses[400] = {
+        description: 'Validation error or email already exists',
+        schema: {
+          error: true,
+          message: 'Validation error message'
+        }
+      }
+      #swagger.responses[401] = {
+        description: 'Incorrect current password',
+        schema: {
+          error: true,
+          message: 'Please provide correct current password!'
+        }
       }
     */
 
@@ -149,7 +187,7 @@ module.exports = {
         req.body.organizationName = req.body.fullName;
         delete req.body.fullName; // delete fullName for organizations
       } else {
-        req.body.fullName = req.body.fullName; 
+        req.body.fullName = req.body.fullName;
         delete req.body.organizationName; // delete organizationName for individuals
       }
     }
@@ -285,6 +323,20 @@ module.exports = {
           required: ['name', 'email', 'feedback']
         }
       }
+      #swagger.responses[200] = {
+        description: 'Feedback submitted successfully',
+        schema: {
+          error: false,
+          message: 'Thank you. We will get back to you as soon as possible!'
+        }
+      }
+      #swagger.responses[400] = {
+        description: 'Validation error',
+        schema: {
+          error: true,
+          message: 'Please fill the contact form!'
+        }
+      }
     */
     const { name, email, subject, feedback } = req.body;
 
@@ -310,7 +362,21 @@ module.exports = {
         description: 'User ID',
         required: true,
         type: 'string'
-      }      
+      }
+      #swagger.responses[204] = {
+        description: 'User deleted successfully',
+        schema: {
+          error: false,
+          message: 'Account successfully deleted!'
+        }
+      }
+      #swagger.responses[400] = {
+        description: 'Bad Request',
+        schema: {
+          error: true,
+          message: 'Error message'
+        }
+      }
     */
 
     const idFilter =

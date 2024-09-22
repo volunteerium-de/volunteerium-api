@@ -37,19 +37,31 @@ module.exports = {
     /*
         #swagger.tags = ["Authentication"]
         #swagger.summary = "Register"
-        #swagger.description = 'Register with valid firstName, lastName, email and password'
-        // _swagger.deprecated = true
-        // _swagger.ignore = true
+        #swagger.description = 'Register with valid fullName, email, and password'
         #swagger.parameters["body"] = {
             in: "body",
             required: true,
-             schema: {
+            schema: {
               "fullName": "John Doe",
               "email": "john.doe@gmail.com",
               "password": "Test@1234",
               "userType": "individual"
-             }
-      }
+            }
+        }
+        #swagger.responses[201] = {
+            description: 'User registered successfully',
+            schema: {
+                error: false,
+                message: "Please verify your email to complete your registration"
+            }
+        }
+        #swagger.responses[400] = {
+            description: 'Bad request, validation error',
+            schema: {
+                error: true,
+                message: 'Validation error message'
+            }
+        }
     */
     const { fullName, email, password, userType } = req.body;
 
@@ -135,9 +147,6 @@ module.exports = {
           message: 'Authentication failed or user not found'
         }
       }
-      #swagger.security = [{
-        "bearerAuth": []
-      }]
     */
     if (!req.user) {
       return res.redirect(`${CLIENT_URL}/auth/failure?provider=google`);
@@ -170,7 +179,7 @@ module.exports = {
   verifyEmail: async (req, res) => {
     /*
       #swagger.tags = ['Authentication']
-      #swagger.summary = 'Verification'
+      #swagger.summary = 'Verify Email'
       #swagger.description = 'Verify user email with a verification token'
       #swagger.parameters['token'] = {
         in: 'path',
@@ -178,7 +187,38 @@ module.exports = {
         required: true,
         type: 'string'
       }
-  */
+      #swagger.responses[200] = {
+        description: 'Email verified successfully',
+        schema: {
+          error: false,
+          message: 'Successfully verified!',
+          bearer: {
+            access: 'access-token',
+            refresh: 'refresh-token',
+          },
+          token: 'simple-token',
+          user: {
+            _id: 'user-id',
+            fullName: 'John Doe',
+            ...
+          }
+        }
+      }
+      #swagger.responses[400] = {
+        description: 'Invalid or expired verification link',
+        schema: {
+          error: true,
+          message: 'Invalid or expired verification link! Please request verification link again.'
+        }
+      }
+      #swagger.responses[404] = {
+        description: 'No account found',
+        schema: {
+          error: true,
+          message: 'No account found! Please sign up.'
+        }
+      }
+    */
     const { email, verifyEmailToken } = req.body;
 
     if (email && verifyEmailToken) {
@@ -315,9 +355,7 @@ module.exports = {
     /*
       #swagger.tags = ["Authentication"]
       #swagger.summary = "Login"
-      #swagger.description = 'Login with email and password for get simpleToken and JWT'
-      _swagger.deprecated = true
-      _swagger.ignore = true
+      #swagger.description = 'Login with email and password to get simpleToken and JWT'
       #swagger.parameters["body"] = {
           in: "body",
           required: true,
@@ -326,7 +364,38 @@ module.exports = {
               "password": "Test@1234",
           }
       }
-      */
+      #swagger.responses[200] = {
+        description: 'Login successful',
+        schema: {
+          error: false,
+          message: 'You are successfully logged in!',
+          bearer: {
+            access: 'access-token',
+            refresh: 'refresh-token',
+          },
+          token: 'simple-token',
+          user: {
+            _id: 'user-id',
+            fullName: 'John Doe',
+            ...
+          }
+        }
+      }
+      #swagger.responses[400] = {
+        description: 'Validation error or missing fields',
+        schema: {
+          error: true,
+          message: 'Validation error message or missing fields message'
+        }
+      }
+      #swagger.responses[401] = {
+        description: 'Wrong email or password',
+        schema: {
+          error: true,
+          message: 'Wrong email or password. Please try again!'
+        }
+      }
+    */
 
     const validationError = await validateLoginPayload(req.body);
 
@@ -402,17 +471,39 @@ module.exports = {
   forgot: async (req, res) => {
     /*
     #swagger.tags = ['Authentication']
-    #swagger.summary = 'Forgot'
-    #swagger.description = 'Request a url with email to reset password'
+    #swagger.summary = 'Forgot Password'
+    #swagger.description = 'Request a URL with email to reset password'
     #swagger.parameters['body'] = {
         in: 'body',
         required: true,
         schema: {
-            "email":"testUser@gmail.com",
+            "email": "testUser@gmail.com",
             "resetPasswordToken": "optionalExistingToken"
         }
     }
-  */
+    #swagger.responses[200] = {
+      description: 'Password reset code sent successfully',
+      schema: {
+        error: false,
+        resetToken: 'reset-password-token',
+        message: 'Password reset code has been sent to your e-mail. Please check your mailbox.'
+      }
+    }
+    #swagger.responses[400] = {
+      description: 'Invalid request',
+      schema: {
+        error: true,
+        message: 'Invalid request. Please provide correct email address!'
+      }
+    }
+    #swagger.responses[401] = {
+      description: 'No account found',
+      schema: {
+        error: true,
+        message: 'No account found!'
+      }
+    }
+    */
     //* As default we will receive just email in body. But if we have to resend resetCode again, we have to get both email and resetPasswordToken in body.
 
     const { email, resetPasswordToken } = req.body;
@@ -478,6 +569,36 @@ module.exports = {
   },
   // POST
   verifyReset: async (req, res) => {
+    /*
+    #swagger.tags = ['Authentication']
+    #swagger.summary = 'Verify Reset Code'
+    #swagger.description = 'Verify reset code and token for password reset'
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        "resetToken": "reset-password-token",
+        "resetCode": "reset-code",
+        "email": "user@example.com"
+      }
+    }
+    #swagger.responses[200] = {
+      description: 'Reset token and code verified successfully',
+      schema: {
+        error: false,
+        resetToken: 'new-reset-token',
+        message: 'Reset token verified successfully'
+      }
+    }
+    #swagger.responses[400] = {
+      description: 'Invalid or expired reset code',
+      schema: {
+        error: true,
+        message: 'Invalid or expired reset code. Please request reset code again!'
+      }
+    }
+  */
+
     const { resetToken, resetCode, email } = req.body;
 
     if (!email || !resetToken || !resetCode) {
@@ -520,27 +641,54 @@ module.exports = {
   reset: async (req, res) => {
     /*
       #swagger.tags = ['Authentication']
-      #swagger.summary = 'JWT: Reset'
-      #swagger.description = 'Reset password with email, new password, and refresh token.'
+      #swagger.summary = 'Reset Password'
+      #swagger.description = 'Reset password with email, new password, and reset token.'
       #swagger.parameters['body'] = {
-          in: 'body',
-          required: true,
-          schema: {
-            email: 'testUser@gmail.com',
-            newPassword: 'newPassword@123',
-          }
+        in: 'body',
+        required: true,
+        schema: {
+          email: 'testUser@gmail.com',
+          password: 'newPassword@123',
+        },
       }
-      #swagger.parameters['token'] = {
+      #swagger.parameters['resetToken'] = {
         in: 'path',
         required: true,
         type: 'string',
-        description: 'Refresh token received via email',
+        description: 'Reset token received via email',
+      }
+      #swagger.responses[200] = {
+        description: 'Password reset successfully',
+        schema: {
+          error: false,
+          message: 'Your password has been successfully reset!',
+        }
+      }
+      #swagger.responses[400] = {
+        description: 'Invalid or expired reset token',
+        schema: {
+          error: true,
+          message: 'Invalid or expired reset token',
+        }
+      }
+      #swagger.responses[404] = {
+        description: 'No user found with this email',
+        schema: {
+          error: true,
+          message: 'No user found with this email',
+        }
       }
     */
-    const { email, newPassword } = req.body;
+    const { email, password } = req.body;
     const { resetToken } = req.params;
 
-    if (!email || !newPassword || !resetToken) {
+    const validationError = await validateUserUpdatePayload(req.body);
+
+    if (validationError) {
+      throw new CustomError(validationError, 400);
+    }
+
+    if (!email || !password || !resetToken) {
       throw new CustomError("Missing required fields!", 400);
     }
 
@@ -567,15 +715,7 @@ module.exports = {
       throw new CustomError("No user found with this email", 404);
     }
 
-    // const validationError = await validateRegisterPayload({
-    //   password: newPassword,
-    // });
-
-    // if (validationError) {
-    //   throw new CustomError(validationError, 400);
-    // }
-
-    const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
+    const hashedNewPassword = bcrypt.hashSync(password, 10);
     user.password = hashedNewPassword;
     await user.save();
 
@@ -594,19 +734,42 @@ module.exports = {
   // POST
   refresh: async (req, res) => {
     /*
-      #swagger.tags = ['Authentication']
-      #swagger.summary = 'JWT: Refresh'
-      #swagger.description = 'Refresh accessToken with refreshToken'
-      #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-            bearer: {
-                refresh: '...refreshToken...'
-            }
+    #swagger.tags = ['Authentication']
+    #swagger.summary = 'JWT: Refresh'
+    #swagger.description = 'Refresh accessToken with refreshToken'
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        bearer: {
+          refresh: '...refreshToken...'
         }
       }
-    */
+    }
+    #swagger.responses[200] = {
+      description: 'New access token generated successfully',
+      schema: {
+        error: false,
+        bearer: {
+          access: 'new-access-token'
+        }
+      }
+    }
+    #swagger.responses[401] = {
+      description: 'Unauthorized or invalid token',
+      schema: {
+        error: true,
+        message: 'JWT refresh token has expired or is invalid!'
+      }
+    }
+    #swagger.responses[404] = {
+      description: 'Data not found',
+      schema: {
+        error: true,
+        message: 'No data found in refresh token!'
+      }
+    }
+  */
     const refreshToken = req.body?.bearer?.refresh;
 
     if (refreshToken) {
@@ -659,10 +822,31 @@ module.exports = {
   // GET
   logout: async (req, res) => {
     /*
-      #swagger.tags = ["Authentication"]
-      #swagger.summary = "SimpleToken: Logout"
-      #swagger.description = 'Delete simple token key and bypass JWT token'
-    */
+    #swagger.tags = ["Authentication"]
+    #swagger.summary = "SimpleToken: Logout"
+    #swagger.description = 'Delete simple token key and bypass JWT token'
+    #swagger.responses[200] = {
+      description: 'Logout successful',
+      schema: {
+        error: false,
+        message: 'You are successfully logged out!'
+      }
+    }
+    #swagger.responses[401] = {
+      description: 'Unauthorized',
+      schema: {
+        error: true,
+        message: 'No Authorization Header provided!'
+      }
+    }
+    #swagger.responses[400] = {
+      description: 'Logout failed',
+      schema: {
+        error: true,
+        message: 'Logout failed. Please try again!'
+      }
+    }
+  */
 
     const auth = req.headers?.authorization;
     const tokenKey = auth ? auth.split(" ") : null;
