@@ -1,149 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <meta name="x-apple-disable-message-reformatting">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="telephone=no" name="format-detection">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta content="telephone=no" name="format-detection" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
     <title>Welcome to Volunteerium</title>
     <style>
-        body {
-            font-family: "Poppins", sans-serif;
-            margin: 0;
-            line-height: 1.6;
-        }
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        line-height: 1.6;
+      }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border-radius: 1rem;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 1rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
 
-        }
+      .logo {
+        text-align: center;
+        padding-bottom: 25px;
+      }
 
-        .logo {
-            text-align: center;
-            padding-bottom: 25px;
-        }
+      .logo img {
+        width: 100px;
+      }
 
-        .logo img {
-            width: 100px;
-        }
+      .divider {
+        height: 1px;
+        background-color: #7f9d9d;
+        margin: 10px 0;
+      }
 
-        .divider {
-            height: 1px;
-            background-color: #7f9d9d;
-            margin: 10px 0;
-        }
+      h1,
+      h2,
+      h3 {
+        color: #10054d;
+      }
 
-        h1,
-        h2,
-        h3 {
-            color: #10054D;
-        }
+      h1 {
+        font-size: 34px;
+        margin-bottom: 20px;
+      }
 
+      h2 {
+        font-size: 28px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+
+      h3 {
+        font-size: 20px;
+        margin-bottom: 15px;
+      }
+
+      p {
+        font-size: 16px;
+        color: #10054d;
+        margin-bottom: 15px;
+      }
+
+      a {
+        color: #007bff;
+        text-decoration: underline;
+      }
+
+      a.es-button,
+      button.es-button {
+        padding: 10px 25px;
+        display: inline-block;
+        background: #69957b;
+        border-radius: 10px;
+        font-weight: normal;
+        text-align: center;
+        color: #ffffff;
+        text-decoration: none;
+      }
+
+      .footer {
+        margin-top: 30px;
+        text-align: center;
+      }
+
+      @media only screen and (max-width: 600px) {
         h1 {
-            font-size: 34px;
-            margin-bottom: 20px;
+          font-size: 30px;
         }
 
         h2 {
-            font-size: 28px;
-            margin-top: 20px;
-            margin-bottom: 10px;
+          font-size: 24px;
         }
 
         h3 {
-            font-size: 20px;
-            margin-bottom: 15px;
+          font-size: 20px;
         }
-
-        p {
-            font-size: 16px;
-            color: #10054D;
-            margin-bottom: 15px;
-        }
-
-        a {
-            color: #007bff;
-            text-decoration: underline;
-        }
-
-        a.es-button,
-        button.es-button {
-            padding: 10px 25px;
-            display: inline-block;
-            background: #69957B;
-            border-radius: 10px;
-            font-weight: normal;
-            text-align: center;
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        @media only screen and (max-width: 600px) {
-            h1 {
-                font-size: 30px;
-            }
-
-            h2 {
-                font-size: 24px;
-            }
-
-            h3 {
-                font-size: 20px;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <div class="logo">
-            <img src="https://demo.stripocdn.email/content/guids/03743a69-03fe-4a9b-9316-88c6bb79e14f/images/logo.png"
-                alt="Logo" title="Logo">
-        </div>
-        <div class="divider"></div>
-        <h1 style="text-align:center;">Welcome to Volunteerium, {{firstName}}!</h1>
-        <p>Thank you for signing up to Volunteerium! 🌟 We're excited to have you on board as part of our vibrant
-            community of volunteers working to make a positive impact.</p>
-        <p>Before you dive in, don’t forget to set your preferences to help us match you with the most meaningful
-            opportunities tailored to your passions and skills.</p>
+      <div class="logo">
+        <img
+          src="https://demo.stripocdn.email/content/guids/03743a69-03fe-4a9b-9316-88c6bb79e14f/images/logo.png"
+          alt="Logo"
+          title="Logo"
+        />
+      </div>
+      <div class="divider"></div>
+      <h1 style="text-align: center">
+        Welcome to Volunteerium, {{firstName}}!
+      </h1>
+      <p>
+        Thank you for signing up to Volunteerium! 🌟 We're excited to have you
+        on board as part of our vibrant community of volunteers working to make
+        a positive impact.
+      </p>
+      <p>
+        Before you dive in, don’t forget to set your preferences to help us
+        match you with the most meaningful opportunities tailored to your
+        passions and skills.
+      </p>
 
-        <h2>Get Started</h2>
-        <p>To get started, please confirm your email address by clicking the link below:</p>
+      <h2>Get Started</h2>
+      <p>
+        To get started, please confirm your email address by clicking the link
+        below:
+      </p>
 
-        <div>
-            <a href="" class="es-button">Verify Email
-                Address</a>
-        </div>
-        <p>If the link above does not work, please copy and paste the following URL into your browser:</p>
-        <p><a href="">
-                {{clientUrl}}/verify-email/{{token}}</a></p>
-        <p>This verification link is valid for 1 Week. After that you have to register again. If you didn't request this
-            link, please ignore this email.</p>
+      <div>
+        <a
+          href="{{clientUrl}}/verify-email/success?payload={{verifyData}}"
+          class="es-button"
+          >Verify Email Address</a
+        >
+      </div>
+      <p>
+        If the link above does not work, please copy and paste the following URL
+        into your browser:
+      </p>
+      <p>
+        <a href="{{clientUrl}}/verify-email/success?payload={{verifyData}}">
+          {{clientUrl}}/verify-email/success?payload={{verifyData}}</a
+        >
+      </p>
+      <p>
+        This verification link is valid for 1 Week. After that you have to
+        register again. If you didn't request this link, please ignore this
+        email.
+      </p>
 
-        <h2>Need Help?</h2>
-        <p>If you have any questions or need assistance, feel free to reply to this email or visit our <a
-                href="mailto:info.volunteerium@gmail.com">Support Center</a></p>
-        <p>Thank you for choosing Bloggio. We look forward to helping you achieve your goals!</p>
+      <h2>Need Help?</h2>
+      <p>
+        If you have any questions or need assistance, feel free to reply to this
+        email or visit our
+        <a href="mailto:info.volunteerium@gmail.com">Support Center</a>
+      </p>
+      <p>
+        Thank you for choosing Volunteerium. We look forward to helping you
+        achieve your goals!
+      </p>
 
-        <div class="footer">
-            <p>Best regards,</p>
-            <p><strong>Your Volunteerium Team</strong></p>
-        </div>
+      <div class="footer">
+        <p>Best regards,</p>
+        <p><strong>Your Volunteerium Team</strong></p>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

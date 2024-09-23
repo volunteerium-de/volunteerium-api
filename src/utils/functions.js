@@ -8,7 +8,16 @@ const extractDateNumber = (url) => {
   return null; // Return null if no match is found
 };
 
+const isTokenExpired = (token) => {
+  return token.expiresIn < Date.now();
+};
+
+const isEmpty = (value) =>
+  value === undefined || value === null || value === "";
+
 // Export the functions
 module.exports = {
+  isTokenExpired,
+  isEmpty,
   extractDateNumber,
 };
