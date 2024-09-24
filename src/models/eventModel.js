@@ -43,6 +43,7 @@ const EventSchema = new mongoose.Schema(
     addressId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Address",
+      required: true,
     },
     interestIds: [
       {
