@@ -61,10 +61,12 @@ const uploadAvatarToS3 = async (avatarUrl, profileId) => {
 };
 
 // Middleware function to upload single file to S3
-const uploadSingleToS3 = (type) => async (req, res, next) => {
+const uploadSingleToS3 = () => async (req, res, next) => {
   if (!req.file) {
     return next();
   }
+
+  const fileType = req.file.fieldname;
 
   if (!allowedMimeTypes.includes(req.file.mimetype)) {
     throw new CustomError(
@@ -75,7 +77,7 @@ const uploadSingleToS3 = (type) => async (req, res, next) => {
 
   const params = {
     Bucket: AWS_S3_BUCKET_NAME,
-    Key: `${Date.now()}-${type}_${req.file.originalname}`,
+    Key: `${Date.now()}-${fileType}_${req.file.originalname}`,
     Body: req.file.buffer,
     ContentType: req.file.mimetype,
     // ACL: 'public-read' // Uncomment if you want the file to be publicly readable

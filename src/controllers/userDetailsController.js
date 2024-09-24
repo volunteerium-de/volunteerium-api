@@ -120,6 +120,30 @@ module.exports = {
 
     // console.log("userId", req.body.userId);
 
+    if (req.fileLocation) {
+      if (req.file.fieldname === "avatar") {
+        const identifierForImage = extractDateNumber(user.avatar);
+        // console.log("identifierForImage", identifierForImage); // debugging
+        await deleteObjectByDateKeyNumber(identifierForImage); // delete existing user avatar from S3 bucket
+
+        req.body.avatar = req.fileLocation;
+      } else if (req.file.fieldname === "organizationLogo") {
+        const identifierForImage = extractDateNumber(user.organizationLogo);
+        await deleteObjectByDateKeyNumber(identifierForImage); // delete existing organization logo from S3 bucket
+
+        req.body.organizationLogo = req.fileLocation;
+      }
+    } else {
+      if (user.avatar && req.body.avatar === "") {
+        const identifierForImage = extractDateNumber(user.avatar);
+        await deleteObjectByDateKeyNumber(identifierForImage); // just delete existing user avatar from S3 bucket
+      }
+      if (user.organizationLogo && req.body.organizationLogo === "") {
+        const identifierForImage = extractDateNumber(user.organizationLogo);
+        await deleteObjectByDateKeyNumber(identifierForImage); // just delete existing organization logo from S3 bucket
+      }
+    }
+
     const data = await UserDetails.findOneAndUpdate(
       { _id: req.params.id },
       req.body,
