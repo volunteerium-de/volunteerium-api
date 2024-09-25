@@ -32,16 +32,17 @@ module.exports = {
     //   listFilter._id = req.user._id;
     // }
 
-    const data = await res.getModelList(UserDetails, listFilter, [
-      {
-        path: "interestIds",
-        select: "name _id",
-      },
-      {
-        path: "addressId",
-        select: "-createdAt -updatedAt -__v",
-      },
-    ]);
+    const data = await res.getModelList(UserDetails, listFilter);
+    // const data = await res.getModelList(UserDetails, listFilter, [
+    //   {
+    //     path: "interestIds",
+    //     select: "name _id",
+    //   },
+    //   {
+    //     path: "addressId",
+    //     select: "-createdAt -updatedAt -__v",
+    //   },
+    // ]);
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(UserDetails),
@@ -61,16 +62,18 @@ module.exports = {
         }
       */
 
-    const data = await UserDetails.findOne({ _id: req.params.id }).populate([
-      {
-        path: "interestIds",
-        select: "name _id",
-      },
-      {
-        path: "addressId",
-        select: "-createdAt -updatedAt -__v",
-      },
-    ]);
+    const data = await UserDetails.findOne({ _id: req.params.id });
+
+    // const data = await UserDetails.findOne({ _id: req.params.id }).populate([
+    //   {
+    //     path: "interestIds",
+    //     select: "name _id",
+    //   },
+    //   {
+    //     path: "addressId",
+    //     select: "-createdAt -updatedAt -__v",
+    //   },
+    // ]);
     res.status(200).send({
       error: false,
       data,
@@ -110,39 +113,17 @@ module.exports = {
 
     // console.log("req.user._id", req.user._id);
 
-    const user = await User.findOne({
-      _id: req.user?.userType === "admin" ? req.body.userId : req.user._id,
-    });
+    const userId =
+      req.user?.userType === "admin" ? req.body.userId : req.user._id;
+
+    const user = await User.findOne({ _id: userId });
 
     if (!user) {
       throw new CustomError("User not found", 404);
     }
 
+    req.body.userId = userId;
     // console.log("userId", req.body.userId);
-
-    if (req.fileLocation) {
-      if (req.file.fieldname === "avatar") {
-        const identifierForImage = extractDateNumber(user.avatar);
-        // console.log("identifierForImage", identifierForImage); // debugging
-        await deleteObjectByDateKeyNumber(identifierForImage); // delete existing user avatar from S3 bucket
-
-        req.body.avatar = req.fileLocation;
-      } else if (req.file.fieldname === "organizationLogo") {
-        const identifierForImage = extractDateNumber(user.organizationLogo);
-        await deleteObjectByDateKeyNumber(identifierForImage); // delete existing organization logo from S3 bucket
-
-        req.body.organizationLogo = req.fileLocation;
-      }
-    } else {
-      if (user.avatar && req.body.avatar === "") {
-        const identifierForImage = extractDateNumber(user.avatar);
-        await deleteObjectByDateKeyNumber(identifierForImage); // just delete existing user avatar from S3 bucket
-      }
-      if (user.organizationLogo && req.body.organizationLogo === "") {
-        const identifierForImage = extractDateNumber(user.organizationLogo);
-        await deleteObjectByDateKeyNumber(identifierForImage); // just delete existing organization logo from S3 bucket
-      }
-    }
 
     const data = await UserDetails.findOneAndUpdate(
       { _id: req.params.id },
@@ -154,10 +135,11 @@ module.exports = {
     ); // returns data (user's details)
 
     // const data = await UserDetails.findOneAndUpdate(
-    //   { userId: customUserId },
+    //   { _id: req.params.id },
     //   req.body,
     //   {
     //     runValidators: true,
+    //     new: true,
     //   }
     // ).populate([
     //   {

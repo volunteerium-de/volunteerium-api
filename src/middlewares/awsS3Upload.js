@@ -60,15 +60,16 @@ const uploadAvatarToS3 = async (avatarUrl, profileId) => {
   }
 };
 
-// Middleware function to upload single file to S3
-const uploadSingleToS3 = () => async (req, res, next) => {
+// Middleware function to upload a single dynamic file to S3
+const uploadSingleToS3 = (fieldName) => async (req, res, next) => {
   if (!req.file) {
-    return next();
+    return next(); // No file uploaded for the specified field, proceed to next middleware
   }
 
-  const fileType = req.file.fieldname;
+  const fileToUpload = req.file; // Get the uploaded file
 
-  if (!allowedMimeTypes.includes(req.file.mimetype)) {
+  // Check if the file type is allowed
+  if (!allowedMimeTypes.includes(fileToUpload.mimetype)) {
     throw new CustomError(
       "File type error. Allowed file types are JPEG, JPG, PNG, PDF, DOC, DOCX, and TXT.",
       400
@@ -77,17 +78,17 @@ const uploadSingleToS3 = () => async (req, res, next) => {
 
   const params = {
     Bucket: AWS_S3_BUCKET_NAME,
-    Key: `${Date.now()}-${fileType}_${req.file.originalname}`,
-    Body: req.file.buffer,
-    ContentType: req.file.mimetype,
+    Key: `${Date.now()}-${fileToUpload.fieldname}_${fileToUpload.originalname}`, // Key for the S3 file
+    Body: fileToUpload.buffer, // Buffer of the file
+    ContentType: fileToUpload.mimetype, // MIME type of the file
     // ACL: 'public-read' // Uncomment if you want the file to be publicly readable
   };
 
   try {
     const command = new PutObjectCommand(params);
     await s3Client.send(command);
-    req.fileLocation = `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${params.Key}`;
-    next();
+    req.fileLocation = `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${params.Key}`; // Store the file location for later use
+    next(); // Proceed to the next middleware
   } catch (err) {
     throw new CustomError("Failed to upload single file.", 500);
   }
