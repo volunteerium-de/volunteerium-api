@@ -106,12 +106,16 @@ const EventSchema = new mongoose.Schema(
       type: [String],
       enum: languageCodes,
     },
-    documentIds: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Document",
-      },
-    ],
+    eventPhoto: {
+      type: String,
+      trim: true,
+    },
+    // documentIds: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Document",
+    //   },
+    // ],
     isOnline: {
       type: Boolean,
       default: false,
