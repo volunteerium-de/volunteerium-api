@@ -83,7 +83,8 @@ const userDetailsSchema = new mongoose.Schema(
 
 // Pre-update middleware to validate required fields based on userType
 userDetailsSchema.pre("findOneAndUpdate", async function (next) {
-  const userId = this._conditions.userId || this.getUpdate().userId;
+  const userId = this.getUpdate().userId;
+  // console.log("userId", userId);
 
   if (!userId) {
     return next(new CustomError("UserId is missing in the update query", 400));

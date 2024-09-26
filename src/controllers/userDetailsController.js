@@ -32,16 +32,17 @@ module.exports = {
     //   listFilter._id = req.user._id;
     // }
 
-    const data = await res.getModelList(UserDetails, listFilter, [
-      {
-        path: "interestIds",
-        select: "name _id",
-      },
-      {
-        path: "addressId",
-        select: "-createdAt -updatedAt -__v",
-      },
-    ]);
+    const data = await res.getModelList(UserDetails, listFilter);
+    // const data = await res.getModelList(UserDetails, listFilter, [
+    //   {
+    //     path: "interestIds",
+    //     select: "name _id",
+    //   },
+    //   {
+    //     path: "addressId",
+    //     select: "-createdAt -updatedAt -__v",
+    //   },
+    // ]);
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(UserDetails),
@@ -61,16 +62,18 @@ module.exports = {
         }
       */
 
-    const data = await UserDetails.findOne({ _id: req.params.id }).populate([
-      {
-        path: "interestIds",
-        select: "name _id",
-      },
-      {
-        path: "addressId",
-        select: "-createdAt -updatedAt -__v",
-      },
-    ]);
+    const data = await UserDetails.findOne({ _id: req.params.id });
+
+    // const data = await UserDetails.findOne({ _id: req.params.id }).populate([
+    //   {
+    //     path: "interestIds",
+    //     select: "name _id",
+    //   },
+    //   {
+    //     path: "addressId",
+    //     select: "-createdAt -updatedAt -__v",
+    //   },
+    // ]);
     res.status(200).send({
       error: false,
       data,
@@ -110,14 +113,16 @@ module.exports = {
 
     // console.log("req.user._id", req.user._id);
 
-    const user = await User.findOne({
-      _id: req.user?.userType === "admin" ? req.body.userId : req.user._id,
-    });
+    const userId =
+      req.user?.userType === "admin" ? req.body.userId : req.user._id;
+
+    const user = await User.findOne({ _id: userId });
 
     if (!user) {
       throw new CustomError("User not found", 404);
     }
 
+    req.body.userId = userId;
     // console.log("userId", req.body.userId);
 
     const data = await UserDetails.findOneAndUpdate(
@@ -130,10 +135,11 @@ module.exports = {
     ); // returns data (user's details)
 
     // const data = await UserDetails.findOneAndUpdate(
-    //   { userId: customUserId },
+    //   { _id: req.params.id },
     //   req.body,
     //   {
     //     runValidators: true,
+    //     new: true,
     //   }
     // ).populate([
     //   {

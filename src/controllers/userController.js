@@ -1,6 +1,11 @@
 "use strict";
 
 const User = require("../models/userModel");
+const UserDetails = require("../models/userDetailsModel");
+const Documents = require("../models/documentModel");
+const Events = require("../models/eventModel");
+const Messages = require("../models/messageModel");
+const Conversations = require("../models/conversationModel");
 const bcrypt = require("bcryptjs");
 const { CustomError } = require("../errors/customError");
 const { sendFeedbackEmail } = require("../utils/email/emailService");
@@ -403,6 +408,12 @@ module.exports = {
 
     // Delete all events, documents and messages etc. related to this user
     await Events.deleteMany(userIdFilter);
+    await Conversations.deleteMany({
+      createdBy:
+        req.user?.userType.toLowerCase() !== "admin"
+          ? req.params.id
+          : req.user?._id,
+    });
     await Messages.deleteMany({
       senderId:
         req.user?.userType.toLowerCase() !== "admin"
@@ -412,11 +423,15 @@ module.exports = {
     await Documents.deleteMany(userIdFilter);
 
     // Delete user
-    const result = await User.findOneAndDelete(idFilter); // returns data
+    await User.findOneAndDelete(idFilter);
+    const result = await UserDetails.findOneAndDelete(userIdFilter);
 
-    if (result.avatar && result.avatar.includes(AWS_S3_BASE)) {
+    if (result.avatar) {
       const identifierForImage = extractDateNumber(result.avatar);
       await deleteObjectByDateKeyNumber(identifierForImage); // delete existing user avatar from s3 bucket
+    } else if (result.organizationLogo) {
+      const identifierForLogo = extractDateNumber(result.organizationLogo);
+      await deleteObjectByDateKeyNumber(identifierForLogo); // delete existing organization logo from s3 bucket
     }
 
     res.status(204).send({
