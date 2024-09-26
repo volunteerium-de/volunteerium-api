@@ -2,16 +2,8 @@
 
 const yup = require("yup");
 const validateSchema = require("./validator");
-const fs = require("fs");
-const path = require("path");
+const languagesData = require("../helpers/ISO-639-1-languages.json"); // ISO 639-1 language codes
 
-// ISO 639-1 language codes
-const languagesData = JSON.parse(
-  fs.readFileSync(
-    path.resolve(__dirname, "../helpers/ISO-639-1-languages.json"),
-    "utf8"
-  )
-);
 const languageCodes = languagesData.map((lang) => lang.code);
 
 const updateUserSchema = yup.object().shape({

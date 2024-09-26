@@ -1,6 +1,13 @@
 "use strict";
 
 const Event = require("../models/eventModel");
+const Address = require("../models/addressModel");
+const {
+  validateEventPayload,
+  validateUpdateEventPayload,
+} = require("../validators/eventValidator");
+const { CustomError } = require("../errors/customError");
+const { mongoose } = require("../configs/dbConnection");
 
 module.exports = {
   list: async (req, res) => {
@@ -82,10 +89,10 @@ module.exports = {
         path: "addressId",
         select: "city country zipCode",
       },
-      {
-        path: "interestIds",
-        select: "name",
-      },
+      // {
+      //   path: "interestIds",
+      //   select: "name",
+      // },
     ]);
 
     res.status(200).send({
@@ -112,11 +119,55 @@ module.exports = {
         }
       }
     */
-    const data = await Event.create(req.body);
+
+    const validationError = await validateEventPayload(req.body);
+
+    if (validationError) {
+      throw new CustomError(validationError, 400);
+    }
+
+    if (req.user.userType !== "admin") {
+      delete req.body.isActive;
+    }
+
+    const {
+      city,
+      country,
+      zipCode,
+      streetName,
+      streetNumber,
+      state,
+      additional,
+    } = req.body;
+
+    if (!req.body.isOnline) {
+      if (!city || !country || !zipCode || !streetName || !streetNumber) {
+        throw new Error(
+          "City, country, zip code, street name, and street number are required for offline events."
+        );
+      }
+
+      const address = new Address({
+        city,
+        country,
+        zipCode,
+        streetName,
+        streetNumber,
+        state,
+        additional,
+      });
+
+      const savedAddress = await address.save();
+      req.body.addressId = savedAddress._id;
+    }
+
+    const event = new Event(req.body);
+    const savedEvent = await event.save();
+
     res.status(201).send({
       error: false,
-      message: "Event successfully created!",
-      data,
+      message: "New Event successfully created!",
+      data: savedEvent,
     });
   },
   read: async (req, res) => {
@@ -227,29 +278,29 @@ module.exports = {
       {
         path: "addressId",
       },
-      {
-        path: "interestIds",
-        select: "name",
-      },
-      {
-        path: "eventParticipantIds",
-        select: "email fullName",
-        populate: {
-          path: "userDetailsId",
-          select: "avatar isFullNameDisplay",
-        },
-      },
-      {
-        path: "eventFeedbackIds",
-        populate: {
-          path: "userId",
-          select: "email fullName",
-          populate: {
-            path: "userDetailsId",
-            select: "avatar isFullNameDisplay",
-          },
-        },
-      },
+      // {
+      //   path: "interestIds",
+      //   select: "name",
+      // },
+      // {
+      //   path: "eventParticipantIds",
+      //   select: "email fullName",
+      //   populate: {
+      //     path: "userDetailsId",
+      //     select: "avatar isFullNameDisplay",
+      //   },
+      // },
+      // {
+      //   path: "eventFeedbackIds",
+      //   populate: {
+      //     path: "userId",
+      //     select: "email fullName",
+      //     populate: {
+      //       path: "userDetailsId",
+      //       select: "avatar isFullNameDisplay",
+      //     },
+      //   },
+      // },
     ]);
 
     res.status(200).send({
@@ -282,8 +333,18 @@ module.exports = {
       }
     */
 
+    const validationError = await validateUpdateEventPayload(req.body);
+
+    if (validationError) {
+      throw new CustomError(validationError, 400);
+    }
+
+    if (req.user.userType !== "admin") {
+      delete req.body.isActive;
+    }
+
     const event = await Event.findOneAndUpdate(
-      { _id: req.param.id },
+      { _id: req.params.id },
       req.body,
       {
         new: true,
@@ -322,7 +383,9 @@ module.exports = {
     const data = await Event.deleteOne({ _id: req.params.id });
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
-      message: data.deletedCount ? undefined : "Event not found",
+      message: data.deletedCount
+        ? "Event successfully deleted!"
+        : "Event not found",
     });
   },
 };

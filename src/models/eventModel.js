@@ -49,7 +49,7 @@ const EventSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Interest",
-        required: true,
+        // required: true,
       },
     ],
     contactName: {
@@ -120,7 +120,7 @@ const EventSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isRecurring: {
+    isRepeat: {
       type: Boolean,
       default: false,
     },
