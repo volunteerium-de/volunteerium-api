@@ -356,7 +356,7 @@ module.exports = {
       }
     );
 
-    res.status(200).send({
+    res.status(202).send({
       error: false,
       message: "Event successfully updated!",
       new: event,
