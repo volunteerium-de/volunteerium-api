@@ -13,7 +13,6 @@ module.exports = {
         schema: {
           error: false,
           details: { type: 'array', items: { type: 'object' } },
-          totalRecords: 1,
           data: [{ _id: 'token-id', token: 'token-string', userId: 'user-id' }]
         }
       }
@@ -22,7 +21,6 @@ module.exports = {
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(Token),
-      totalRecords: data.length,
       data,
     });
   },
