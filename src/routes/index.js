@@ -13,6 +13,8 @@ router.use("/auth", require("./authRouter"));
 router.use("/users", require("./userRouter"));
 // userDetails:
 router.use("/details/users", require("./userDetailsRouter"));
+// events:
+router.use("/events", require("./eventRouter"));
 
 /* ------------------------------------------------------- */
 module.exports = router;

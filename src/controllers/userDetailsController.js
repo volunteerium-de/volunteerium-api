@@ -3,9 +3,6 @@
 const User = require("../models/userModel");
 const UserDetails = require("../models/userDetailsModel");
 const { CustomError } = require("../errors/customError");
-const { AWS_S3_BASE } = require("../../setups");
-const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
-const { extractDateNumber } = require("../utils/functions");
 const {
   validateUserDetailsUpdatePayload,
 } = require("../validators/userValidator");

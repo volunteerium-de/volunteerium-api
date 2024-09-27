@@ -3,6 +3,7 @@
 const { mongoose } = require("../configs/dbConnection");
 const fs = require("fs");
 const path = require("path");
+const { CustomError } = require("../errors/customError");
 
 const languagesData = JSON.parse(
   fs.readFileSync(
@@ -43,13 +44,12 @@ const EventSchema = new mongoose.Schema(
     addressId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Address",
-      required: true,
     },
     interestIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Interest",
-        required: true,
+        // required: true,
       },
     ],
     contactName: {
@@ -106,17 +106,21 @@ const EventSchema = new mongoose.Schema(
       type: [String],
       enum: languageCodes,
     },
-    documentIds: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Document",
-      },
-    ],
+    eventPhoto: {
+      type: String,
+      trim: true,
+    },
+    // documentIds: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Document",
+    //   },
+    // ],
     isOnline: {
       type: Boolean,
       default: false,
     },
-    isRecurring: {
+    isRepeat: {
       type: Boolean,
       default: false,
     },

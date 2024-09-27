@@ -78,7 +78,7 @@ const uploadSingleToS3 = (fieldName) => async (req, res, next) => {
 
   const params = {
     Bucket: AWS_S3_BUCKET_NAME,
-    Key: `${Date.now()}-${fileToUpload.fieldname}_${fileToUpload.originalname}`, // Key for the S3 file
+    Key: `${Date.now()}-${fieldName ? fieldName : fileToUpload.fieldname}_${fileToUpload.originalname}`, // Key for the S3 file
     Body: fileToUpload.buffer, // Buffer of the file
     ContentType: fileToUpload.mimetype, // MIME type of the file
     // ACL: 'public-read' // Uncomment if you want the file to be publicly readable
