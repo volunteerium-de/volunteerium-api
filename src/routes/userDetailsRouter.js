@@ -2,7 +2,7 @@
 
 const router = require("express").Router();
 const userDetailsController = require("../controllers/userDetailsController");
-const validateUserFileUpload = require("../middlewares/fileUploadValidation");
+const { checkUserFileUpload } = require("../middlewares/fileUploadHandler");
 const idValidation = require("../middlewares/idValidation");
 const uploadFileBasedOnUserType = require("../middlewares/uploadFileBasedOnUserType");
 
@@ -15,12 +15,12 @@ router
   .get(userDetailsController.read)
   .put(
     uploadFileBasedOnUserType,
-    validateUserFileUpload,
+    checkUserFileUpload,
     userDetailsController.update
   )
   .patch(
     uploadFileBasedOnUserType,
-    validateUserFileUpload,
+    checkUserFileUpload,
     userDetailsController.update
   );
 

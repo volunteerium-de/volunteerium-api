@@ -161,6 +161,10 @@ module.exports = {
       req.body.addressId = savedAddress._id;
     }
 
+    if (req.fileLocation) {
+      req.body.eventPhoto = req.fileLocation;
+    }
+
     const event = new Event(req.body);
     const savedEvent = await event.save();
 

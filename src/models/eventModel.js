@@ -3,6 +3,7 @@
 const { mongoose } = require("../configs/dbConnection");
 const fs = require("fs");
 const path = require("path");
+const { CustomError } = require("../errors/customError");
 
 const languagesData = JSON.parse(
   fs.readFileSync(
@@ -43,7 +44,6 @@ const EventSchema = new mongoose.Schema(
     addressId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Address",
-      required: true,
     },
     interestIds: [
       {
