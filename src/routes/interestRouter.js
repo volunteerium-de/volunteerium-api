@@ -2,7 +2,7 @@
 
 const router = require("express").Router();
 
-const interest = require("../controllers/interestController");
+const interestController = require("../controllers/interestController");
 const idValidation = require("../middlewares/idValidation");
 // const { isAdmin } = require("../middlewares/permissions");
 
@@ -10,14 +10,14 @@ const idValidation = require("../middlewares/idValidation");
 
 // URL: /interests
 
-router.route("/").get(interest.list).post(interest.create);
+router.route("/").get(interestController.list).post(interestController.create);
 router
   .route("/:id")
   .all(idValidation)
-  .get(interest.read)
-  .put(interest.update)
-  .patch(interest.update)
-  .delete(interest.delete);
+  .get(interestController.read)
+  .put(interestController.update)
+  .patch(interestController.update)
+  .delete(interestController.delete);
 
 /* ------------------------------------------------------- */
 module.exports = router;
