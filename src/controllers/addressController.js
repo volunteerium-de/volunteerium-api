@@ -245,7 +245,15 @@ module.exports = {
         }
       }
     */
+
     const data = await Address.deleteOne({ _id: req.params.id });
+
+    // Check address in related event and set it null after deleting this address
+    const relatedEvent = await Event.findOne({ addressId: req.params.id });
+    if (relatedEvent) {
+      await Event.updateOne({ _id: relatedEvent._id }, { addressId: null });
+    }
+
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       message: data.deletedCount

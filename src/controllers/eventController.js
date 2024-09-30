@@ -54,6 +54,9 @@ module.exports = {
                 city: 'City Name',
                 country: 'Country Name',
                 zipCode: "Zip Code"
+                iframeSrc: "Iframe Source"
+                latitude: "Latitude",
+                longitude: "Longitude",
               },
               interestIds: [
                 {
@@ -219,7 +222,9 @@ module.exports = {
                 streetName: "Street Name",
                 streetNumber: "Street Number",
                 additional: "Additional",
-                iframe: "Address IFrame"
+                iframeSrc: "Address IFrame",
+                latitude: "Latitude",
+                longitude: "Longitude",
               },
               interestIds: [
                 {
