@@ -31,6 +31,8 @@ module.exports = {
               streetNumber: '45',
               additional: 'None',
               iframeSrc: 'https://www.openstreetmap.org/export/embed.html?bbox=13.3878%2C52.5323%2C13.3878%2C52.5323&layer=mapnik'
+              latitude: '52.5323', 
+              longitude: '13.3878'  
             }
           ]
         }
@@ -60,6 +62,8 @@ module.exports = {
           streetNumber: '45',
           additional: 'None',
           iframeSrc: 'Iframe Src'
+          latitude: 'Latitude', 
+          longitude: 'Longitude'  
         }
       }
       #swagger.responses[201] = {
@@ -77,6 +81,8 @@ module.exports = {
             streetNumber: '45',
             additional: 'None',
             iframeSrc: 'https://www.openstreetmap.org/export/embed.html?bbox=13.3882%2C52.5316%2C13.3898%2C52.5323&layer=mapnik'
+            latitude: '52.5323', 
+            longitude: '13.3878'  
           }
         }
       }
@@ -121,6 +127,8 @@ module.exports = {
             streetNumber: '45',
             additional: 'None',
             iframeSrc: 'https://www.openstreetmap.org/export/embed.html?bbox=13.3882%2C52.5316%2C13.3898%2C52.5323&layer=mapnik'
+            latitude: '52.5323', 
+            longitude: '13.3878'  
           }
         }
       }
@@ -136,7 +144,6 @@ module.exports = {
     res.status(data ? 200 : 404).send({
       error: !data,
       data,
-      message: !data && "Address not found",
     });
   },
   update: async (req, res) => {
@@ -162,6 +169,8 @@ module.exports = {
           streetNumber: '45',
           additional: 'None',
           iframeSrc: 'Iframe Src'
+          latitude: 'Latitude', 
+          longitude: 'Longitude  
         }
       }
       #swagger.responses[202] = {
@@ -179,6 +188,8 @@ module.exports = {
             streetNumber: '45',
             additional: 'None',
             iframeSrc: 'https://www.openstreetmap.org/export/embed.html?bbox=13.3882%2C52.5316%2C13.3898%2C52.5323&layer=mapnik'
+            latitude: '52.5323', 
+            longitude: '13.3878'  
           }
         }
       }

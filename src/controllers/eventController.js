@@ -143,7 +143,7 @@ module.exports = {
     if (!req.body.isOnline) {
       if (!city || !country || !zipCode || !streetName || !streetNumber) {
         throw new Error(
-          "City, country, zip code, street name, and street number are required for offline events."
+          "Address informations are required for physical events."
         );
       }
 
@@ -347,19 +347,78 @@ module.exports = {
       delete req.body.isActive;
     }
 
-    const event = await Event.findOneAndUpdate(
+    // If an address is provided, update it; otherwise, create a new address if needed
+    const {
+      city,
+      country,
+      zipCode,
+      streetName,
+      streetNumber,
+      state,
+      additional,
+    } = req.body;
+
+    // Get the existing event
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      throw new Error("Event not found.", 404);
+    }
+
+    // Use the event's existing addressId
+    const addressId = event.addressId;
+
+    if (city || country || zipCode || streetName || streetNumber) {
+      if (addressId) {
+        // Update existing address if it exists
+        await Address.findByIdAndUpdate(
+          addressId,
+          {
+            city,
+            country,
+            zipCode,
+            streetName,
+            streetNumber,
+            state,
+            additional,
+          },
+          { new: true, runValidators: true }
+        );
+      } else if (!addressId && !req.body.isOnline) {
+        // If no addressId and the event is not online, create a new address
+        const address = new Address({
+          city,
+          country,
+          zipCode,
+          streetName,
+          streetNumber,
+          state,
+          additional,
+        });
+        const savedAddress = await address.save();
+        req.body.addressId = savedAddress._id;
+      }
+    } else if (!req.body.isOnline) {
+      // if the event is not online and no address data provided, then we throw error!
+      throw new Error("Address informations are required for physical events.");
+    } else if (addressId && req.body.isOnline) {
+      // if the event is online and no address data provided, then we set addressId to null!
+      req.body.addressId = null;
+      await Address.deleteOne({ _id: addressId });
+    }
+
+    const updatedEvent = await Event.findOneAndUpdate(
       { _id: req.params.id },
       req.body,
       {
         new: true,
         runValidators: true,
       }
-    );
+    ).populate("addressId");
 
     res.status(202).send({
       error: false,
       message: "Event successfully updated!",
-      new: event,
+      new: updatedEvent,
     });
   },
   delete: async (req, res) => {
