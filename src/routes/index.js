@@ -15,6 +15,8 @@ router.use("/users", require("./userRouter"));
 router.use("/details/users", require("./userDetailsRouter"));
 // events:
 router.use("/events", require("./eventRouter"));
+// interests:
+router.use("/interests", require("./interestRouter"));
 
 /* ------------------------------------------------------- */
 module.exports = router;
