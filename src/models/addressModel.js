@@ -28,6 +28,10 @@ const AddressSchema = new mongoose.Schema(
     additional: {
       type: String,
     },
+    iframeSrc: {
+      type: String,
+      default: null,
+    },
   },
   {
     collection: "addresses",
