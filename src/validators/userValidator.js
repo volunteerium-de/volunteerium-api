@@ -39,6 +39,7 @@ const updateUserDetailsSchema = yup.object().shape({
         .string()
         .matches(/^[0-9a-fA-F]{24}$/, "InterestIds must be a valid ObjectId")
     )
+    .max(3, "You can add up to 3 interestIds only.")
     .optional(),
   organizationLogo: yup.string().trim().optional(),
   organizationDesc: yup.string().max(1000).trim().optional(),
