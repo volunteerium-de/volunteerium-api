@@ -19,6 +19,8 @@ router.use("/events", require("./eventRouter"));
 router.use("/interests", require("./interestRouter"));
 // addresses:
 router.use("/addresses", require("./addressRouter"));
+// documents:
+router.use("/documents", require("./documentRouter"));
 
 /* ------------------------------------------------------- */
 module.exports = router;

@@ -50,12 +50,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    //   documentIds: [
-    //     {
-    //       type: mongoose.Schema.Types.ObjectId,
-    //       ref: "Document",
-    //     },
-    //   ],
+    documentIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Document",
+      },
+    ],
   },
   { collection: "users", timestamps: true }
 );

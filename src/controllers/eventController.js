@@ -448,11 +448,46 @@ module.exports = {
         }
       }
     */
+
+    // Check if event exists
+    const event = await Event.findById(req.params.id).populate("documentIds");
+
+    // Array to hold promises for deleting files
+    const deletePromises = [];
+
+    // Delete event photo from S3 if it exists
+    if (event.eventPhoto) {
+      const identifierForImage = extractDateNumber(event.eventPhoto);
+      console.log(
+        `Deleting existing Event photo from S3: ${identifierForImage}`
+      );
+      deletePromises.push(deleteObjectByDateKeyNumber(identifierForImage));
+    }
+
+    if (event.documentIds.length) {
+      // Prepare document deletion
+      for (const documentData of event.documentIds) {
+        const identifierForImage = extractDateNumber(documentData.file);
+        console.log(
+          `Deleting existing Document related to this event from S3: ${identifierForImage}`
+        );
+        deletePromises.push(deleteObjectByDateKeyNumber(identifierForImage));
+      }
+    }
+
+    // Execute all delete promises for S3
+    await Promise.all(deletePromises);
+
+    // Delete related documents from the database
+    await Document.deleteMany({ eventId: req.params.id });
+
+    // Delete the event
     const data = await Event.deleteOne({ _id: req.params.id });
+
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       message: data.deletedCount
-        ? "Event successfully deleted!"
+        ? "Event and related files successfully deleted!"
         : "Event not found",
     });
   },
