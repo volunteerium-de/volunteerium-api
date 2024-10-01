@@ -101,4 +101,10 @@ app.use((req, res, next) => {
 // Error Handler Middleware
 app.use(require("./src/middlewares/errorHandler"));
 
-app.listen(PORT, () => console.log(`server running on http://${HOST}:${PORT}`));
+// Connect App with Socket.io
+const server = http.createServer(app);
+require("./socket")(server);
+
+server.listen(PORT, () =>
+  console.log(`Server running on http://${HOST}:${PORT}`)
+);
