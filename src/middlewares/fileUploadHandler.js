@@ -2,17 +2,18 @@
 
 const UserDetails = require("../models/userDetailsModel");
 const Event = require("../models/eventModel");
+const Document = require("../models/documentModel");
 const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
 const { extractDateNumber } = require("../utils/functions");
 
 const handleS3FileDeletionAndAssignment = async (
-  document,
+  modelData,
   field,
   fileLocation,
   body
 ) => {
-  if (document[field]) {
-    const identifierForImage = extractDateNumber(document[field]);
+  if (modelData[field]) {
+    const identifierForImage = extractDateNumber(modelData[field]);
     console.log(`Deleting existing ${field} from S3`);
     await deleteObjectByDateKeyNumber(identifierForImage);
   }
@@ -69,4 +70,30 @@ const checkEventPhotoUpload = async (req, res, next) => {
   next();
 };
 
-module.exports = { checkUserFileUpload, checkEventPhotoUpload };
+const checkDocumentUpload = async (req, res, next) => {
+  const documentData = await Document.findOne({ _id: req.params.id });
+
+  const validField = "file";
+
+  if (!req.file) {
+    if (documentData[validField] && req.body[validField] === "") {
+      await handleS3FileDeletionAndAssignment(documentData, validField);
+    }
+    return next();
+  }
+
+  await handleS3FileDeletionAndAssignment(
+    documentData,
+    validField,
+    req.fileLocation,
+    req.body
+  );
+
+  next();
+};
+
+module.exports = {
+  checkUserFileUpload,
+  checkEventPhotoUpload,
+  checkDocumentUpload,
+};

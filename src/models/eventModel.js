@@ -110,12 +110,12 @@ const EventSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    // documentIds: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Document",
-    //   },
-    // ],
+    documentIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Document",
+      },
+    ],
     isOnline: {
       type: Boolean,
       default: false,
