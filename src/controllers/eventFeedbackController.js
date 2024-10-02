@@ -209,11 +209,7 @@ module.exports = {
         $pull: { eventFeedbackIds: data._id },
       });
 
-      res.status(204).send({
-        error: false,
-        message: "Event Feedback successfully deleted!",
-        data,
-      });
+      return res.status(204).send();
     }
 
     res.status(404).send({
