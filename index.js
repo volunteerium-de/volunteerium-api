@@ -3,6 +3,7 @@
 require("express-async-errors");
 const express = require("express");
 const app = express();
+const { createServer } = require("node:http");
 const session = require("express-session");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
@@ -16,6 +17,10 @@ const {
   SECRET_KEY,
   MONGODB_URI,
 } = require("./setups");
+
+// Connect App with Socket.io
+const server = createServer(app);
+require("./socket")(server); // IIEF
 
 // Cron Job
 
@@ -100,10 +105,6 @@ app.use((req, res, next) => {
 
 // Error Handler Middleware
 app.use(require("./src/middlewares/errorHandler"));
-
-// Connect App with Socket.io
-const server = http.createServer(app);
-require("./socket")(server);
 
 server.listen(PORT, () =>
   console.log(`Server running on http://${HOST}:${PORT}`)
