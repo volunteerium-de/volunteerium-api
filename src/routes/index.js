@@ -23,6 +23,10 @@ router.use("/addresses", require("./addressRouter"));
 router.use("/documents", require("./documentRouter"));
 // event-feedbacks:
 router.use("/event-feedbacks", require("./eventFeedbackRouter"));
+// conversations:
+router.use("/conversations", require("./conversationRouter"));
+// messages:
+router.use("/messages", require("./messageRouter"));
 
 /* ------------------------------------------------------- */
 module.exports = router;

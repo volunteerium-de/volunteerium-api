@@ -9,9 +9,10 @@ const idValidation = require("../middlewares/idValidation");
 
 // URL: /conversations
 
-router.route("/").post(conversationController.create);
-
-router.route("/users/:id").get(idValidation, conversationController.list);
+router
+  .route("/")
+  .get(conversationController.list)
+  .post(conversationController.create);
 
 router
   .route("/:id")

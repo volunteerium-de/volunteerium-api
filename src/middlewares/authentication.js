@@ -9,6 +9,7 @@
 const Token = require("../models/tokenModel");
 const jwt = require("jsonwebtoken");
 const { ACCESS_KEY } = require("../../setups");
+const { CustomError } = require("../errors/customError");
 
 module.exports = async (req, res, next) => {
   const auth = req.headers?.authorization || null; // Token ...tokenKey...
@@ -26,7 +27,12 @@ module.exports = async (req, res, next) => {
       // JWT:
 
       jwt.verify(tokenKey[1], ACCESS_KEY, (error, data) => {
-        req.user = data;
+        if (data) {
+          req.user = data;
+        } else {
+          console.log("JWT failed to verify:", error);
+          req.user = null;
+        }
       });
     }
   }
