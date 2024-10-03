@@ -9,7 +9,6 @@
 const Token = require("../models/tokenModel");
 const jwt = require("jsonwebtoken");
 const { ACCESS_KEY } = require("../../setups");
-const { CustomError } = require("../errors/customError");
 
 module.exports = async (req, res, next) => {
   const auth = req.headers?.authorization || null; // Token ...tokenKey...
