@@ -417,6 +417,20 @@ module.exports = {
         );
       }
 
+      if (!user.isActive) {
+        throw new CustomError(
+          "Your account is not active. Please contact support team for further assistance.",
+          401
+        );
+      }
+
+      if (!user.isEmailVerified) {
+        throw new CustomError(
+          "Your account is not verified. Please check your email for verification link.",
+          401
+        );
+      }
+
       const isPasswordMatch = await bcrypt.compare(password, user.password);
       // console.log("Password validation result:", isPasswordMatch);
       if (isPasswordMatch) {

@@ -3,6 +3,7 @@
 const nodemailer = require("nodemailer");
 const { NODEMAILER_EMAIL, NODEMAILER_PASSWORD } = require("../../../setups");
 const { CustomError } = require("../../errors/customError");
+const { getFeedbackHtml } = require("./feedback/feedback");
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
