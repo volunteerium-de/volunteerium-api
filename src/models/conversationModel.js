@@ -15,24 +15,6 @@ const ConversationSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    title: {
-      type: String,
-      trim: true,
-      maxLength: 50,
-    },
-    description: {
-      type: String,
-      trim: true,
-      maxLength: 300,
-    },
-    photo: {
-      type: String,
-      trim: true,
-      match: [
-        /^https?:\/\/.*\.(jpg|jpeg|png|gif)$/,
-        "Invalid photo URL format",
-      ],
-    },
     participantIds: [
       {
         type: mongoose.Schema.Types.ObjectId,

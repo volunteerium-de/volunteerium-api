@@ -48,8 +48,8 @@ module.exports = {
         description: 'List of conversations retrieved successfully',
         schema: {
           error: false,
-          details: [{ _id: 'conversation-id', title: 'conversation-title', description: 'conversation-description' }],
-          data: [{ _id: 'conversation-id', title: 'conversation-title', description: 'conversation-description', ...}]
+          details: [{ Object }],
+          data: [{ _id: 'conversation-id', ...}]
         }
       }
     */
@@ -75,7 +75,7 @@ module.exports = {
         description: 'Conversation retrieved successfully',
         schema: {
           error: false,
-          data: { _id: 'conversation-id', title: 'conversation-title', description: 'conversation-description', participantIds: [{ _id: 'user-id', name: 'user-name' }], messageIds: [{ _id: 'message-id', text: 'message-text' }] }
+          data: { _id: 'conversation-id',, participantIds: [{ _id: 'user-id', name: 'user-name' }], messageIds: [{ _id: 'message-id', text: 'message-text' }] }
         }
       }
       #swagger.responses[404] = {
@@ -100,21 +100,22 @@ module.exports = {
       populateParticipant,
     ]);
 
-    // Update messages: If req.user._id is not the senderId, add to readerIds
-    const messages = conversation.messageIds;
-
-    await Promise.all(
-      messages.map(async (messageId) => {
-        const message = await Message.findById(messageId);
-        if (message.senderId.toString() !== req.user._id.toString()) {
-          // If the message's senderId is not equal to the current user's ID, add to readerIds
-          if (!message.readerIds.includes(req.user._id)) {
-            message.readerIds.push(req.user._id);
-            await message.save();
+    if (req.user) {
+      // Update messages: If req.user._id is not the senderId, add to readerIds
+      const messages = conversation.messageIds;
+      await Promise.all(
+        messages.map(async (messageId) => {
+          const message = await Message.findById(messageId);
+          if (message.senderId.toString() !== req.user._id.toString()) {
+            // If the message's senderId is not equal to the current user's ID, add to readerIds
+            if (!message.readerIds.includes(req.user._id)) {
+              message.readerIds.push(req.user._id);
+              await message.save();
+            }
           }
-        }
-      })
-    );
+        })
+      );
+    }
 
     res.status(200).send({ error: false, data: conversation });
   },
@@ -129,7 +130,6 @@ module.exports = {
         schema: {
           $eventId: 'event-id',
           $createdBy: 'user-id',
-          $description: 'conversation-description',
           $participantIds: ['user-id1', 'user-id2']
         }
       }
@@ -138,7 +138,7 @@ module.exports = {
         schema: {
           error: false,
           message: "New Conversation successfully created!",
-          data: { _id: 'conversation-id', eventId: 'event-id', createdBy: 'user-id', title: 'conversation-title', description: 'conversation-description', participantIds: ['user-id1', 'user-id2'], photo: 'conversation-photo-url' }
+          data: { _id: 'conversation-id', eventId: 'event-id', createdBy: 'user-id', participantIds: ['user-id1', 'user-id2'] }
         }
       }
       #swagger.responses[400] = {
@@ -158,31 +158,19 @@ module.exports = {
     */
     const { eventId, createdBy, description, participantIds } = req.body;
 
-    const relatedEvent = await Event.findOne({ _id: eventId });
     const relatedCreater = await User.findOne({ _id: createdBy });
 
-    if (participantIds.length > 1) {
-      if (relatedCreater.userType === "organization") {
-        req.body.photo = relatedEvent.eventPhoto;
-        req.body.title = relatedEvent.title;
-      } else if (relatedCreater.userType === "individual") {
-        throw new CustomError(
-          "Only organizations can create a conversation with multiple participants",
-          403
-        );
-      }
-    } else {
-      delete req.body.photo;
-      delete req.body.title;
+    if (participantIds.length > 1 && relatedCreater.userType === "individual") {
+      throw new CustomError(
+        "Only organizations can create a conversation with multiple participants",
+        403
+      );
     }
 
     const conversation = new Conversation({
       eventId,
       createdBy,
-      title: req.body.title || "",
-      description,
       participantIds,
-      photo: req.body.photo || "",
     });
     await conversation.save();
 
