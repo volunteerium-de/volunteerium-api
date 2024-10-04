@@ -1,5 +1,6 @@
 "use strict";
 
+const { CustomError } = require("../errors/customError");
 const Notification = require("../models/notificationModel");
 const User = require("../models/userModel");
 
@@ -64,12 +65,12 @@ module.exports = {
       } else {
         customFilter.userId = req.user._id;
       }
-    }
 
-    const user = await User.findById(customFilter.userId);
+      const user = await User.findById(customFilter.userId);
 
-    if (!user) {
-      throw new CustomError("User not found", 404);
+      if (!user) {
+        throw new CustomError("User not found", 404);
+      }
     }
 
     await Notification.updateMany(customFilter, { $set: { isRead: true } });
