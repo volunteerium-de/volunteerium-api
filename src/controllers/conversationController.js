@@ -3,7 +3,6 @@
 const Conversation = require("../models/conversationModel");
 const Message = require("../models/messageModel");
 const User = require("../models/userModel");
-const Event = require("../models/eventModel");
 const { CustomError } = require("../errors/customError");
 
 const populateUserDetails = [
