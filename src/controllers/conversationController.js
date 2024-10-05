@@ -195,9 +195,6 @@ module.exports = {
         in: 'body',
         required: true,
         schema: {
-          $title: 'updated-conversation-title',
-          $description: 'updated-conversation-description',
-          $photo: 'updated-conversation-photo-url',
           $participantIds: ['updated-user-id1', 'updated-user-id2']
         }
       }
@@ -205,7 +202,7 @@ module.exports = {
         description: 'Conversation updated successfully',
         schema: {
           error: false,
-          new: { _id: 'conversation-id', title: 'updated-conversation-title', description: 'updated-conversation-description', photo: 'updated-conversation-photo-url', participantIds: ['updated-user-id1', 'updated-user-id2'] }
+          new: { _id: 'conversation-id', participantIds: ['updated-user-id1', 'updated-user-id2'] }
         }
       }
       #swagger.responses[400] = {
