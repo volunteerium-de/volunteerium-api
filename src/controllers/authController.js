@@ -407,7 +407,13 @@ module.exports = {
     // console.log("Login attempt:", email, password);
 
     if (email && password) {
-      const user = await User.findOne({ email }).populate("userDetailsId");
+      const user = await User.findOne({ email }).populate({
+        path: "userDetailsId",
+        populate: [
+          { path: "interestIds", select: "name" },
+          { path: "addressId" },
+        ],
+      });
       // console.log("User found:", user);
 
       if (!user) {

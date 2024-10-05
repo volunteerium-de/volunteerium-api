@@ -3,7 +3,6 @@ const { mongoose } = require("../configs/dbConnection");
 const fs = require("fs");
 const path = require("path");
 const { CustomError } = require("../errors/customError");
-const { isEmpty } = require("../utils/functions");
 
 const languagesData = JSON.parse(
   fs.readFileSync(
@@ -54,20 +53,20 @@ const userDetailsSchema = new mongoose.Schema(
       default: 0,
       min: [0, "Total point cannot be negative"],
     },
-    // interestIds: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Interest",
-    //     validate: [
-    //       {
-    //         validator: function (v) {
-    //           return v.length <= 3;
-    //         },
-    //         message: "You can add up to 3 interest only."
-    //       }
-    //     ]
-    //   },
-    // ],
+    interestIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Interest",
+        validate: [
+          {
+            validator: function (v) {
+              return v.length <= 3;
+            },
+            message: "You can add up to 3 interest only.",
+          },
+        ],
+      },
+    ],
     organizationLogo: {
       type: String,
       trim: true,
@@ -81,10 +80,10 @@ const userDetailsSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    // addressId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Address",
-    // },
+    addressId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address",
+    },
   },
   { collection: "userDetails", timestamps: true }
 );
