@@ -23,6 +23,8 @@ router.use("/addresses", require("./addressRouter"));
 router.use("/documents", require("./documentRouter"));
 // event-feedbacks:
 router.use("/event-feedbacks", require("./eventFeedbackRouter"));
+// notifications:
+router.use("/notifications", require("./notificationRouter"));
 // event-participants:
 router.use("/event-participants", require("./eventParticipantRouter"));
 // conversations:
