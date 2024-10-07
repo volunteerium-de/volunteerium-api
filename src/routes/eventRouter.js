@@ -16,6 +16,7 @@ router
     uploadSingleToS3("eventPhoto"),
     eventController.create
   );
+
 router
   .route("/:id")
   .all(idValidation)
