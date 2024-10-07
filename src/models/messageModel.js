@@ -26,12 +26,12 @@ const MessageSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    documentIds: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Document",
-      },
-    ],
+    // documentIds: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Document",
+    //   },
+    // ],
   },
   {
     collection: "messages",
