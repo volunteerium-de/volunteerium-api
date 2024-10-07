@@ -52,9 +52,25 @@ passport.use(
           newUser.userDetailsId = newUserDetails._id;
           await newUser.save();
         } else {
+          const updates = {};
+
+          if (!user.isEmailVerified && profile?.emails[0]?.verified) {
+            updates.isEmailVerified = true;
+          }
+
+          if (!user.googleId) {
+            // update googleId of existing user
+            updates.googleId = profile.id;
+          }
+
+          if (Object.keys(updates).length > 0) {
+            await User.updateOne({ _id: user._id }, updates);
+          }
+
           let userDetails = await UserDetails.findOne({
             userId: user._id,
           });
+
           if (!userDetails.avatar) {
             // change avatar url of existing user, it user's avatar doesnt exist
             const avatarUrl = await uploadAvatarToS3(
@@ -64,13 +80,6 @@ passport.use(
             await UserDetails.updateOne(
               { userId: user._id },
               { avatar: avatarUrl }
-            );
-          }
-          if (!user.googleId) {
-            // update googleId of existing user
-            await User.updateOne(
-              { email: profile.emails[0].value },
-              { googleId: profile.id }
             );
           }
         }

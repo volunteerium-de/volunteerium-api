@@ -26,7 +26,12 @@ module.exports = async (req, res, next) => {
       // JWT:
 
       jwt.verify(tokenKey[1], ACCESS_KEY, (error, data) => {
-        req.user = data;
+        if (data) {
+          req.user = data;
+        } else {
+          console.log("JWT failed to verify:", error);
+          req.user = null;
+        }
       });
     }
   }

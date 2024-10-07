@@ -1,6 +1,8 @@
 "use strict";
 
 const { mongoose } = require("../configs/dbConnection");
+const UserDetails = require("../models/userDetailsModel");
+const { CustomError } = require("../errors/customError");
 
 const EventParticipantSchema = new mongoose.Schema(
   {
@@ -8,11 +10,17 @@ const EventParticipantSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      immutable: true,
     },
     eventId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
       required: true,
+      immutable: true,
+    },
+    isPending: {
+      type: Boolean,
+      default: true,
     },
     isApproved: {
       type: Boolean,
@@ -32,20 +40,91 @@ const EventParticipantSchema = new mongoose.Schema(
 // Unique index to ensure a user can join an event only once
 EventParticipantSchema.index({ userId: 1, eventId: 1 }, { unique: true });
 
-// Optional pre-save hook to check for uniqueness
-EventParticipantSchema.pre("save", async function (next) {
-  try {
-    const exists = await mongoose.models.EventParticipant.findOne({
-      userId: this.userId,
-      eventId: this.eventId,
-    });
-    if (exists) {
-      return next(new CustomError("User has already joined this event.", 400));
-    }
-    next();
-  } catch (error) {
-    next(error);
+// Helper function to check if a participant exists
+const findAndValidateParticipant = async (userId, eventId) => {
+  const participant = await mongoose.models.EventParticipant.findOne({
+    userId,
+    eventId,
+  });
+  if (!participant) {
+    throw new CustomError(
+      `User with ID ${userId} has not requested to join event with ID ${eventId}`,
+      400
+    );
   }
-});
+  return participant;
+};
+
+EventParticipantSchema.statics.requestJoin = async function (userId, eventId) {
+  const participant = await mongoose.models.EventParticipant.findOne({
+    userId,
+    eventId,
+  });
+  if (participant) {
+    throw new CustomError(
+      `User with ID ${userId} has already joined this event.`,
+      400
+    );
+  }
+
+  const eventParticipant = new this({ userId, eventId });
+  const savedParticipant = await eventParticipant.save();
+  return savedParticipant;
+};
+
+EventParticipantSchema.statics.approveParticipant = async function (
+  userId,
+  eventId
+) {
+  const eventParticipant = await findAndValidateParticipant(userId, eventId);
+  eventParticipant.isApproved = true;
+  eventParticipant.isPending = false;
+  eventParticipant.hasJoined = false;
+  const updatedParticipant = await eventParticipant.save();
+  return updatedParticipant;
+};
+
+EventParticipantSchema.statics.rejectParticipant = async function (
+  userId,
+  eventId
+) {
+  const eventParticipant = await findAndValidateParticipant(userId, eventId);
+  eventParticipant.isPending = false;
+  eventParticipant.isApproved = false;
+  eventParticipant.hasJoined = false;
+  const updatedParticipant = await eventParticipant.save();
+  return updatedParticipant;
+};
+
+EventParticipantSchema.statics.confirmAttendance = async function (
+  userId,
+  eventId
+) {
+  const eventParticipant = await findAndValidateParticipant(userId, eventId);
+  if (!eventParticipant.isApproved) {
+    throw new CustomError(
+      `User with ID ${userId} is not approved to join this event.`,
+      400
+    );
+  }
+
+  const userDetails = await UserDetails.findOne({ userId });
+  if (!userDetails) {
+    throw new CustomError(
+      `User Details not found for this User with ID ${userId}.`,
+      404
+    );
+  }
+
+  // Mark user as joined
+  eventParticipant.hasJoined = true;
+  const updatedParticipant = await eventParticipant.save();
+
+  // Increase user points
+  userDetails.totalPoint = (userDetails.totalPoint || 0) + 10;
+  await userDetails.save();
+
+  return updatedParticipant;
+};
 
 module.exports = mongoose.model("EventParticipant", EventParticipantSchema);

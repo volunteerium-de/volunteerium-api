@@ -25,6 +25,11 @@ router.use("/documents", require("./documentRouter"));
 router.use("/event-feedbacks", require("./eventFeedbackRouter"));
 // notifications:
 router.use("/notifications", require("./notificationRouter"));
-
+// event-participants:
+router.use("/event-participants", require("./eventParticipantRouter"));
+// conversations:
+router.use("/conversations", require("./conversationRouter"));
+// messages:
+router.use("/messages", require("./messageRouter"));
 /* ------------------------------------------------------- */
 module.exports = router;
