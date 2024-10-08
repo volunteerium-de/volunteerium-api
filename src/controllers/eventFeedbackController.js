@@ -68,11 +68,6 @@ module.exports = {
 
     if (req.user.userType == "individual") {
       req.body.userId = req.user._id;
-    } else if (req.user.userType == "organization") {
-      throw new CustomError(
-        "Organizations cannot give feedback for events",
-        400
-      );
     }
 
     const feedback = new EventFeedback(req.body);

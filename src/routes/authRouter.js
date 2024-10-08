@@ -14,10 +14,11 @@ const {
 } = require("../controllers/authController");
 const passport = require("passport");
 const { CLIENT_URL } = require("../../setups");
+const { checkAdminUserType } = require("../middlewares/permissions");
 
 // URL: /auth
 
-router.post("/register", register);
+router.post("/register", checkAdminUserType, register);
 router.post("/login", login);
 router.get("/logout", logout);
 router.post("/refresh", refresh);

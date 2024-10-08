@@ -34,6 +34,7 @@ passport.use(
 
           user = new User({
             googleId: profile.id,
+            userType: "individual",
             fullName: `${profile.name.givenName} ${profile.name.familyName}`,
             email: profile.emails[0].value,
             isActive: true,
@@ -86,26 +87,22 @@ passport.use(
 
         user = await User.findOne({
           $or: [{ email: profile.emails[0].value }, { googleId: profile.id }],
-        }).populate("userDetailsId");
-
-        // user = await User.findOne({
-        //  $or: [{ email: profile.emails[0].value }, { googleId: profile.id }],
-        //}).populate([
-        //   {
-        //     path: "userDetailsId",
-        //     populate: [
-        //       {
-        //         path: "interestIds",
-        //         select: "name _id",
-        //       },
-        //       {
-        //         path: "addressId",
-        //         select: "-createdAt -updatedAt -__v",
-        //       },
-        //     ],
-        //   },
-        //   // { path: "documentIds", select: "-__v" },
-        // ]);
+        }).populate([
+          {
+            path: "userDetailsId",
+            populate: [
+              {
+                path: "interestIds",
+                select: "name _id",
+              },
+              {
+                path: "addressId",
+                select: "-createdAt -updatedAt -__v",
+              },
+            ],
+          },
+          { path: "documentIds", select: "-__v" },
+        ]);
 
         // console.log(user)
         return done(null, user);

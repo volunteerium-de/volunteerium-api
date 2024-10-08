@@ -5,8 +5,16 @@ const documentController = require("../controllers/documentController");
 const { uploadSingleToS3, upload } = require("../middlewares/awsS3Upload");
 const { checkDocumentUpload } = require("../middlewares/fileUploadHandler");
 const idValidation = require("../middlewares/idValidation");
+const {
+  checkEmailVerification,
+  isLogin,
+  isActive,
+  isDocumentOwnerOrAdmin,
+} = require("../middlewares/permissions");
 
 // URL: /documents
+
+router.use([isLogin, isActive, checkEmailVerification]);
 
 router
   .route("/")
@@ -18,7 +26,7 @@ router
   );
 router
   .route("/:id")
-  .all(idValidation)
+  .all(idValidation, isDocumentOwnerOrAdmin)
   .get(documentController.read)
   .put(
     upload.single("file"),

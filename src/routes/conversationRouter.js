@@ -4,23 +4,46 @@ const router = require("express").Router();
 
 const conversationController = require("../controllers/conversationController");
 const idValidation = require("../middlewares/idValidation");
+const {
+  isConversationOwnerOrAdmin,
+  isConversationParticipant,
+  isLogin,
+  isActive,
+  checkEmailVerification,
+  canConversationParticipant,
+  canConversationOwner,
+} = require("../middlewares/permissions");
 
 /* ------------------------------------------------------- */
 
 // URL: /conversations
 
+router.use([isLogin, isActive, checkEmailVerification]);
+
 router
   .route("/")
   .get(conversationController.list)
-  .post(conversationController.create);
+  .post(
+    canConversationOwner,
+    canConversationParticipant,
+    conversationController.create
+  );
 
 router
   .route("/:id")
-  .all(idValidation)
+  .all(idValidation, isConversationParticipant)
   .get(conversationController.read)
-  .put(conversationController.update)
-  .patch(conversationController.update)
-  .delete(conversationController.delete);
+  .put(
+    isConversationOwnerOrAdmin,
+    canConversationParticipant,
+    conversationController.update
+  )
+  .patch(
+    isConversationOwnerOrAdmin,
+    canConversationParticipant,
+    conversationController.update
+  )
+  .delete(isConversationOwnerOrAdmin, conversationController.delete);
 
 /* ------------------------------------------------------- */
 module.exports = router;

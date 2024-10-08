@@ -29,17 +29,17 @@ module.exports = {
     //   listFilter._id = req.user._id;
     // }
 
-    const data = await res.getModelList(UserDetails, listFilter);
-    // const data = await res.getModelList(UserDetails, listFilter, [
-    //   {
-    //     path: "interestIds",
-    //     select: "name _id",
-    //   },
-    //   {
-    //     path: "addressId",
-    //     select: "-createdAt -updatedAt -__v",
-    //   },
-    // ]);
+    const data = await res.getModelList(UserDetails, listFilter, [
+      {
+        path: "interestIds",
+        select: "name _id",
+      },
+      {
+        path: "addressId",
+        select: "-createdAt -updatedAt -__v",
+      },
+    ]);
+
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(UserDetails),
@@ -59,18 +59,17 @@ module.exports = {
         }
       */
 
-    const data = await UserDetails.findOne({ _id: req.params.id });
+    const data = await UserDetails.findOne({ _id: req.params.id }).populate([
+      {
+        path: "interestIds",
+        select: "name _id",
+      },
+      {
+        path: "addressId",
+        select: "-createdAt -updatedAt -__v",
+      },
+    ]);
 
-    // const data = await UserDetails.findOne({ _id: req.params.id }).populate([
-    //   {
-    //     path: "interestIds",
-    //     select: "name _id",
-    //   },
-    //   {
-    //     path: "addressId",
-    //     select: "-createdAt -updatedAt -__v",
-    //   },
-    // ]);
     res.status(200).send({
       error: false,
       data,
@@ -129,46 +128,36 @@ module.exports = {
         runValidators: true,
         new: true,
       }
-    ); // returns data (user's details)
-
-    // const data = await UserDetails.findOneAndUpdate(
-    //   { _id: req.params.id },
-    //   req.body,
-    //   {
-    //     runValidators: true,
-    //     new: true,
-    //   }
-    // ).populate([
-    //   {
-    //     path: "interestIds",
-    //     select: "name _id",
-    //   },
-    //   {
-    //     path: "addressId",
-    //     select: "-createdAt -updatedAt -__v",
-    //   },
-    // ]); // returns data (user's details)
+    ).populate([
+      {
+        path: "interestIds",
+        select: "name _id",
+      },
+      {
+        path: "addressId",
+        select: "-createdAt -updatedAt -__v",
+      },
+    ]); // returns data (user's details)
 
     res.status(202).send({
       error: false,
       message: "Changes have been saved successfully.",
-      new: await User.findOne({ _id: user._id }).populate("userDetailsId"),
-      // new: await User.findOne({ _id: user._id }).populate([
-      //   {
-      //     path: "userDetailsId",
-      //     populate: [
-      //       {
-      //         path: "interestIds",
-      //         select: "name _id",
-      //       },
-      //       {
-      //         path: "addressId",
-      //         select: "-createdAt -updatedAt -__v",
-      //       },
-      //     ],
-      //   },
-      //   { path: "documentIds", select: "-__v" },
-      // ]),
+      new: await User.findOne({ _id: user._id }).populate([
+        {
+          path: "userDetailsId",
+          populate: [
+            {
+              path: "interestIds",
+              select: "name _id",
+            },
+            {
+              path: "addressId",
+              select: "-createdAt -updatedAt -__v",
+            },
+          ],
+        },
+        { path: "documentIds", select: "-__v" },
+      ]),
       data,
     });
   },

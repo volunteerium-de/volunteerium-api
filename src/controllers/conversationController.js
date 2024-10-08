@@ -2,8 +2,6 @@
 
 const Conversation = require("../models/conversationModel");
 const Message = require("../models/messageModel");
-const User = require("../models/userModel");
-const { CustomError } = require("../errors/customError");
 
 const populateUserDetails = [
   {
@@ -155,16 +153,7 @@ module.exports = {
         }
       }
     */
-    const { eventId, createdBy, description, participantIds } = req.body;
-
-    const relatedCreater = await User.findOne({ _id: createdBy });
-
-    if (participantIds.length > 1 && relatedCreater.userType === "individual") {
-      throw new CustomError(
-        "Only organizations can create a conversation with multiple participants",
-        403
-      );
-    }
+    const { eventId, createdBy, participantIds } = req.body;
 
     const conversation = new Conversation({
       eventId,

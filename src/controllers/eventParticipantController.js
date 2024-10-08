@@ -123,15 +123,8 @@ module.exports = {
     */
     const { userId, eventId } = req.body;
 
-    const event = await findEvent(eventId);
+    await findEvent(eventId);
     await findUser(userId);
-
-    if (event.eventParticipantIds.length >= event.maxParticipant) {
-      throw new CustomError(
-        `The event has reached its maximum number of participants (${event.maxParticipant}).`,
-        400
-      );
-    }
 
     const updatedParticipant = await EventParticipant.approveParticipant(
       userId,
