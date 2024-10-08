@@ -31,6 +31,7 @@ const {
   validateLoginPayload,
 } = require("../validators/authValidator");
 const { redirectWithError } = require("../errors/redirectWithError");
+const { validateUserUpdatePayload } = require("../validators/userValidator.js");
 
 module.exports = {
   register: async (req, res) => {

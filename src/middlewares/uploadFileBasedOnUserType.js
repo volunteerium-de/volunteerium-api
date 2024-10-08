@@ -5,7 +5,9 @@ const { uploadSingleToS3, upload } = require("./awsS3Upload");
 
 const uploadFileBasedOnUserType = (req, res, next) => {
   const validField =
-    req.user.userType === "individual" ? "avatar" : "organizationLogo";
+    req.user.userType === "individual" || req.user.userType === "admin"
+      ? "avatar"
+      : "organizationLogo";
 
   // Multer setup for the valid field
   const uploadSingle = upload.single(validField);
