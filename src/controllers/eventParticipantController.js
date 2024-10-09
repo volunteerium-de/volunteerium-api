@@ -44,7 +44,17 @@ module.exports = {
         }
       }
     */
-    const data = await res.getModelList(EventParticipant);
+    const data = await res.getModelList(EventParticipant, {}, [
+      {
+        path: "userId",
+        select: "fullName organizationName email",
+        populate: { path: "userDetailsId", select: "avatar organizationLogo" },
+      },
+      {
+        path: "eventId",
+        select: "title eventPhoto",
+      },
+    ]);
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(EventParticipant),

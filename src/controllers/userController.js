@@ -9,7 +9,6 @@ const Conversations = require("../models/conversationModel");
 const bcrypt = require("bcryptjs");
 const { CustomError } = require("../errors/customError");
 const { sendFeedbackEmail } = require("../utils/email/emailService");
-const { AWS_S3_BASE } = require("../../setups");
 const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
 const { extractDateNumber } = require("../utils/functions");
 const { validateUserUpdatePayload } = require("../validators/userValidator");

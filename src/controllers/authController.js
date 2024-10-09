@@ -247,9 +247,22 @@ module.exports = {
       }
 
       // Find user
-      const user = await User.findById(verifyData.userId).populate(
-        "userDetailsId"
-      );
+      const user = await User.findById(verifyData.userId).populate([
+        {
+          path: "userDetailsId",
+          populate: [
+            {
+              path: "interestIds",
+              select: "name _id",
+            },
+            {
+              path: "addressId",
+              select: "-createdAt -updatedAt -__v",
+            },
+          ],
+        },
+        { path: "documentIds", select: "-__v" },
+      ]);
 
       if (!user) {
         return redirectWithError(
@@ -408,13 +421,22 @@ module.exports = {
     // console.log("Login attempt:", email, password);
 
     if (email && password) {
-      const user = await User.findOne({ email }).populate({
-        path: "userDetailsId",
-        populate: [
-          { path: "interestIds", select: "name" },
-          { path: "addressId" },
-        ],
-      });
+      const user = await User.findOne({ email }).populate([
+        {
+          path: "userDetailsId",
+          populate: [
+            {
+              path: "interestIds",
+              select: "name _id",
+            },
+            {
+              path: "addressId",
+              select: "-createdAt -updatedAt -__v",
+            },
+          ],
+        },
+        { path: "documentIds", select: "-__v" },
+      ]);
       // console.log("User found:", user);
 
       if (!user) {

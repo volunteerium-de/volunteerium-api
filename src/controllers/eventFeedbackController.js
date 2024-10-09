@@ -27,7 +27,14 @@ module.exports = {
         }
       }
     */
-    const data = await res.getModelList(EventFeedback);
+    const data = await res.getModelList(EventFeedback, {}, [
+      {
+        path: "userId",
+        select: "fullName organizationName email",
+        populate: { path: "userDetailsId", select: "avatar organizationLogo" },
+      },
+      { path: "eventId", select: "title eventPhoto" },
+    ]);
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(EventFeedback),
@@ -109,7 +116,14 @@ module.exports = {
         }
       }
     */
-    const data = await EventFeedback.findOne({ _id: req.params.id });
+    const data = await EventFeedback.findOne({ _id: req.params.id }).populate([
+      {
+        path: "userId",
+        select: "fullName organizationName email",
+        populate: { path: "userDetailsId", select: "avatar organizationLogo" },
+      },
+      { path: "eventId", select: "title eventPhoto" },
+    ]);
     res.status(data ? 200 : 404).send({
       error: !data,
       data,
