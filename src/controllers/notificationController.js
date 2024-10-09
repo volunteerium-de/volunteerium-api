@@ -57,23 +57,11 @@ module.exports = {
         }
       }
     */
-    let customFilter = {};
 
-    if (req.user) {
-      if (req.user.userType === "admin") {
-        customFilter.userId = req.body.userId;
-      } else {
-        customFilter.userId = req.user._id;
-      }
-
-      const user = await User.findById(customFilter.userId);
-
-      if (!user) {
-        throw new CustomError("User not found", 404);
-      }
-    }
-
-    await Notification.updateMany(customFilter, { $set: { isRead: true } });
+    await Notification.updateMany(
+      { userId: req.user._id },
+      { $set: { isRead: true } }
+    );
 
     res.status(200).send({
       error: false,

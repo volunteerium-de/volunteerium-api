@@ -27,7 +27,14 @@ module.exports = {
         }
       }
     */
-    const data = await res.getModelList(EventFeedback);
+    const data = await res.getModelList(EventFeedback, {}, [
+      {
+        path: "userId",
+        select: "fullName organizationName email",
+        populate: { path: "userDetailsId", select: "avatar organizationLogo" },
+      },
+      { path: "eventId", select: "title eventPhoto" },
+    ]);
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(EventFeedback),
@@ -68,11 +75,6 @@ module.exports = {
 
     if (req.user.userType == "individual") {
       req.body.userId = req.user._id;
-    } else if (req.user.userType == "organization") {
-      throw new CustomError(
-        "Organizations cannot give feedback for events",
-        400
-      );
     }
 
     const feedback = new EventFeedback(req.body);
@@ -114,7 +116,14 @@ module.exports = {
         }
       }
     */
-    const data = await EventFeedback.findOne({ _id: req.params.id });
+    const data = await EventFeedback.findOne({ _id: req.params.id }).populate([
+      {
+        path: "userId",
+        select: "fullName organizationName email",
+        populate: { path: "userDetailsId", select: "avatar organizationLogo" },
+      },
+      { path: "eventId", select: "title eventPhoto" },
+    ]);
     res.status(data ? 200 : 404).send({
       error: !data,
       data,

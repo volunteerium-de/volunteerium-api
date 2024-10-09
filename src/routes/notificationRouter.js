@@ -4,21 +4,29 @@ const router = require("express").Router();
 
 const notificationController = require("../controllers/notificationController");
 const idValidation = require("../middlewares/idValidation");
+const {
+  isLogin,
+  isActive,
+  checkEmailVerification,
+  isAdmin,
+} = require("../middlewares/permissions");
 
 /* ------------------------------------------------------- */
 
 // URL: /notifications
 
+router.use([isLogin, isActive, checkEmailVerification]);
+
 router
   .route("/")
   .get(notificationController.list)
-  .post(notificationController.create);
+  .post(isAdmin, notificationController.create);
 
-router.put("/read-all", notificationController.markAllAsRead);
+router.get("/read-all", notificationController.markAllAsRead);
 
 router
   .route("/:id")
-  .all(idValidation)
+  .all(idValidation, isAdmin)
   .get(notificationController.read)
   .put(notificationController.update)
   .patch(notificationController.update)

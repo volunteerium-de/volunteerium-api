@@ -9,7 +9,6 @@ const Conversations = require("../models/conversationModel");
 const bcrypt = require("bcryptjs");
 const { CustomError } = require("../errors/customError");
 const { sendFeedbackEmail } = require("../utils/email/emailService");
-const { AWS_S3_BASE } = require("../../setups");
 const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
 const { extractDateNumber } = require("../utils/functions");
 const { validateUserUpdatePayload } = require("../validators/userValidator");
@@ -44,24 +43,22 @@ module.exports = {
     //   listFilter._id = req.user._id;
     // }
 
-    const data = await res.getModelList(User, listFilter, "userDetailsId");
-
-    // const data = await res.getModelList(User, listFilter, [
-    //   {
-    //     path: "userDetailsId",
-    //     populate: [
-    //       {
-    //         path: "interestIds",
-    //         select: "name _id",
-    //       },
-    //       {
-    //         path: "addressId",
-    //         select: "-createdAt -updatedAt -__v",
-    //       },
-    //     ],
-    //   },
-    //   // { path: "documentIds", select: "-__v" },
-    // ]);
+    const data = await res.getModelList(User, listFilter, [
+      {
+        path: "userDetailsId",
+        populate: [
+          {
+            path: "interestIds",
+            select: "name _id",
+          },
+          {
+            path: "addressId",
+            select: "-createdAt -updatedAt -__v",
+          },
+        ],
+      },
+      { path: "documentIds", select: "-__v" },
+    ]);
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(User, listFilter),
@@ -88,26 +85,22 @@ module.exports = {
       }
     */
 
-    const data = await User.findOne({ _id: req.params.id }).populate(
-      "userDetailsId"
-    );
-
-    // const data = await User.findOne({ _id: req.params.id }).populate([
-    //   {
-    //     path: "userDetailsId",
-    //     populate: [
-    //       {
-    //         path: "interestIds",
-    //         select: "name _id",
-    //       },
-    //       {
-    //         path: "addressId",
-    //         select: "-createdAt -updatedAt -__v",
-    //       },
-    //     ],
-    //   },
-    //   // { path: "documentIds", select: "-__v" },
-    // ]);
+    const data = await User.findOne({ _id: req.params.id }).populate([
+      {
+        path: "userDetailsId",
+        populate: [
+          {
+            path: "interestIds",
+            select: "name _id",
+          },
+          {
+            path: "addressId",
+            select: "-createdAt -updatedAt -__v",
+          },
+        ],
+      },
+      { path: "documentIds", select: "-__v" },
+    ]);
     res.status(200).send({
       error: false,
       data,
@@ -236,26 +229,22 @@ module.exports = {
 
     const data = await User.findOneAndUpdate(customFilter, req.body, {
       runValidators: true,
-    }).populate("userDetailsId"); // returns data
-
-    // const data = await User.findOneAndUpdate(customFilter, req.body, {
-    //   runValidators: true,
-    // }).populate([
-    //   {
-    //     path: "userDetailsId",
-    //     populate: [
-    //       {
-    //         path: "interestIds",
-    //         select: "name _id",
-    //       },
-    //       {
-    //         path: "addressId",
-    //         select: "-createdAt -updatedAt -__v",
-    //       },
-    //     ],
-    //   },
-    //   // { path: "documentIds", select: "-__v" },
-    // ]); // returns data
+    }).populate([
+      {
+        path: "userDetailsId",
+        populate: [
+          {
+            path: "interestIds",
+            select: "name _id",
+          },
+          {
+            path: "addressId",
+            select: "-createdAt -updatedAt -__v",
+          },
+        ],
+      },
+      { path: "documentIds", select: "-__v" },
+    ]); // returns data
 
     let message;
 
@@ -270,23 +259,22 @@ module.exports = {
     res.status(202).send({
       error: false,
       message,
-      new: await User.findOne(customFilter).populate("userDetailsId"),
-      // new: await User.findOne(customFilter).populate([
-      //   {
-      //     path: "userDetailsId",
-      //     populate: [
-      //       {
-      //         path: "interestIds",
-      //         select: "name _id",
-      //       },
-      //       {
-      //         path: "addressId",
-      //         select: "-createdAt -updatedAt -__v",
-      //       },
-      //     ],
-      //   },
-      //   { path: "documentIds", select: "-__v" },
-      // ]),
+      new: await User.findOne(customFilter).populate([
+        {
+          path: "userDetailsId",
+          populate: [
+            {
+              path: "interestIds",
+              select: "name _id",
+            },
+            {
+              path: "addressId",
+              select: "-createdAt -updatedAt -__v",
+            },
+          ],
+        },
+        { path: "documentIds", select: "-__v" },
+      ]),
       data,
     });
   },

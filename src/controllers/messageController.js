@@ -111,9 +111,15 @@ module.exports = {
     */
     const { conversationId, senderId, content } = req.body;
 
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation) {
+      throw new CustomError("Conversation not found", 404);
+    }
+
     const message = new Message({
       conversationId,
-      senderId,
+      senderId: req.user.userType === "admin" ? senderId : req.user._id,
       content,
     });
 

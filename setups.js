@@ -30,4 +30,5 @@ module.exports = {
   NODEMAILER_PASSWORD: process.env.NODEMAILER_PASSWORD,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  ADMIN_ID: process.env.ADMIN_ID,
 };

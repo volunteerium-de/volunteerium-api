@@ -4,16 +4,27 @@ const router = require("express").Router();
 
 const addressController = require("../controllers/addressController");
 const idValidation = require("../middlewares/idValidation");
-// const iframeHandler = require("../middlewares/iframeHandler");
+const {
+  isLogin,
+  isAdmin,
+  checkEmailVerification,
+  isActive,
+  addressOwnerOrAdmin,
+} = require("../middlewares/permissions");
 
 /* ------------------------------------------------------- */
 
 // URL: /addresses
 
-router.route("/").get(addressController.list).post(addressController.create);
+router.use([isLogin, isActive, checkEmailVerification]);
+
+router
+  .route("/")
+  .get(isAdmin, addressController.list)
+  .post(addressController.create);
 router
   .route("/:id")
-  .all(idValidation)
+  .all([idValidation, addressOwnerOrAdmin])
   .get(addressController.read)
   .put(addressController.update)
   .patch(addressController.update)

@@ -92,10 +92,10 @@ module.exports = {
         path: "addressId",
         select: "city country zipCode",
       },
-      // {
-      //   path: "interestIds",
-      //   select: "name",
-      // },
+      {
+        path: "interestIds",
+        select: "name",
+      },
     ]);
 
     res.status(200).send({
@@ -287,29 +287,29 @@ module.exports = {
       {
         path: "addressId",
       },
-      // {
-      //   path: "interestIds",
-      //   select: "name",
-      // },
-      // {
-      //   path: "eventParticipantIds",
-      //   select: "email fullName",
-      //   populate: {
-      //     path: "userDetailsId",
-      //     select: "avatar isFullNameDisplay",
-      //   },
-      // },
-      // {
-      //   path: "eventFeedbackIds",
-      //   populate: {
-      //     path: "userId",
-      //     select: "email fullName",
-      //     populate: {
-      //       path: "userDetailsId",
-      //       select: "avatar isFullNameDisplay",
-      //     },
-      //   },
-      // },
+      {
+        path: "interestIds",
+        select: "name",
+      },
+      {
+        path: "eventParticipantIds",
+        select: "email fullName",
+        populate: {
+          path: "userDetailsId",
+          select: "avatar isFullNameDisplay",
+        },
+      },
+      {
+        path: "eventFeedbackIds",
+        populate: {
+          path: "userId",
+          select: "email fullName",
+          populate: {
+            path: "userDetailsId",
+            select: "avatar isFullNameDisplay",
+          },
+        },
+      },
     ]);
 
     res.status(200).send({
