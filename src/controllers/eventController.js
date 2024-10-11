@@ -104,6 +104,59 @@ module.exports = {
       data,
     });
   },
+  listEventLanguages: async (req, res) => {
+    /*
+      #swagger.tags = ['Event']
+      #swagger.summary = 'List languages with event count'
+      #swagger.description = 'Retrieve a list of languages and the count of events for each language'
+      #swagger.responses[200] = {
+        description: 'List of languages with event count retrieved successfully',
+        schema: {
+          error: false,
+          data: [
+            { _id: 1, langCode: "de", eventCount: 10 },
+            { _id: 2, langCode: "en", eventCount: 5 },
+            // more items...
+          ],
+        },
+      }
+    */
+
+    const currentDate = new Date();
+
+    // filter out past events based on the endDate before aggregating the language statistics
+    const languageStats = await Event.aggregate([
+      { $match: { endDate: { $gte: currentDate } } },
+      { $unwind: "$languages" },
+      {
+        $group: {
+          _id: "$languages",
+          eventCount: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          langCode: "$_id",
+          eventCount: 1,
+        },
+      },
+      {
+        $sort: { eventCount: -1 },
+      },
+    ]);
+
+    // Count of events whose endDates are after the current date and time
+    const totalEventCount = await Event.find({
+      endDate: { $gte: currentDate },
+    }).countDocuments();
+
+    res.status(200).send({
+      error: false,
+      totalEventCount,
+      data: languageStats,
+    });
+  },
   create: async (req, res) => {
     /*
       #swagger.tags = ['Event']

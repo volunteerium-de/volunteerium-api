@@ -28,6 +28,8 @@ router
     eventController.create
   );
 
+router.route("/languages").get(eventController.listEventLanguages);
+
 router
   .route("/:id")
   .all(idValidation)
