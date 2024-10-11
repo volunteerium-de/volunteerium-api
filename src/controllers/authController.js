@@ -105,17 +105,11 @@ module.exports = {
 
     const verifyEmailToken = generateVerifyEmailToken(newUser);
 
-    const verifyData = {
-      verifyToken: verifyEmailToken,
-      email,
-    };
-
     // Send email to user
     const emailSubject = "Welcome to Volunteerium!";
     const emailHtml = getWelcomeEmailHtml(
       fullName.split(" ")[0],
-      encodeURIComponent(verifyData.verifyToken),
-      encodeURIComponent(verifyData.email)
+      encodeURIComponent(verifyEmailToken)
     );
 
     await sendEmail(email, emailSubject, emailHtml);
@@ -130,7 +124,7 @@ module.exports = {
       #swagger.tags = ["Authentication"]
       #swagger.summary = "Successful Authentication Callback"
       #swagger.description = "Handles successful authentication, generates tokens, and redirects the user to the client URL with user data encoded in the query parameters."
-      #swagger.responses[302`] = {
+      #swagger.responses[302] = {
         description: 'Redirects to the client URL with user data',
         headers: {
           Location: {
@@ -336,8 +330,7 @@ module.exports = {
         const emailSubject = "Verify Your Email for Volunteerium!";
         const emailHtml = getWelcomeEmailHtml(
           user.fullName.split(" ")[0],
-          encodeURIComponent(verifyData.verifyToken),
-          encodeURIComponent(verifyData.email)
+          encodeURIComponent(verifyData.verifyToken)
         );
 
         await sendEmail(email, emailSubject, emailHtml);
