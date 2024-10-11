@@ -10,12 +10,11 @@ const { isAdmin } = require("../middlewares/permissions");
 
 // URL: /interests
 
-router.use(isAdmin);
-
 router.route("/").get(interestController.list).post(interestController.create);
+router.use(isAdmin);
 router
   .route("/:id")
-  .all(idValidation)
+  .all(idValidation, isAdmin)
   .get(interestController.read)
   .put(interestController.update)
   .patch(interestController.update)
