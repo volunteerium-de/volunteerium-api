@@ -14,7 +14,7 @@ router.route("/").get(interestController.list).post(interestController.create);
 router.use(isAdmin);
 router
   .route("/:id")
-  .all(idValidation, isAdmin)
+  .all(idValidation)
   .get(interestController.read)
   .put(interestController.update)
   .patch(interestController.update)
