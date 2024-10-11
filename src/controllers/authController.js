@@ -321,16 +321,11 @@ module.exports = {
         // Generate new verification token
         const verifyEmailToken = generateVerifyEmailToken(user);
 
-        const verifyData = {
-          token: verifyEmailToken,
-          email,
-        };
-
         // Send email to user
         const emailSubject = "Verify Your Email for Volunteerium!";
         const emailHtml = getWelcomeEmailHtml(
           user.fullName.split(" ")[0],
-          encodeURIComponent(verifyData.verifyToken)
+          encodeURIComponent(verifyEmailToken)
         );
 
         await sendEmail(email, emailSubject, emailHtml);
