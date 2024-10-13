@@ -46,6 +46,13 @@ module.exports = (req, res, next) => {
     };
   }
 
+  if (filter.languages) {
+    const languages = filter.languages.split(",").map((lang) => lang.trim());
+    filterCriteria["languages"] = {
+      $in: languages,
+    };
+  }
+
   for (let key in filter) {
     // other filters like userId, name ...
     if (!["startDate", "endDate", "category"].includes(key)) {
@@ -130,6 +137,14 @@ module.exports = (req, res, next) => {
 
   // Run for output:
   res.getModelList = async (Model, customFilter = {}, populate = null) => {
+    if (Model.modelName === "Interest") {
+      return await Model.find({
+        ...filterCriteria,
+        ...searchCriteria,
+        ...customFilter,
+      }).populate(populate);
+    }
+
     return await Model.find({
       ...filterCriteria,
       ...searchCriteria,
@@ -149,24 +164,37 @@ module.exports = (req, res, next) => {
       ...customFilter,
     });
 
-    let details = {
-      filter,
-      search,
-      sort,
-      skip,
-      limit,
-      page,
-      pages: {
-        previous: page > 0 ? page : false,
-        current: page + 1,
-        next: page + 2,
-        total: Math.ceil(data.length / limit),
-      },
-      totalRecords: data.length,
-    };
-    details.pages.next =
-      details.pages.next > details.pages.total ? false : details.pages.next;
-    if (details.totalRecords <= limit) details.pages = false;
+    let details = {};
+
+    if (Model.modelName === "Interest") {
+      details = {
+        filter,
+        search,
+        sort,
+        totalRecords: data.length,
+      };
+    } else {
+      details = {
+        filter,
+        search,
+        sort,
+        skip,
+        limit,
+        page,
+        pages: {
+          previous: page > 0 ? page : false,
+          current: page + 1,
+          next: page + 2,
+          total: Math.ceil(data.length / limit),
+        },
+        totalRecords: data.length,
+      };
+
+      details.pages.next =
+        details.pages.next > details.pages.total ? false : details.pages.next;
+      if (details.totalRecords <= limit) details.pages = false;
+    }
+
     return details;
   };
 
