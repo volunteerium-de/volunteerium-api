@@ -55,7 +55,7 @@ module.exports = (req, res, next) => {
 
   for (let key in filter) {
     // other filters like userId, name ...
-    if (!["startDate", "endDate", "category"].includes(key)) {
+    if (!["startDate", "endDate", "category", "languages"].includes(key)) {
       if (typeof filter[key] !== "string" || filter[key].trim() === "") {
         throw new CustomError(`Invalid filter format for ${key}!`, 400);
       }
