@@ -105,16 +105,11 @@ module.exports = {
 
     const verifyEmailToken = generateVerifyEmailToken(newUser);
 
-    const verifyData = {
-      verifyToken: verifyEmailToken,
-      email,
-    };
-
     // Send email to user
     const emailSubject = "Welcome to Volunteerium!";
     const emailHtml = getWelcomeEmailHtml(
       fullName.split(" ")[0],
-      encodeURIComponent(JSON.stringify(verifyData))
+      encodeURIComponent(verifyEmailToken)
     );
 
     await sendEmail(email, emailSubject, emailHtml);
@@ -220,15 +215,58 @@ module.exports = {
         }
       }
     */
-    const { email, verifyEmailToken } = req.body;
+    const { verifyEmailToken } = req.body;
 
-    if (email && verifyEmailToken) {
+    if (verifyEmailToken) {
       let verifyData;
 
       // Decode user
       try {
         verifyData = jwt.verify(verifyEmailToken, VERIFY_EMAIL_KEY);
       } catch (error) {
+        const { email } = jwt.decode(verifyEmailToken);
+
+        // Find user
+        const user = await User.findOne({ email });
+
+        if (!user) {
+          return redirectWithError(
+            res,
+            `${CLIENT_URL}/verify-email/failed`,
+            301,
+            "No account found! Please sign up."
+          );
+        }
+
+        if (!user.isEmailVerified) {
+          // Generate new verification token
+          const verifyEmailToken = generateVerifyEmailToken(user);
+
+          // Send email to user
+          const emailSubject = "Verify Your Email for Volunteerium!";
+          const emailHtml = getWelcomeEmailHtml(
+            user.fullName.split(" ")[0],
+            encodeURIComponent(verifyEmailToken)
+          );
+
+          await sendEmail(email, emailSubject, emailHtml);
+
+          // res.status(200).send({
+          //   error: false,
+          //   message:
+          //     "Verification email has been sent again. Please check your inbox.",
+          // });
+
+          return res.redirect(`${CLIENT_URL}/verify-email`);
+        } else {
+          return redirectWithError(
+            res,
+            `${CLIENT_URL}/verify-email/failed`,
+            301,
+            "Account is already verified. Please log in!"
+          );
+        }
+
         return redirectWithError(
           res,
           `${CLIENT_URL}/verify-email/failed`,
@@ -273,26 +311,17 @@ module.exports = {
         );
       }
 
-      if (verifyData.email === email) {
-        if (user.isEmailVerified) {
-          return redirectWithError(
-            res,
-            `${CLIENT_URL}/verify-email/failed`,
-            301,
-            "Account is already verifed! Please log in."
-          );
-        } else {
-          // Verify user email
-          user.isEmailVerified = true;
-          await user.save();
-        }
-      } else {
+      if (user.isEmailVerified) {
         return redirectWithError(
           res,
           `${CLIENT_URL}/verify-email/failed`,
           301,
-          "Invalid request. Please try again!"
+          "Account is already verifed! Please log in."
         );
+      } else {
+        // Verify user email
+        user.isEmailVerified = true;
+        await user.save();
       }
 
       const { simpleToken, accessToken, refreshToken } =
@@ -309,52 +338,6 @@ module.exports = {
         token: simpleToken,
         user,
       });
-    } else if (email && !verifyEmailToken) {
-      // Find user
-      const user = await User.findOne({ email });
-
-      if (!user) {
-        return redirectWithError(
-          res,
-          `${CLIENT_URL}/verify-email/failed`,
-          301,
-          "No account found! Please sign up."
-        );
-      }
-
-      if (!user.isEmailVerified) {
-        // Generate new verification token
-        const verifyEmailToken = generateVerifyEmailToken(user);
-
-        const verifyData = {
-          token: verifyEmailToken,
-          email,
-        };
-
-        // Send email to user
-        const emailSubject = "Verify Your Email for Volunteerium!";
-        const emailHtml = getWelcomeEmailHtml(
-          user.fullName.split(" ")[0],
-          encodeURIComponent(JSON.stringify(verifyData))
-        );
-
-        await sendEmail(email, emailSubject, emailHtml);
-
-        // res.status(200).send({
-        //   error: false,
-        //   message:
-        //     "Verification email has been sent again. Please check your inbox.",
-        // });
-
-        return res.redirect(`${CLIENT_URL}/verify-email`);
-      } else {
-        return redirectWithError(
-          res,
-          `${CLIENT_URL}/verify-email/failed`,
-          301,
-          "Account is already verified. Please log in!"
-        );
-      }
     } else {
       return redirectWithError(
         res,
