@@ -7,7 +7,7 @@
 const { PAGE_SIZE } = require("../../setups");
 const { CustomError } = require("../errors/customError");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   /* FILTERING & SEARCHING & SORTING & PAGINATION */
 
   //! Example Usage
@@ -38,12 +38,24 @@ module.exports = (req, res, next) => {
   }
 
   if (filter.category) {
+    if (typeof filter.category !== "string" || filter.category.trim() === "") {
+      throw new CustomError("Invalid category format!", 400);
+    }
     const categories = filter.category
       .split(",")
       .map((category) => category.trim());
-    filterCriteria["interestsIds.name"] = {
-      $in: categories.map((category) => ({ $regex: category, $options: "i" })),
-    };
+
+    const Interest = require("../models/interestModel");
+
+    const interestIds = await Interest.find({
+      name: { $in: categories.map((c) => new RegExp(c, "i")) }, // case insensitive
+    });
+
+    const matchingInterestIds = interestIds.map((interest) => interest._id);
+
+    if (matchingInterestIds.length) {
+      filterCriteria.interestIds = { $in: matchingInterestIds };
+    }
   }
 
   if (filter.languages) {
@@ -89,11 +101,21 @@ module.exports = (req, res, next) => {
       throw new CustomError("Invalid location format!", 400);
     }
     const locationRegex = { $regex: search.location, $options: "i" };
-    searchCriteria.$or = [
-      { "addressId.city": locationRegex },
-      { "addressId.country": locationRegex },
-      { "addressId.zipCode": locationRegex },
-    ];
+    // Get matching address IDs from Address model
+    const Address = require("../models/addressModel");
+    const matchingAddresses = await Address.find({
+      $or: [
+        { city: locationRegex },
+        { country: locationRegex },
+        { zipCode: locationRegex },
+      ],
+    });
+
+    if (matchingAddresses.length) {
+      const matchingAddressIds = matchingAddresses.map((addr) => addr._id);
+      console.log(matchingAddressIds);
+      filterCriteria.addressId = { $in: matchingAddressIds };
+    }
   }
 
   // console.log(searchCriteria);

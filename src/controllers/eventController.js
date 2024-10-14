@@ -3,6 +3,8 @@
 const Event = require("../models/eventModel");
 const Address = require("../models/addressModel");
 const EventParticipant = require("../models/eventParticipantModel");
+const EventFeedback = require("../models/eventFeedbackModel");
+const Document = require("../models/documentModel");
 const {
   validateEventPayload,
   validateUpdateEventPayload,
@@ -644,8 +646,11 @@ module.exports = {
     // Execute all delete promises for S3
     await Promise.all(deletePromises);
 
-    // Delete related documents from the database
+    // Delete related datas from the database
     await Document.deleteMany({ eventId: req.params.id });
+    await EventParticipant.deleteMany({ eventId: req.params.id });
+    await EventFeedback.deleteMany({ eventId: req.params.id });
+    await Address.deleteOne({ _id: event.addressId });
 
     // Delete the event
     const data = await Event.deleteOne({ _id: req.params.id });
