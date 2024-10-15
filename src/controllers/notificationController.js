@@ -1,6 +1,7 @@
 "use strict";
 
 const { CustomError } = require("../errors/customError");
+const { getIoInstance } = require("../configs/socketInstance");
 const Notification = require("../models/notificationModel");
 const User = require("../models/userModel");
 
@@ -26,22 +27,13 @@ module.exports = {
         }
       }
     */
-    let customFilter = {};
-
-    if (req.user) {
-      if (req.user.userType === "admin") {
-        customFilter.userId = req.body.userId;
-      } else {
-        customFilter.userId = req.user._id;
-      }
-    }
-
-    const data = await res.getModelList(Notification, customFilter);
+    const notifications = await Notification.find({
+      userId: req.user._id,
+    }).sort({ createdAt: -1 });
 
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(Notification, customFilter),
-      data,
+      data: notifications,
     });
   },
   markAllAsRead: async (req, res) => {
@@ -66,6 +58,9 @@ module.exports = {
     res.status(200).send({
       error: false,
       message: "All unread notifications marked as read successfully",
+      data: await Notification.find({
+        userId: req.user._id,
+      }).sort({ createdAt: -1 }),
     });
   },
   create: async (req, res) => {
@@ -98,12 +93,26 @@ module.exports = {
         }
       }
     */
+    const { content, userId, notificationType } = req.body;
 
-    const data = await Notification.create(req.body);
+    const notification = new Notification({
+      userId,
+      notificationType,
+      content,
+    });
+    await notification.save();
+
+    const newNotifications = await Notification.find({
+      userId,
+    }).sort({ createdAt: -1 });
+
+    const io = getIoInstance();
+    io.emit("receive_notifications", newNotifications);
+
     res.status(201).send({
       error: false,
       message: "New notification successfully created!",
-      data,
+      data: notification,
     });
   },
   read: async (req, res) => {
@@ -182,18 +191,24 @@ module.exports = {
       }
     */
 
-    const data = await Notification.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
+    const { content, notificationType } = req.body;
+    const updatedNotification = await Notification.findByIdAndUpdate(
+      req.params.id,
+      { content, notificationType },
+      { new: true }
     );
+
+    const newNotifications = await Notification.find({
+      userId: updatedNotification.userId,
+    }).sort({ createdAt: -1 });
+
+    const io = getIoInstance();
+    io.emit("receive_notifications", newNotifications);
+
     res.status(202).send({
       error: false,
       message: "Notification updated successfully!",
-      new: data,
+      new: updatedNotification,
     });
   },
   delete: async (req, res) => {

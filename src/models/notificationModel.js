@@ -14,11 +14,21 @@ const NotificationSchema = new mongoose.Schema(
       required: true,
       trim: true,
       minLength: 5,
-      maxLength: 100,
+      maxLength: 200,
     },
     notificationType: {
       type: String,
-      enum: ["eventReminder", "eventUpdate", "eventJoinRequest", "scoreUpdate"],
+      enum: [
+        "eventReminder",
+        "eventUpdate",
+        "eventJoinRequest",
+        "eventApproveParticipant",
+        "eventCancellation",
+        "confirmEventParticipants",
+        "scoreUpdate",
+        "badgeUpdate",
+        "eventFeedbackRequest",
+      ],
       required: true,
     },
     isRead: {
