@@ -423,7 +423,7 @@ module.exports = {
       throw new CustomError("No Permission: Event not found.", 404);
     }
 
-    if (event.eventParticipantIds.length >= event.maxParticipant) {
+    if (event.eventParticipantIds.length <= event.maxParticipant) {
       return next();
     } else {
       throw new CustomError(

@@ -57,14 +57,6 @@ const userDetailsSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Interest",
-        validate: [
-          {
-            validator: function (v) {
-              return v.length <= 3;
-            },
-            message: "You can add up to 3 interest only.",
-          },
-        ],
       },
     ],
     organizationLogo: {
@@ -118,7 +110,6 @@ userDetailsSchema.pre("findOneAndUpdate", async function (next) {
       }
     }
   }
-
   next();
 });
 

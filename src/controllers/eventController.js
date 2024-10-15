@@ -2,6 +2,9 @@
 
 const Event = require("../models/eventModel");
 const Address = require("../models/addressModel");
+const EventParticipant = require("../models/eventParticipantModel");
+const EventFeedback = require("../models/eventFeedbackModel");
+const Document = require("../models/documentModel");
 const {
   validateEventPayload,
   validateUpdateEventPayload,
@@ -66,7 +69,7 @@ module.exports = {
               ],
               startDate: "2024-09-25T12:00:00.000Z",
               endDate: "2024-09-25T14:00:00.000Z",
-              languages: ["de"]
+              languages: ["de"],
               eventPhoto: 'photo-url',
               isRecurring: false,
               isOnline: false,
@@ -101,6 +104,118 @@ module.exports = {
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(Event),
+      data,
+    });
+  },
+  listParticipatedEvents: async (req, res) => {
+    /*
+      #swagger.tags = ['Event']
+      #swagger.summary = 'List events participated by a user'
+      #swagger.description = 'Retrieve a list of events that a specific user has participated in, based on user ID from the EventParticipant model.'
+      #swagger.parameters['id'] = {
+        in: 'path',
+        required: true,
+        type: 'string',
+        description: 'User ID'
+      }
+      #swagger.responses[200] = {
+        description: 'List of participated events retrieved successfully',
+        schema: {
+          error: false,
+          data: [
+            {
+              _id: 'event-id',
+              title: 'Event Title',
+              description: 'Event Description',
+              createdBy: {
+                _id: 'user-id',
+                userType: "organization",
+                email: "organization-email",
+                fullName: "",
+                organizationName: "Organization Name",
+                userDetailsId: {
+                  _id: 'userDetails-id',
+                  avatar: '',
+                  isFullNameDisplay: true,
+                  organizationLogo: 'Organization Logo Url',
+                },
+              },
+              addressId: {
+                _id: 'address-id',
+                city: 'City Name',
+                country: 'Country Name',
+                zipCode: "Zip Code"
+                iframeSrc: "Iframe Source"
+                latitude: "Latitude",
+                longitude: "Longitude",
+              },
+              interestIds: [
+                {
+                  _id: 'interest-id',
+                  name: 'Interest Name',
+                },
+              ],
+              startDate: "2024-09-25T12:00:00.000Z",
+              endDate: "2024-09-25T14:00:00.000Z",
+              languages: ["de"],
+              eventPhoto: 'photo-url',
+              isRecurring: false,
+              isOnline: false,
+              isActive: true,
+              maxParticipant: 100,
+              createdAt: "2024-09-24T10:00:00.000Z",
+              updatedAt: "2024-09-24T10:00:00.000Z",
+            },
+          ],
+        }
+      }
+    */
+
+    const userId = req.params.id;
+
+    const participantRecords = await EventParticipant.find({ userId });
+
+    if (!participantRecords.length) {
+      return res.status(404).send({
+        error: true,
+        message: "No participated events found for this user.",
+      });
+    }
+
+    const participantIds = participantRecords.map(
+      (participant) => participant._id
+    );
+
+    const data = await res.getModelList(
+      Event,
+      {
+        eventParticipantIds: { $in: participantIds },
+      },
+      [
+        {
+          path: "createdBy",
+          select: "userType email fullName organizationName",
+          populate: {
+            path: "userDetailsId",
+            select: "avatar isFullNameDisplay organizationLogo",
+          },
+        },
+        {
+          path: "addressId",
+          select: "city country zipCode",
+        },
+        {
+          path: "interestIds",
+          select: "name",
+        },
+      ]
+    );
+
+    res.status(200).send({
+      error: false,
+      details: await res.getModelListDetails(Event, {
+        eventParticipantIds: { $in: participantIds },
+      }),
       data,
     });
   },
@@ -531,8 +646,11 @@ module.exports = {
     // Execute all delete promises for S3
     await Promise.all(deletePromises);
 
-    // Delete related documents from the database
+    // Delete related datas from the database
     await Document.deleteMany({ eventId: req.params.id });
+    await EventParticipant.deleteMany({ eventId: req.params.id });
+    await EventFeedback.deleteMany({ eventId: req.params.id });
+    await Address.deleteOne({ _id: event.addressId });
 
     // Delete the event
     const data = await Event.deleteOne({ _id: req.params.id });

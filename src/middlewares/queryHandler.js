@@ -7,7 +7,7 @@
 const { PAGE_SIZE } = require("../../setups");
 const { CustomError } = require("../errors/customError");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   /* FILTERING & SEARCHING & SORTING & PAGINATION */
 
   //! Example Usage
@@ -38,17 +38,36 @@ module.exports = (req, res, next) => {
   }
 
   if (filter.category) {
+    if (typeof filter.category !== "string" || filter.category.trim() === "") {
+      throw new CustomError("Invalid category format!", 400);
+    }
     const categories = filter.category
       .split(",")
       .map((category) => category.trim());
-    filterCriteria["interestsIds.name"] = {
-      $in: categories.map((category) => ({ $regex: category, $options: "i" })),
+
+    const Interest = require("../models/interestModel");
+
+    const interestIds = await Interest.find({
+      name: { $in: categories.map((c) => new RegExp(c, "i")) }, // case insensitive
+    });
+
+    const matchingInterestIds = interestIds.map((interest) => interest._id);
+
+    if (matchingInterestIds.length) {
+      filterCriteria.interestIds = { $in: matchingInterestIds };
+    }
+  }
+
+  if (filter.languages) {
+    const languages = filter.languages.split(",").map((lang) => lang.trim());
+    filterCriteria["languages"] = {
+      $in: languages,
     };
   }
 
   for (let key in filter) {
     // other filters like userId, name ...
-    if (!["startDate", "endDate", "category"].includes(key)) {
+    if (!["startDate", "endDate", "category", "languages"].includes(key)) {
       if (typeof filter[key] !== "string" || filter[key].trim() === "") {
         throw new CustomError(`Invalid filter format for ${key}!`, 400);
       }
@@ -82,11 +101,21 @@ module.exports = (req, res, next) => {
       throw new CustomError("Invalid location format!", 400);
     }
     const locationRegex = { $regex: search.location, $options: "i" };
-    searchCriteria.$or = [
-      { "addressId.city": locationRegex },
-      { "addressId.country": locationRegex },
-      { "addressId.zipCode": locationRegex },
-    ];
+    // Get matching address IDs from Address model
+    const Address = require("../models/addressModel");
+    const matchingAddresses = await Address.find({
+      $or: [
+        { city: locationRegex },
+        { country: locationRegex },
+        { zipCode: locationRegex },
+      ],
+    });
+
+    if (matchingAddresses.length) {
+      const matchingAddressIds = matchingAddresses.map((addr) => addr._id);
+      console.log(matchingAddressIds);
+      filterCriteria.addressId = { $in: matchingAddressIds };
+    }
   }
 
   // console.log(searchCriteria);
@@ -130,6 +159,14 @@ module.exports = (req, res, next) => {
 
   // Run for output:
   res.getModelList = async (Model, customFilter = {}, populate = null) => {
+    if (Model.modelName === "Interest") {
+      return await Model.find({
+        ...filterCriteria,
+        ...searchCriteria,
+        ...customFilter,
+      }).populate(populate);
+    }
+
     return await Model.find({
       ...filterCriteria,
       ...searchCriteria,
@@ -149,24 +186,37 @@ module.exports = (req, res, next) => {
       ...customFilter,
     });
 
-    let details = {
-      filter,
-      search,
-      sort,
-      skip,
-      limit,
-      page,
-      pages: {
-        previous: page > 0 ? page : false,
-        current: page + 1,
-        next: page + 2,
-        total: Math.ceil(data.length / limit),
-      },
-      totalRecords: data.length,
-    };
-    details.pages.next =
-      details.pages.next > details.pages.total ? false : details.pages.next;
-    if (details.totalRecords <= limit) details.pages = false;
+    let details = {};
+
+    if (Model.modelName === "Interest") {
+      details = {
+        filter,
+        search,
+        sort,
+        totalRecords: data.length,
+      };
+    } else {
+      details = {
+        filter,
+        search,
+        sort,
+        skip,
+        limit,
+        page,
+        pages: {
+          previous: page > 0 ? page : false,
+          current: page + 1,
+          next: page + 2,
+          total: Math.ceil(data.length / limit),
+        },
+        totalRecords: data.length,
+      };
+
+      details.pages.next =
+        details.pages.next > details.pages.total ? false : details.pages.next;
+      if (details.totalRecords <= limit) details.pages = false;
+    }
+
     return details;
   };
 
