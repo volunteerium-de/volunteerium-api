@@ -28,6 +28,7 @@ router
     eventController.create
   );
 
+router.route("/participant/:id").get(eventController.listParticipatedEvents);
 router.route("/languages").get(eventController.listEventLanguages);
 
 router
