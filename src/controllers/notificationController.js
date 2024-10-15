@@ -1,9 +1,7 @@
 "use strict";
 
-const { CustomError } = require("../errors/customError");
 const { getIoInstance } = require("../configs/socketInstance");
 const Notification = require("../models/notificationModel");
-const User = require("../models/userModel");
 
 module.exports = {
   list: async (req, res) => {
@@ -27,9 +25,24 @@ module.exports = {
         }
       }
     */
-    const notifications = await Notification.find({
-      userId: req.user._id,
+    const userId = req.user._id;
+
+    // Fetch all unread notifications
+    const unreadNotifications = await Notification.find({
+      userId: userId,
+      isRead: false,
     }).sort({ createdAt: -1 });
+
+    // Fetch the latest 10 read notifications
+    const readNotifications = await Notification.find({
+      userId: userId,
+      isRead: true,
+    })
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    // Combine both unread and read notifications
+    const notifications = [...unreadNotifications, ...readNotifications];
 
     res.status(200).send({
       error: false,
@@ -60,7 +73,9 @@ module.exports = {
       message: "All unread notifications marked as read successfully",
       data: await Notification.find({
         userId: req.user._id,
-      }).sort({ createdAt: -1 }),
+      })
+        .sort({ createdAt: -1 })
+        .limit(10),
     });
   },
   create: async (req, res) => {

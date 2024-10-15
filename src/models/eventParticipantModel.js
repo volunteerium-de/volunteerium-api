@@ -101,6 +101,14 @@ EventParticipantSchema.statics.confirmAttendance = async function (
   eventId
 ) {
   const eventParticipant = await findAndValidateParticipant(userId, eventId);
+
+  if (eventParticipant.hasJoined) {
+    throw new CustomError(
+      `User with ID ${userId} has already confirmed attendance for this event.`,
+      400
+    );
+  }
+
   if (!eventParticipant.isApproved) {
     throw new CustomError(
       `User with ID ${userId} is not approved to join this event.`,

@@ -34,7 +34,13 @@ function notificationContentGenerator(
     case "scoreUpdate":
       return `Congratulations! 🥳 You've earned 10 points for participating in the event "${eventTitle}".`;
     case "badgeUpdate":
-      return `Awesome job! 🏅 You've earned a ${badgeType} badge for your outstanding contributions as a volunteer. Your dedication to helping others is truly commendable!`;
+      return `Awesome job! You've earned a ${badgeType.toUpperCase()} badge ${
+        badgeType === "bronze"
+          ? "🥉"
+          : badgeType === "silver"
+          ? "🥈"
+          : badgeType === "gold" && "🥇"
+      } for your outstanding contributions as a volunteer. Your dedication to helping others is truly commendable!`;
     case "eventFeedbackRequest":
       return `Dear Volunteer , we would love to hear your feedback on the event "${eventTitle}". Please visit the event details page to share your experience.`;
     default:

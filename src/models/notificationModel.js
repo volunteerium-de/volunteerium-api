@@ -1,6 +1,8 @@
 "use strict";
 
 const { mongoose } = require("../configs/dbConnection");
+const { getIoInstance } = require("../configs/socketInstance");
+const { notificationContentGenerator } = require("../utils/functions");
 
 const NotificationSchema = new mongoose.Schema(
   {
@@ -41,5 +43,36 @@ const NotificationSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+NotificationSchema.statics.generate = async function (
+  userId,
+  notificationType,
+  eventTitle,
+  badgeType = ""
+) {
+  // Generate content based on notificationType
+  const content = notificationContentGenerator(
+    notificationType,
+    eventTitle,
+    badgeType
+  );
+
+  const notification = new this({
+    userId,
+    content,
+    notificationType,
+  });
+
+  await notification.save();
+
+  const newNotifications = await this.find({
+    userId,
+  }).sort({ createdAt: -1 });
+
+  const io = getIoInstance();
+  io.emit("receive_notifications", newNotifications);
+
+  return notification;
+};
 
 module.exports = mongoose.model("Notification", NotificationSchema);
