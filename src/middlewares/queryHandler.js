@@ -115,6 +115,8 @@ module.exports = async (req, res, next) => {
       const matchingAddressIds = matchingAddresses.map((addr) => addr._id);
       console.log(matchingAddressIds);
       filterCriteria.addressId = { $in: matchingAddressIds };
+    } else {
+      filterCriteria.addressId = null;
     }
   }
 
