@@ -3,6 +3,7 @@
 const Message = require("../models/messageModel");
 const Conversation = require("../models/conversationModel");
 const { CustomError } = require("../errors/customError");
+const { getIoInstance } = require("../configs/socketInstance");
 
 module.exports = {
   list: async (req, res) => {
@@ -109,18 +110,16 @@ module.exports = {
         }
       }
     */
-    const { conversationId, senderId, content } = req.body;
-
-    const conversation = await Conversation.findById(conversationId);
-
-    if (!conversation) {
-      throw new CustomError("Conversation not found", 404);
-    }
+    const { conversationId, content } = req.body;
 
     const message = new Message({
       conversationId,
-      senderId: req.user.userType === "admin" ? senderId : req.user._id,
+      senderId:
+        req.user.userType === "admin"
+          ? req.body?.senderId || req.user._id
+          : req.user._id,
       content,
+      readerIds: [req.user._id],
     });
 
     await message.save();
@@ -129,6 +128,13 @@ module.exports = {
     await Conversation.findByIdAndUpdate(conversationId, {
       $push: { messageIds: message._id },
     });
+
+    const io = getIoInstance();
+    io.to(conversationId).emit("receive_message", {
+      conversationId,
+    });
+
+    io.emit("receive_conversations");
 
     res.status(201).send({
       error: false,

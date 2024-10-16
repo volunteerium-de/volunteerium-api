@@ -6,6 +6,8 @@ const EventParticipant = require("../models/eventParticipantModel");
 const EventFeedback = require("../models/eventFeedbackModel");
 const Document = require("../models/documentModel");
 const Notification = require("../models/notificationModel");
+const Conversation = require("../models/conversationModel");
+const Message = require("../models/messageModel");
 const {
   validateEventPayload,
   validateUpdateEventPayload,
@@ -301,6 +303,10 @@ module.exports = {
       delete req.body.isActive;
     }
 
+    if (!req.user.createdBy) {
+      req.body.createdBy = req.user._id;
+    }
+
     const {
       city,
       country,
@@ -338,6 +344,12 @@ module.exports = {
 
     const event = new Event(req.body);
     const savedEvent = await event.save();
+
+    const conversation = new Conversation({
+      eventId: savedEvent._id,
+      createdBy: req.user._id,
+    });
+    await conversation.save();
 
     res.status(201).send({
       error: false,
@@ -685,6 +697,22 @@ module.exports = {
     await EventParticipant.deleteMany({ eventId: req.params.id });
     await EventFeedback.deleteMany({ eventId: req.params.id });
     await Address.deleteOne({ _id: event.addressId });
+
+    const deletedConversations = await Conversation.find(
+      { eventId: req.params.id },
+      "_id"
+    );
+
+    const conversationIds = deletedConversations.map(
+      (conversation) => conversation._id
+    );
+
+    await Message.deleteMany({
+      conversationId: { $in: conversationIds },
+    });
+    await Conversation.deleteMany({
+      eventId: req.params.id,
+    });
 
     // Delete the event
     const data = await Event.deleteOne({ _id: req.params.id });
