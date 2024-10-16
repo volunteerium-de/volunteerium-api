@@ -3,7 +3,9 @@
 const { CustomError } = require("../errors/customError");
 const EventParticipant = require("../models/eventParticipantModel");
 const Event = require("../models/eventModel");
+const Notification = require("../models/notificationModel");
 const User = require("../models/userModel");
+const UserDetails = require("../models/userDetailsModel");
 
 // Helper functions to check existance of requested data
 async function findEvent(eventId) {
@@ -92,10 +94,17 @@ module.exports = {
     */
     const { userId, eventId } = req.body;
 
-    await findEvent(eventId);
+    const event = await findEvent(eventId);
     await findUser(userId);
 
     const newParticipant = await EventParticipant.requestJoin(userId, eventId);
+
+    await Notification.generate(
+      event.createdBy,
+      "eventJoinRequest",
+      event.title
+    );
+
     res.status(200).send({
       error: false,
       message: "Join request sent successfully.",
@@ -133,7 +142,7 @@ module.exports = {
     */
     const { userId, eventId } = req.body;
 
-    await findEvent(eventId);
+    const event = await findEvent(eventId);
     await findUser(userId);
 
     const updatedParticipant = await EventParticipant.approveParticipant(
@@ -144,6 +153,8 @@ module.exports = {
     await Event.findByIdAndUpdate(eventId, {
       $push: { eventParticipantIds: updatedParticipant._id },
     });
+
+    await Notification.generate(userId, "eventApproveParticipant", event.title);
 
     res.status(200).send({
       error: false,
@@ -233,13 +244,28 @@ module.exports = {
     */
     const { userId, eventId } = req.body;
 
-    await findEvent(eventId);
+    const event = await findEvent(eventId);
     await findUser(userId);
 
     const updatedParticipant = await EventParticipant.confirmAttendance(
       userId,
       eventId
     );
+
+    await Notification.generate(userId, "scoreUpdate", event.title);
+
+    const badgeUpdates = {
+      30: "bronze",
+      60: "silver",
+      90: "gold",
+    };
+
+    const userDetails = await UserDetails.findOne({ userId });
+
+    const badge = badgeUpdates[userDetails.totalPoint];
+    if (badge) {
+      await Notification.generate(userId, "badgeUpdate", event.title, badge);
+    }
 
     res.status(200).send({
       error: false,

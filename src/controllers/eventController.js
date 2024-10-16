@@ -5,12 +5,12 @@ const Address = require("../models/addressModel");
 const EventParticipant = require("../models/eventParticipantModel");
 const EventFeedback = require("../models/eventFeedbackModel");
 const Document = require("../models/documentModel");
+const Notification = require("../models/notificationModel");
 const {
   validateEventPayload,
   validateUpdateEventPayload,
 } = require("../validators/eventValidator");
 const { CustomError } = require("../errors/customError");
-const { mongoose } = require("../configs/dbConnection");
 
 module.exports = {
   list: async (req, res) => {
@@ -516,6 +516,10 @@ module.exports = {
       throw new CustomError(validationError, 400);
     }
 
+    if (req.body.eventParticipantIds) {
+      delete req.body.eventParticipantIds;
+    }
+
     if (req.user.userType !== "admin") {
       delete req.body.isActive;
     }
@@ -570,9 +574,6 @@ module.exports = {
         const savedAddress = await address.save();
         req.body.addressId = savedAddress._id;
       }
-    } else if (!req.body.isOnline) {
-      // if the event is not online and no address data provided, then we throw error!
-      throw new Error("Address informations are required for physical events.");
     } else if (addressId && req.body.isOnline) {
       // if the event is online and no address data provided, then we set addressId to null!
       req.body.addressId = null;
@@ -587,6 +588,29 @@ module.exports = {
         runValidators: true,
       }
     ).populate("addressId");
+
+    console.log(updatedEvent);
+
+    // Generate notifications for participants
+    for (const participantId of updatedEvent.eventParticipantIds) {
+      console.log(participantId);
+      const participant = await EventParticipant.findById(participantId);
+
+      if (!participant) {
+        console.warn(`No participant found with ID: ${participantId}`);
+        continue; // Skip to the next participant if not found
+      }
+
+      if (participant.userId) {
+        await Notification.generate(
+          participant.userId,
+          "eventUpdate",
+          updatedEvent.title
+        );
+      } else {
+        console.warn(`No user found with ID: ${participant.userId}`);
+      }
+    }
 
     res.status(202).send({
       error: false,
@@ -648,6 +672,16 @@ module.exports = {
 
     // Delete related datas from the database
     await Document.deleteMany({ eventId: req.params.id });
+
+    // Generate notifications for participants
+    for (const participantId of event.eventParticipantIds) {
+      const participant = await EventParticipant.findById(participantId);
+      await Notification.generate(
+        participant.userId,
+        "eventCancellation",
+        event.title
+      );
+    }
     await EventParticipant.deleteMany({ eventId: req.params.id });
     await EventFeedback.deleteMany({ eventId: req.params.id });
     await Address.deleteOne({ _id: event.addressId });
