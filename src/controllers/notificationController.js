@@ -1,8 +1,12 @@
 "use strict";
 
-const { CustomError } = require("../errors/customError");
+const { getIoInstance } = require("../configs/socketInstance");
 const Notification = require("../models/notificationModel");
 const User = require("../models/userModel");
+const { sendEmail } = require("../utils/email/emailService");
+const {
+  getNotificationAndMessageEmailHtml,
+} = require("../utils/email/notification-message/notification-message");
 
 module.exports = {
   list: async (req, res) => {
@@ -26,22 +30,28 @@ module.exports = {
         }
       }
     */
-    let customFilter = {};
+    const userId = req.user._id;
 
-    if (req.user) {
-      if (req.user.userType === "admin") {
-        customFilter.userId = req.body.userId;
-      } else {
-        customFilter.userId = req.user._id;
-      }
-    }
+    // Fetch all unread notifications
+    const unreadNotifications = await Notification.find({
+      userId: userId,
+      isRead: false,
+    }).sort({ createdAt: -1 });
 
-    const data = await res.getModelList(Notification, customFilter);
+    // Fetch the latest 10 read notifications
+    const readNotifications = await Notification.find({
+      userId: userId,
+      isRead: true,
+    })
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    // Combine both unread and read notifications
+    const notifications = [...unreadNotifications, ...readNotifications];
 
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(Notification, customFilter),
-      data,
+      data: notifications,
     });
   },
   markAllAsRead: async (req, res) => {
@@ -66,6 +76,11 @@ module.exports = {
     res.status(200).send({
       error: false,
       message: "All unread notifications marked as read successfully",
+      data: await Notification.find({
+        userId: req.user._id,
+      })
+        .sort({ createdAt: -1 })
+        .limit(10),
     });
   },
   create: async (req, res) => {
@@ -98,12 +113,42 @@ module.exports = {
         }
       }
     */
+    const { content, userId, notificationType } = req.body;
 
-    const data = await Notification.create(req.body);
+    const notification = new Notification({
+      userId,
+      notificationType,
+      content,
+    });
+    await notification.save();
+
+    const newNotifications = await Notification.find({
+      userId,
+    }).sort({ createdAt: -1 });
+
+    const io = getIoInstance();
+    io.emit("receive_notifications", newNotifications);
+
+    const user = await User.findById(userId);
+    const unreadNotificationCount = await Notification.countDocuments({
+      userId,
+      isRead: false,
+    });
+
+    // Send email to user
+    const emailSubject = `You have ${unreadNotificationCount} new notifications`;
+    const emailHtml = getNotificationAndMessageEmailHtml(
+      user.fullName.split(" ")[0],
+      unreadNotificationCount > 1 ? "notifications" : "notification",
+      unreadNotificationCount
+    );
+
+    await sendEmail(user.email, emailSubject, emailHtml);
+
     res.status(201).send({
       error: false,
       message: "New notification successfully created!",
-      data,
+      data: notification,
     });
   },
   read: async (req, res) => {
@@ -182,18 +227,24 @@ module.exports = {
       }
     */
 
-    const data = await Notification.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
+    const { content, notificationType } = req.body;
+    const updatedNotification = await Notification.findByIdAndUpdate(
+      req.params.id,
+      { content, notificationType },
+      { new: true }
     );
+
+    const newNotifications = await Notification.find({
+      userId: updatedNotification.userId,
+    }).sort({ createdAt: -1 });
+
+    const io = getIoInstance();
+    io.emit("receive_notifications", newNotifications);
+
     res.status(202).send({
       error: false,
       message: "Notification updated successfully!",
-      new: data,
+      new: updatedNotification,
     });
   },
   delete: async (req, res) => {

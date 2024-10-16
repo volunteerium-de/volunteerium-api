@@ -3,6 +3,7 @@
 require("express-async-errors");
 const express = require("express");
 const app = express();
+const http = require("http");
 const session = require("express-session");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
@@ -16,6 +17,7 @@ const {
   SECRET_KEY,
   MONGODB_URI,
 } = require("./setups");
+const { Server } = require("socket.io");
 
 // Cron Job
 
@@ -29,7 +31,7 @@ const cors = require("cors");
 const corsOptions = {
   origin: CLIENT_URL,
   methods: ["GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS"],
-  // allowedHeaders: ["Origin", "Content-Type", "Authorization"],
+  allowedHeaders: ["Origin", "Content-Type", "Authorization"],
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -78,6 +80,16 @@ app.use(require("./src/middlewares/queryHandler"));
 // Routes;
 app.use(`/api/${VERSION}`, require("./src/routes"));
 
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: corsOptions,
+});
+
+// Socket.IO
+const socket = require("./socket");
+socket(io);
+
 app.all("/", (req, res) => {
   res.send({
     error: false,
@@ -101,4 +113,6 @@ app.use((req, res, next) => {
 // Error Handler Middleware
 app.use(require("./src/middlewares/errorHandler"));
 
-app.listen(PORT, () => console.log(`server running on http://${HOST}:${PORT}`));
+server.listen(PORT, () =>
+  console.log(`server running on http://${HOST}:${PORT}`)
+);

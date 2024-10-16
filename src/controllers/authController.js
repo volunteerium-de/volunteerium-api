@@ -504,7 +504,6 @@ module.exports = {
         required: true,
         schema: {
             "email": "testUser@gmail.com",
-            "resetPasswordToken": "optionalExistingToken"
         }
     }
     #swagger.responses[200] = {
@@ -532,54 +531,23 @@ module.exports = {
     */
     //* As default we will receive just email in body. But if we have to resend resetCode again, we have to get both email and resetPasswordToken in body.
 
-    const { email, resetPasswordToken } = req.body;
+    const { email } = req.body;
     const user = await User.findOne({ email });
 
     if (!user) {
       throw new CustomError("No account found!", 401);
     }
 
-    let resetCode;
-    let newResetPasswordToken;
-
-    if (resetPasswordToken) {
-      // Decode the token and check its validity
-      try {
-        const decodedToken = jwt.verify(resetPasswordToken, RESET_PASSWORD_KEY);
-        if (decodedToken.email === email && !isTokenExpired(decodedToken)) {
-          // Token is valid
-          resetCode = decodedToken.resetCode;
-          newResetPasswordToken = resetPasswordToken;
-        } else if (decodedToken.email === email) {
-          // Token is expired
-          ({ resetCode, resetPasswordToken: newResetPasswordToken } =
-            generateResetPasswordCode(user));
-        } else {
-          return res.status(400).send({
-            error: true,
-            message: "Invalid request. Please provide correct email address!",
-          });
-        }
-      } catch (err) {
-        return res.status(400).send({
-          error: true,
-          message: "Something went wrong. Please request code again!",
-        });
-      }
-    } else {
-      // No token provided, generate a new one
-      ({ resetCode, resetPasswordToken: newResetPasswordToken } =
-        generateResetPasswordCode(user));
-    }
+    const { resetCode, resetPasswordToken } = generateResetPasswordCode(user);
 
     // console.log("ResetCode and token: ", {resetCode, newResetPasswordToken});
 
-    if ((resetCode, newResetPasswordToken)) {
+    if ((resetCode, resetPasswordToken)) {
       // Send forgot request email to user
       const forgotEmailSubject = "Password Reset Request!";
       const forgotEmailHtml = getForgotPasswordEmailHtml(
         user.fullName.split(" ")[0],
-        newResetPasswordToken,
+        resetPasswordToken,
         resetCode
       );
 
@@ -587,7 +555,7 @@ module.exports = {
 
       res.status(200).send({
         error: false,
-        resetToken: newResetPasswordToken,
+        resetToken: resetPasswordToken,
         message:
           "Password reset code has been sent to your e-mail. Please check your mailbox.",
       });
