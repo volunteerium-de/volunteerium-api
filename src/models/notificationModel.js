@@ -2,7 +2,12 @@
 
 const { mongoose } = require("../configs/dbConnection");
 const { getIoInstance } = require("../configs/socketInstance");
+const { sendEmail } = require("../utils/email/emailService");
+const {
+  getNotificationAndMessageEmailHtml,
+} = require("../utils/email/notification-message/notification-message");
 const { notificationContentGenerator } = require("../utils/functions");
+const User = require("../models/userModel");
 
 const NotificationSchema = new mongoose.Schema(
   {
@@ -64,6 +69,22 @@ NotificationSchema.statics.generate = async function (
   });
 
   await notification.save();
+
+  const unreadNotificationCount = await this.countDocuments({
+    userId,
+    isRead: false,
+  });
+
+  const user = await User.findById(userId);
+  // Send email to user
+  const emailSubject = `You have ${unreadNotificationCount} new notifications`;
+  const emailHtml = getNotificationAndMessageEmailHtml(
+    user.fullName.split(" ")[0],
+    unreadNotificationCount > 1 ? "notifications" : "notification",
+    unreadNotificationCount
+  );
+
+  await sendEmail(user.email, emailSubject, emailHtml);
 
   const newNotifications = await this.find({
     userId,

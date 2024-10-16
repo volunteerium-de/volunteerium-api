@@ -2,6 +2,11 @@
 
 const { getIoInstance } = require("../configs/socketInstance");
 const Notification = require("../models/notificationModel");
+const User = require("../models/userModel");
+const { sendEmail } = require("../utils/email/emailService");
+const {
+  getNotificationAndMessageEmailHtml,
+} = require("../utils/email/notification-message/notification-message");
 
 module.exports = {
   list: async (req, res) => {
@@ -123,6 +128,22 @@ module.exports = {
 
     const io = getIoInstance();
     io.emit("receive_notifications", newNotifications);
+
+    const user = await User.findById(userId);
+    const unreadNotificationCount = await Notification.countDocuments({
+      userId,
+      isRead: false,
+    });
+
+    // Send email to user
+    const emailSubject = `You have ${unreadNotificationCount} new notifications`;
+    const emailHtml = getNotificationAndMessageEmailHtml(
+      user.fullName.split(" ")[0],
+      unreadNotificationCount > 1 ? "notifications" : "notification",
+      unreadNotificationCount
+    );
+
+    await sendEmail(user.email, emailSubject, emailHtml);
 
     res.status(201).send({
       error: false,
