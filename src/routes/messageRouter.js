@@ -18,10 +18,8 @@ const {
 
 router.use([isLogin, isActive, checkEmailVerification]);
 
-router
-  .route("/")
-  .get(messageController.list)
-  .post(canSendMessage, messageController.create);
+router.route("/").get(messageController.list).post(messageController.create);
+// .post(canSendMessage, messageController.create);
 
 router
   .route("/:id")

@@ -114,12 +114,9 @@ module.exports = {
 
     const message = new Message({
       conversationId,
-      senderId:
-        req.user.userType === "admin"
-          ? req.body?.senderId || req.user._id
-          : req.user._id,
+      senderId: req.body?.senderId || req.user._id,
       content,
-      readerIds: [req.user._id],
+      readerIds: [req.body?.senderId || req.user._id],
     });
 
     await message.save();
@@ -130,10 +127,6 @@ module.exports = {
     });
 
     const io = getIoInstance();
-    io.to(conversationId).emit("receive_message", {
-      conversationId,
-    });
-
     io.emit("receive_conversations");
 
     res.status(201).send({

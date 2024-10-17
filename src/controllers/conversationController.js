@@ -7,25 +7,25 @@ const Message = require("../models/messageModel");
 const populateUserDetails = [
   {
     path: "userDetailsId",
-    select: "avatar organizationLogo",
+    select: "avatar organizationLogo isFullNameDisplay",
   },
 ];
 
 const populateSender = {
   path: "senderId",
-  select: "fullName organizationName",
+  select: "fullName organizationName userType",
   populate: populateUserDetails,
 };
 
 const populateParticipant = {
   path: "participantIds",
-  select: "fullName organizationName",
+  select: "fullName organizationName userType",
   populate: populateUserDetails,
 };
 
 const populateMessage = {
   path: "messageIds",
-  select: "senderId content readerIds createdAt",
+  select: "senderId content conversationId readerIds createdAt",
   populate: populateSender,
 };
 
@@ -51,30 +51,23 @@ module.exports = {
         }
       }
     */
-    const data = await res.getModelList(
-      Conversation,
+    const data = await Conversation.find({
+      $or: [{ createdBy: req.user._id }, { participantIds: req.user._id }],
+    }).populate([
       {
-        $or: [{ createdBy: req.user._id }, { participantIds: req.user._id }],
+        path: "eventId",
+        select: "title eventPhoto createdBy",
       },
-      [
-        {
-          path: "eventId",
-          select: "title description eventPhoto",
-        },
-        {
-          path: "createdBy",
-          select: "fullName organizationName",
-          populate: populateUserDetails,
-        },
-        populateMessage,
-        populateParticipant,
-      ]
-    );
+      {
+        path: "createdBy",
+        select: "fullName organizationName",
+        populate: populateUserDetails,
+      },
+      populateMessage,
+      populateParticipant,
+    ]);
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(Conversation, {
-        $or: [{ createdBy: req.user._id }, { participantIds: req.user._id }],
-      }),
       data,
     });
   },
@@ -118,7 +111,7 @@ module.exports = {
     }).populate([
       {
         path: "eventId",
-        select: "title description eventPhoto",
+        select: "title eventPhoto",
       },
       {
         path: "createdBy",
