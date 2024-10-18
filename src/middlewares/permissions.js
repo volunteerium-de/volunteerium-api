@@ -252,12 +252,12 @@ module.exports = {
   canSendMessage: async (req, res, next) => {
     const conversation = await Conversation.findById(req.body.conversationId);
     if (!conversation) {
-      throw new CustomError("Conversation not found", 404);
+      throw new CustomError("Message could not be sent!", 404);
     }
 
     const event = await Event.findById(conversation.eventId);
     if (!event) {
-      throw new CustomError("Event not found", 404);
+      throw new CustomError("Message could not be sent!", 404);
     }
 
     const isAdmin = req.user?.userType?.toLowerCase() === "admin";
