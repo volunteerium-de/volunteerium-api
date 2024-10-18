@@ -628,7 +628,7 @@ module.exports = {
     return res.status(200).send({
       error: false,
       resetToken: newResetToken,
-      message: "Reset token verified successfully",
+      message: "Code verified successfully!",
     });
   },
   // POST
