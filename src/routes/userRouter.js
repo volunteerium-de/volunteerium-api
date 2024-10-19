@@ -16,7 +16,6 @@ router
   .route("/")
   .get(isLogin, isActive, checkEmailVerification, userController.list);
 
-router.post("/feedback", userController.feedback);
 router
   .route("/:id")
   .all(idValidation)

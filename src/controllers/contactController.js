@@ -1,6 +1,8 @@
 "use strict";
 
+const { CustomError } = require("../errors/customError");
 const Contact = require("../models/contactModel");
+const { sendFeedbackEmail } = require("../utils/email/emailService");
 
 module.exports = {
   list: async (req, res) => {
@@ -45,7 +47,7 @@ module.exports = {
     /*
       #swagger.tags = ['Contact']
       #swagger.summary = 'Create a new contact'
-      #swagger.description = 'Create a new contact and save it to the database'
+      #swagger.description = 'Handles user contact&feedback submission by validating input and sending contact form via email.'
       #swagger.parameters['body'] = {
         in: 'body',
         required: true,
@@ -57,7 +59,7 @@ module.exports = {
         }
       }
       #swagger.responses[201] = {
-        description: 'Contact created successfully',
+        message: 'Thank you. We will get back to you as soon as possible!'
         schema: {
           error: false,
           data: { 
@@ -71,66 +73,29 @@ module.exports = {
           }
         }
       }
-    */
+      #swagger.responses[400] = {
+        description: 'Validation error',
+        schema: {
+          error: true,
+          message: 'Please fill the contact form!'
+        }
+      }
+      */
+    const { name, email, subject, feedback } = req.body;
+
+    if (!name || !email || !subject || !feedback) {
+      throw new CustomError("Please fill the contact form!", 400);
+    }
+
     const data = await Contact.create(req.body);
+
+    // send feedback email
+    await sendFeedbackEmail(name, email, subject, feedback);
+
     res.status(201).send({
       error: false,
       data,
-    });
-  },
-  update: async (req, res) => {
-    /*
-      #swagger.tags = ['Contact']
-      #swagger.summary = 'Update a contact by ID'
-      #swagger.description = 'Update a specific contact by its ID'
-      #swagger.parameters['id'] = {
-        in: 'path',
-        required: true,
-        type: 'string',
-        description: 'Contact ID'
-      }
-      #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          name: 'contact-name',
-          email: 'contact-email',
-          subject: 'contact-subject',
-          message: 'contact-message'
-        }
-      }
-      #swagger.responses[200] = {
-        description: 'Contact updated successfully',
-        schema: {
-          error: false,
-          data: { 
-            _id: 'contact-id', 
-            name: 'contact-name', 
-            email: 'contact-email',
-            subject: 'contact-subject', 
-            message: 'contact-message',
-            createdAt: 'timestamp',
-            updatedAt: 'timestamp'
-          }
-        }
-      }
-      #swagger.responses[404] = {
-        description: 'Contact not found',
-        schema: {
-          error: true,
-          message: 'Contact not found'
-        }
-      }
-    */
-    const data = await Contact.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    res.status(200).send({
-      error: false,
-      data,
+      message: "Thank you. We will get back to you as soon as possible!",
     });
   },
   read: async (req, res) => {

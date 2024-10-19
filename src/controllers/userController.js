@@ -8,7 +8,6 @@ const Messages = require("../models/messageModel");
 const Conversations = require("../models/conversationModel");
 const bcrypt = require("bcryptjs");
 const { CustomError } = require("../errors/customError");
-const { sendFeedbackEmail } = require("../utils/email/emailService");
 const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
 const { extractDateNumber } = require("../utils/functions");
 const { validateUserUpdatePayload } = require("../validators/userValidator");
@@ -276,73 +275,6 @@ module.exports = {
         { path: "documentIds", select: "-__v" },
       ]),
       data,
-    });
-  },
-  // feedback => POST
-  feedback: async (req, res) => {
-    /*
-      #swagger.tags = ["Users"]
-      #swagger.summary = "Submit Feedback"
-      #swagger.description = "Handles user feedback submission by validating input and sending feedback via email."
-      #swagger.parameters['body'] = {
-        in: 'body',
-        description: 'Feedback submission data',
-        required: true,
-        schema: {
-          type: 'object',
-          properties: {
-            name: {
-              type: 'string',
-              description: 'Name of the user',
-              example: 'John Doe'
-            },
-            email: {
-              type: 'string',
-              format: 'email',
-              description: 'Email address of the user',
-              example: 'john.doe@example.com'
-            },
-            subject: {
-              type: 'string',
-              description: 'Subject of the feedback',
-              example: 'Feedback Subject'
-            },
-            feedback: {
-              type: 'string',
-              description: 'Feedback message',
-              example: 'This is a feedback message.'
-            }
-          },
-          required: ['name', 'email', 'feedback']
-        }
-      }
-      #swagger.responses[200] = {
-        description: 'Feedback submitted successfully',
-        schema: {
-          error: false,
-          message: 'Thank you. We will get back to you as soon as possible!'
-        }
-      }
-      #swagger.responses[400] = {
-        description: 'Validation error',
-        schema: {
-          error: true,
-          message: 'Please fill the contact form!'
-        }
-      }
-    */
-    const { name, email, subject, feedback } = req.body;
-
-    if (!name || !email || !feedback) {
-      throw new CustomError("Please fill the contact form!", 400);
-    }
-
-    // send feedback email
-    await sendFeedbackEmail(name, email, subject, feedback);
-
-    res.status(200).send({
-      error: false,
-      message: "Thank you. We will get back to you as soon as possible!",
     });
   },
   // /:id => DELETE

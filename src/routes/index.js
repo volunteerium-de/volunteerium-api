@@ -31,5 +31,7 @@ router.use("/event-participants", require("./eventParticipantRouter"));
 router.use("/conversations", require("./conversationRouter"));
 // messages:
 router.use("/messages", require("./messageRouter"));
+// contacts:
+router.use("/contacts", require("./contactRouter"));
 /* ------------------------------------------------------- */
 module.exports = router;
