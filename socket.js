@@ -11,10 +11,6 @@ const socket = (io) => {
   io.on("connection", (socket) => {
     console.log(`User Connected: ${socket.user._id}`);
 
-    socket.on("join_channel", (conversationId) => {
-      socket.join(conversationId);
-    });
-
     socket.on("disconnect", () => {
       console.log(`User Disconnected: ${socket.user._id}`);
     });
