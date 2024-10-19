@@ -15,6 +15,7 @@ const EventReportSchema = new mongoose.Schema(
     },
     reportType: {
       type: String,
+      trim: true,
       enum: [
         "offensive",
         "harmful",
@@ -34,7 +35,7 @@ const EventReportSchema = new mongoose.Schema(
       trim: true,
       required: true,
       minlength: 10,
-      maxlength: 500,
+      maxlength: 1000,
     },
   },
   {
