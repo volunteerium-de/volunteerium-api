@@ -25,6 +25,10 @@ const userDetailsSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    isProfileSetup: {
+      type: Boolean,
+      default: false,
+    },
     gender: {
       type: String,
       enum: ["male", "female", "n/a"],

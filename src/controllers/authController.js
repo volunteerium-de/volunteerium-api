@@ -86,7 +86,6 @@ module.exports = {
       userType,
       password: hashedPassword,
       isActive: true,
-      isProfileSetup: false,
       isEmailVerified: false, // user will active his account via verification email
     });
 

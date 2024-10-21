@@ -46,10 +46,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isProfileSetup: {
-      type: Boolean,
-      default: false,
-    },
     documentIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
