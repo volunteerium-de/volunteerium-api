@@ -4,8 +4,10 @@ const { CustomError } = require("../errors/customError");
 const EventParticipant = require("../models/eventParticipantModel");
 const Event = require("../models/eventModel");
 const Notification = require("../models/notificationModel");
+const Conversation = require("../models/conversationModel");
 const User = require("../models/userModel");
 const UserDetails = require("../models/userDetailsModel");
+const { getIoInstance } = require("../configs/socketInstance");
 
 // Helper functions to check existance of requested data
 async function findEvent(eventId) {
@@ -156,6 +158,25 @@ module.exports = {
 
     await Notification.generate(userId, "eventApproveParticipant", event.title);
 
+    const conversation = await Conversation.findOne({
+      eventId,
+      createdBy: event.createdBy,
+    });
+
+    if (conversation) {
+      await Conversation.findByIdAndUpdate(conversation._id, {
+        $push: { participantIds: userId },
+      });
+
+      const io = getIoInstance();
+      io.emit("receive_conversations");
+    } else {
+      throw new CustomError(
+        `No conversation found for eventId: ${eventId} and createdBy: ${event.createdBy}`,
+        404
+      );
+    }
+
     res.status(200).send({
       error: false,
       message: "Participant approved successfully.",
@@ -205,6 +226,25 @@ module.exports = {
       await Event.findByIdAndUpdate(eventId, {
         $pull: { eventParticipantIds: updatedParticipant._id },
       });
+    }
+
+    const conversation = await Conversation.findOne({
+      eventId,
+      createdBy: event.createdBy,
+    });
+
+    if (conversation) {
+      await Conversation.findByIdAndUpdate(conversation._id, {
+        $pull: { participantIds: userId },
+      });
+
+      const io = getIoInstance();
+      io.emit("receive_conversations");
+    } else {
+      throw new CustomError(
+        `No conversation found for eventId: ${eventId} and createdBy: ${event.createdBy}`,
+        404
+      );
     }
 
     res.status(200).send({
@@ -305,6 +345,25 @@ module.exports = {
         await Event.findByIdAndUpdate(participant.eventId, {
           $pull: { eventParticipantIds: participant._id },
         });
+
+        const conversation = await Conversation.findOne({
+          eventId: event._id,
+          createdBy: event.createdBy,
+        });
+
+        if (conversation) {
+          await Conversation.findByIdAndUpdate(conversation._id, {
+            $pull: { participantIds: participant.userId },
+          });
+
+          const io = getIoInstance();
+          io.emit("receive_conversations");
+        } else {
+          throw new CustomError(
+            `No conversation found for eventId: ${event._id} and createdBy: ${event.createdBy}`,
+            404
+          );
+        }
       }
 
       await EventParticipant.findByIdAndDelete(req.params.id);
