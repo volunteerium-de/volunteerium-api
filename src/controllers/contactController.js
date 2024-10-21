@@ -47,7 +47,7 @@ module.exports = {
     /*
       #swagger.tags = ['Contact']
       #swagger.summary = 'Create a new contact'
-      #swagger.description = 'Handles user contact&feedback submission by validating input and sending contact form via email.'
+      #swagger.description = 'Handles user contact&message submission by validating input and sending contact form via email.'
       #swagger.parameters['body'] = {
         in: 'body',
         required: true,
@@ -81,16 +81,16 @@ module.exports = {
         }
       }
       */
-    const { name, email, subject, feedback } = req.body;
+    const { name, email, subject, message } = req.body;
 
-    if (!name || !email || !subject || !feedback) {
+    if (!name || !email || !subject || !message) {
       throw new CustomError("Please fill the contact form!", 400);
     }
 
     const data = await Contact.create(req.body);
 
-    // send feedback email
-    await sendFeedbackEmail(name, email, subject, feedback);
+    // send message email
+    await sendFeedbackEmail(name, email, subject, message);
 
     res.status(201).send({
       error: false,
