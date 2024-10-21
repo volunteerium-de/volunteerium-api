@@ -1,30 +1,31 @@
 "use strict";
 
+const { getIoInstance } = require("../configs/socketInstance");
 const Conversation = require("../models/conversationModel");
 const Message = require("../models/messageModel");
 
 const populateUserDetails = [
   {
     path: "userDetailsId",
-    select: "avatar organizationLogo",
+    select: "avatar organizationLogo isFullNameDisplay",
   },
 ];
 
 const populateSender = {
   path: "senderId",
-  select: "fullName organizationName",
+  select: "fullName organizationName userType",
   populate: populateUserDetails,
 };
 
 const populateParticipant = {
   path: "participantIds",
-  select: "fullName organizationName",
+  select: "fullName organizationName userType",
   populate: populateUserDetails,
 };
 
 const populateMessage = {
   path: "messageIds",
-  select: "senderId content readerIds createdAt",
+  select: "senderId content conversationId readerIds createdAt",
   populate: populateSender,
 };
 
@@ -50,10 +51,23 @@ module.exports = {
         }
       }
     */
-    const data = await res.getModelList(Conversation, {}, [populateMessage]);
+    const data = await Conversation.find({
+      $or: [{ createdBy: req.user._id }, { participantIds: req.user._id }],
+    }).populate([
+      {
+        path: "eventId",
+        select: "title eventPhoto createdBy",
+      },
+      {
+        path: "createdBy",
+        select: "fullName organizationName",
+        populate: populateUserDetails,
+      },
+      populateMessage,
+      populateParticipant,
+    ]);
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(Conversation),
       data,
     });
   },
@@ -83,10 +97,21 @@ module.exports = {
         }
       }
     */
-    const conversation = await Conversation.findById(req.params.id).populate([
+    await Message.updateMany(
+      {
+        conversationId: req.params.id,
+        senderId: { $ne: req.user._id },
+      },
+      { $addToSet: { readerIds: req.user._id } }
+    );
+
+    const conversation = await Conversation.findOne({
+      _id: req.params.id,
+      $or: [{ createdBy: req.user._id }, { participantIds: req.user._id }],
+    }).populate([
       {
         path: "eventId",
-        select: "title description eventPhoto",
+        select: "title eventPhoto",
       },
       {
         path: "createdBy",
@@ -96,23 +121,6 @@ module.exports = {
       populateMessage,
       populateParticipant,
     ]);
-
-    if (req.user) {
-      // Update messages: If req.user._id is not the senderId, add to readerIds
-      const messages = conversation.messageIds;
-      await Promise.all(
-        messages.map(async (messageId) => {
-          const message = await Message.findById(messageId);
-          if (message.senderId.toString() !== req.user._id.toString()) {
-            // If the message's senderId is not equal to the current user's ID, add to readerIds
-            if (!message.readerIds.includes(req.user._id)) {
-              message.readerIds.push(req.user._id);
-              await message.save();
-            }
-          }
-        })
-      );
-    }
 
     res.status(200).send({ error: false, data: conversation });
   },
@@ -153,14 +161,17 @@ module.exports = {
         }
       }
     */
-    const { eventId, createdBy, participantIds } = req.body;
+    const { eventId, participantIds } = req.body;
 
     const conversation = new Conversation({
       eventId,
-      createdBy,
+      createdBy: req.body.createdBy ? req.body.createdBy : req.user._id,
       participantIds,
     });
     await conversation.save();
+
+    const io = getIoInstance();
+    io.emit("receive_conversations", conversation);
 
     res.status(201).send({
       error: false,
@@ -210,6 +221,7 @@ module.exports = {
     */
     const { id } = req.params;
     const updates = req.body;
+
     const conversation = await Conversation.findByIdAndUpdate(id, updates, {
       new: true,
       runValidators: true,
@@ -248,6 +260,9 @@ module.exports = {
 
     // Delete all messages related to this conversation
     await Message.deleteMany({ conversationId: id });
+
+    const io = getIoInstance();
+    io.emit("receive_conversations");
 
     res.status(204).send({
       error: false,

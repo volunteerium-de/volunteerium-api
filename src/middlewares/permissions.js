@@ -250,12 +250,25 @@ module.exports = {
   /*               Message              */
   /* ---------------------------------- */
   canSendMessage: async (req, res, next) => {
-    // if (!NODE_ENV) return next();
-    if (
-      req.user?.userType?.toLowerCase() === "admin" ||
-      String(req.user._id) === String(req.body.senderId)
-    ) {
-      next(); // Admins or the sender themselves can send messages
+    const conversation = await Conversation.findById(req.body.conversationId);
+    if (!conversation) {
+      throw new CustomError("Message could not be sent!", 404);
+    }
+
+    const event = await Event.findById(conversation.eventId);
+    if (!event) {
+      throw new CustomError("Message could not be sent!", 404);
+    }
+
+    const isAdmin = req.user?.userType?.toLowerCase() === "admin";
+    const isEventOwner = String(req.user._id) === String(event.createdBy);
+    const isConversationCreatedByEventOwner =
+      String(conversation.createdBy) === String(event.createdBy);
+
+    if (isAdmin || isEventOwner) {
+      next(); // Admins or event owners can always send messages
+    } else if (!isConversationCreatedByEventOwner) {
+      next(); // Allow anyone to send messages in conversations not created by the event owner
     } else {
       throw new CustomError(
         "NoPermission: You do not have permission to send messages.",
@@ -345,25 +358,20 @@ module.exports = {
 
     const { participantIds } = req.body;
 
-    if (!participantIds || participantIds.length === 0) {
-      throw new CustomError(
-        "NoPermission: At least one participant is required!",
-        403
+    if (participantIds) {
+      const isValidParticipant = participantIds.every(
+        (participant) =>
+          event.eventParticipantIds.includes(participant) ||
+          String(participant) === String(event.createdBy) ||
+          String(participant) === String(ADMIN_ID)
       );
-    }
 
-    const isValidParticipant = participantIds.every(
-      (participant) =>
-        event.eventParticipantIds.includes(participant) ||
-        String(participant) === String(event.createdBy) ||
-        String(participant) === String(ADMIN_ID)
-    );
-
-    if (!isValidParticipant) {
-      throw new CustomError(
-        `NoPermission: All participants must be event participants, the event owner, or admin!`,
-        403
-      );
+      if (!isValidParticipant) {
+        throw new CustomError(
+          `NoPermission: All participants must be event participants, the event owner, or admin!`,
+          403
+        );
+      }
     }
 
     return next();
