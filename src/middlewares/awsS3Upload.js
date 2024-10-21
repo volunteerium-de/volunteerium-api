@@ -54,7 +54,9 @@ const uploadAvatarToS3 = async (avatarUrl, profileId) => {
     const command = new PutObjectCommand(params);
     await s3Client.send(command);
 
-    return `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${fileName}`;
+    return `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${encodeURIComponent(
+      fileName
+    )}`;
   } catch (err) {
     throw new Error("Failed to upload avatar to S3.");
   }
@@ -78,7 +80,9 @@ const uploadSingleToS3 = (fieldName) => async (req, res, next) => {
 
   const params = {
     Bucket: AWS_S3_BUCKET_NAME,
-    Key: `${Date.now()}-${fieldName ? fieldName : fileToUpload.fieldname}_${fileToUpload.originalname}`, // Key for the S3 file
+    Key: `${Date.now()}-${fieldName ? fieldName : fileToUpload.fieldname}_${
+      fileToUpload.originalname
+    }`, // Key for the S3 file
     Body: fileToUpload.buffer, // Buffer of the file
     ContentType: fileToUpload.mimetype, // MIME type of the file
     // ACL: 'public-read' // Uncomment if you want the file to be publicly readable
@@ -87,7 +91,9 @@ const uploadSingleToS3 = (fieldName) => async (req, res, next) => {
   try {
     const command = new PutObjectCommand(params);
     await s3Client.send(command);
-    req.fileLocation = `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${params.Key}`; // Store the file location for later use
+    req.fileLocation = `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${encodeURIComponent(
+      params.Key
+    )}`; // Store the file location for later use
     next(); // Proceed to the next middleware
   } catch (err) {
     throw new CustomError("Failed to upload single file.", 500);
@@ -121,7 +127,9 @@ const uploadArrayToS3 = (type) => async (req, res, next) => {
 
       // Return a promise that resolves to the file location
       return s3Client.send(command).then(() => ({
-        location: `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${params.Key}`,
+        location: `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${encodeURIComponent(
+          params.Key
+        )}`,
         key: params.Key,
       }));
     });
