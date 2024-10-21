@@ -20,7 +20,7 @@ router
   .route("/")
   .get(documentController.list)
   .post(
-    upload.single("file"),
+    upload.single("fileUrl"),
     uploadSingleToS3("document"),
     documentController.create
   );
@@ -29,13 +29,13 @@ router
   .all(idValidation, isDocumentOwnerOrAdmin)
   .get(documentController.read)
   .put(
-    upload.single("file"),
+    upload.single("fileUrl"),
     uploadSingleToS3("document"),
     checkDocumentUpload,
     documentController.update
   )
   .patch(
-    upload.single("file"),
+    upload.single("fileUrl"),
     uploadSingleToS3("document"),
     checkDocumentUpload,
     documentController.update

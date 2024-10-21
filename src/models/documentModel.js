@@ -21,7 +21,7 @@ const DocumentSchema = new mongoose.Schema(
       trim: true,
       maxLength: 50,
     },
-    file: {
+    fileUrl: {
       type: String,
       required: true,
     },

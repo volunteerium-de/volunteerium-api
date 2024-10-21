@@ -73,7 +73,7 @@ const checkEventPhotoUpload = async (req, res, next) => {
 const checkDocumentUpload = async (req, res, next) => {
   const documentData = await Document.findOne({ _id: req.params.id });
 
-  const validField = "file";
+  const validField = "fileUrl";
 
   if (!req.file) {
     if (documentData[validField] && req.body[validField] === "") {

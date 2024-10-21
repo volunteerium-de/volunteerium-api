@@ -67,7 +67,7 @@ module.exports = {
     */
 
     if (req.fileLocation) {
-      req.body.file = req.fileLocation;
+      req.body.fileUrl = req.fileLocation;
     }
 
     const data = await Document.create(req.body);
@@ -235,7 +235,7 @@ module.exports = {
     }
 
     // Delete document from AWS-S3 Bucket
-    const identifierForImage = extractDateNumber(documentData.file);
+    const identifierForImage = extractDateNumber(documentData.fileUrl);
     console.log(`Deleting existing Document related to this document from S3`);
     await deleteObjectByDateKeyNumber(identifierForImage);
 
