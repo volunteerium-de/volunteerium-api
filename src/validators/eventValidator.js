@@ -37,7 +37,8 @@ const eventSchema = yup.object().shape({
       )
   ),
   // .required("At least one interest ID is required"),
-  contactName: yup.string().trim().required("Contact name is required"),
+  contactName: yup.string().trim(),
+  // .required("Contact name is required"),
   contactEmail: yup
     .string()
     .trim()
