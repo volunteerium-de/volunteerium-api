@@ -41,7 +41,7 @@ const eventSchema = yup.object().shape({
   contactEmail: yup
     .string()
     .trim()
-    .required("Contact email is required")
+    // .required("Contact email is required")
     .matches(emailRegex, "Invalid email format"),
   contactPhone: yup
     .string()

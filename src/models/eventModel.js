@@ -55,12 +55,12 @@ const EventSchema = new mongoose.Schema(
     contactName: {
       type: String,
       trim: true,
-      required: true,
+      // required: true,
     },
     contactEmail: {
       type: String,
       trim: true,
-      required: true,
+      // required: true,
       validate: {
         validator: function (value) {
           return emailRegex.test(value);
