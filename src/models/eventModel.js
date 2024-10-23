@@ -35,6 +35,7 @@ const EventSchema = new mongoose.Schema(
       type: String,
       trim: true,
       required: true,
+      index: true,
     },
     description: {
       type: String,
@@ -44,12 +45,14 @@ const EventSchema = new mongoose.Schema(
     addressId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Address",
+      index: true,
     },
     interestIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Interest",
         required: true,
+        index: true,
       },
     ],
     contactName: {
@@ -91,6 +94,7 @@ const EventSchema = new mongoose.Schema(
     startDate: {
       type: Date,
       required: true,
+      index: true,
     },
     endDate: {
       type: Date,
@@ -101,10 +105,12 @@ const EventSchema = new mongoose.Schema(
         },
         message: "End date must be after start date.",
       },
+      index: true,
     },
     languages: {
       type: [String],
       enum: languageCodes,
+      index: true,
     },
     eventPhoto: {
       type: String,
@@ -127,11 +133,12 @@ const EventSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
+      index: true,
     },
     maxParticipant: {
       type: Number,
       required: true,
-      min: [1, "Max participant must be at least 1."],
+      min: [1, "At least 1 Participant is required."],
     },
     eventParticipantIds: [
       {
