@@ -601,11 +601,11 @@ module.exports = {
       }
     ).populate("addressId");
 
-    console.log(updatedEvent);
+    // console.log(updatedEvent);
 
     // Generate notifications for participants
     for (const participantId of updatedEvent.eventParticipantIds) {
-      console.log(participantId);
+      // console.log(participantId);
       const participant = await EventParticipant.findById(participantId);
 
       if (!participant) {

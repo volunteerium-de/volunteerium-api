@@ -113,7 +113,7 @@ module.exports = async (req, res, next) => {
 
     if (matchingAddresses.length) {
       const matchingAddressIds = matchingAddresses.map((addr) => addr._id);
-      console.log(matchingAddressIds);
+      // console.log(matchingAddressIds);
       filterCriteria.addressId = { $in: matchingAddressIds };
     } else {
       filterCriteria.addressId = null;
