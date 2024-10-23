@@ -12,6 +12,7 @@ const {
   isActive,
   checkEmailVerification,
   isEventOwnerOrAdmin,
+  isActiveEvent,
 } = require("../middlewares/permissions");
 
 // URL: /events
@@ -35,7 +36,7 @@ router.route("/languages").get(eventController.listEventLanguages);
 router
   .route("/:id")
   .all(idValidation)
-  .get(eventController.read)
+  .get(isActiveEvent, eventController.read)
   .put(
     isLogin,
     isActive,

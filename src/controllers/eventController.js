@@ -76,6 +76,7 @@ module.exports = {
               isRecurring: false,
               isOnline: false,
               isActive: true,
+              isDone: false,
               maxParticipant: 100,
               createdAt: "2024-09-24T10:00:00.000Z",
               updatedAt: "2024-09-24T10:00:00.000Z",
@@ -164,6 +165,7 @@ module.exports = {
               isRecurring: false,
               isOnline: false,
               isActive: true,
+              isDone: false,
               maxParticipant: 100,
               createdAt: "2024-09-24T10:00:00.000Z",
               updatedAt: "2024-09-24T10:00:00.000Z",
@@ -301,6 +303,7 @@ module.exports = {
 
     if (req.user.userType !== "admin") {
       delete req.body.isActive;
+      delete req.body.isDone;
     }
 
     if (!req.user.createdBy) {
@@ -417,6 +420,7 @@ module.exports = {
               isRecurring: false,
               isOnline: false,
               isActive: true,
+              isDone: false,
               maxParticipant: 100,
               startDate: "2024-09-25T12:00:00.000Z",
               endDate: "2024-09-25T14:00:00.000Z",
@@ -534,6 +538,8 @@ module.exports = {
 
     if (req.user.userType !== "admin") {
       delete req.body.isActive;
+      delete req.body.isDone;
+      delete req.body.createdBy;
     }
 
     // If an address is provided, update it; otherwise, create a new address if needed

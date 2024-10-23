@@ -135,6 +135,11 @@ const EventSchema = new mongoose.Schema(
       default: true,
       index: true,
     },
+    isDone: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
     maxParticipant: {
       type: Number,
       required: true,
