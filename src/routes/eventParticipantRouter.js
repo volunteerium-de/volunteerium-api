@@ -43,6 +43,11 @@ router.post(
   canManageParticipants,
   eventParticipantController.confirmAttendance
 ); // only event owner or admin can confirm attendance of participants
+router.post(
+  "/confirm-absence",
+  canManageParticipants,
+  eventParticipantController.confirmAbsence
+); // only event owner or admin can confirm attendance of participants
 
 router.delete("/:id", idValidation, isAdmin, eventParticipantController.delete);
 
