@@ -79,7 +79,9 @@ NotificationSchema.statics.generate = async function (
   // Send email to user
   const emailSubject = `You have ${unreadNotificationCount} new notifications`;
   const emailHtml = getNotificationAndMessageEmailHtml(
-    user.fullName.split(" ")[0],
+    user.userType === "organization"
+      ? user.organizationName
+      : user.fullName.split(" ")[0],
     unreadNotificationCount > 1 ? "notifications" : "notification",
     unreadNotificationCount
   );

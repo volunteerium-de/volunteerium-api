@@ -8,42 +8,55 @@ const {
 const { sendEmail } = require("../utils/email/emailService");
 
 module.exports = {
-  reminderCronJob: cron.schedule("*/30 * * * *", async () => {
+  reminderCronJob: cron.schedule("*/60 * * * *", async () => {
     console.log("Running cron job to check upcoming events...");
 
     const now = new Date();
     const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
 
-    const events = await Event.find({
-      startDate: { $gte: now, $lte: oneHourLater },
-    }).populate([
-      {
-        path: "eventParticipantIds",
-        populate: { path: "userId", select: "email fullName" },
-      },
-      {
-        path: "addressId",
-      },
-    ]);
+    // console.log("Current time (UTC):", now.toISOString());
+    // console.log("One hour later (UTC):", oneHourLater.toISOString());
 
-    console.log("Found events:", events);
+    try {
+      const events = await Event.find({
+        startDate: {
+          $gte: now.toISOString(),
+          $lte: oneHourLater.toISOString(),
+        },
+      }).populate([
+        {
+          path: "eventParticipantIds",
+          populate: { path: "userId", select: "email fullName" },
+        },
+        {
+          path: "addressId",
+        },
+      ]);
 
-    for (const event of events) {
-      for (const participant of event.eventParticipantIds) {
-        if (participant) {
-          const reminderSubject = `Reminder: Upcoming Event "${event.title}"`;
-          const reminderEmailHtml = getReminderEmailHtml(
-            participant.userId.fullName.split(" ")[0],
-            event
-          );
+      // console.log("Found events:", events);
 
-          await sendEmail(
-            participant.userId.email,
-            reminderSubject,
-            reminderEmailHtml
-          );
+      for (const event of events) {
+        for (const participant of event.eventParticipantIds) {
+          if (participant) {
+            console.log("Participant: ", participant);
+            if (participant.isApproved) {
+              const reminderSubject = `Reminder: Upcoming Event "${event.title}"`;
+              const reminderEmailHtml = getReminderEmailHtml(
+                participant.userId.fullName.split(" ")[0],
+                event
+              );
+
+              await sendEmail(
+                participant.userId.email,
+                reminderSubject,
+                reminderEmailHtml
+              );
+            }
+          }
         }
       }
+    } catch (error) {
+      console.error("Error finding events or sending emails:", error);
     }
   }),
 };

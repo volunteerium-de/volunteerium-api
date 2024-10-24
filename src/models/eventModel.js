@@ -143,7 +143,7 @@ const EventSchema = new mongoose.Schema(
     eventParticipantIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "EventParticipant",
       },
     ],
     eventFeedbackIds: [

@@ -11,6 +11,7 @@ const { getIoInstance } = require("../configs/socketInstance");
 const {
   getAbsenceReportEmailHtml,
 } = require("../utils/email/absenceReport/absenceReport");
+const { sendEmail } = require("../utils/email/emailService");
 
 // Helper functions to check existance of requested data
 async function findEvent(eventId) {
@@ -47,7 +48,7 @@ module.exports = {
         description: 'List of event participants retrieved successfully',
         schema: {
           error: false,
-          data: [{ _id: 'participant-id', userId: 'user-id', eventId: 'event-id', isPending: true, isApproved: false, hasJoined: false }]
+          data: [{ _id: 'participant-id', userId: 'user-id', eventId: 'event-id', isPending: true, isApproved: false, joinStatus: false }]
         }
       }
     */
@@ -347,13 +348,7 @@ module.exports = {
     */
     const { userId, eventId } = req.body;
 
-    const user = await User.findById(userId).populate([
-      {
-        path: "createdBy",
-        select: "userType email fullName organizationName",
-      },
-      { path: "addressId" },
-    ]);
+    const user = await User.findById(userId);
 
     if (!user) {
       throw new CustomError("Participant not found", 404);
@@ -371,15 +366,20 @@ module.exports = {
       throw new CustomError("Event not found", 404);
     }
 
+    console.log(event);
+
     const updatedParticipant = await EventParticipant.confirmAbsence(
       userId,
       eventId
     );
 
     const absenceSubject = "Volunteer Event Absence Report!";
-    const absenceEmailHtml = getAbsenceReportEmailHtml(event);
+    const absenceEmailHtml = getAbsenceReportEmailHtml(
+      user.fullName.split(" ")[0],
+      event
+    );
 
-    await sendEmail(user.createdBy.email, absenceSubject, absenceEmailHtml);
+    await sendEmail(user.email, absenceSubject, absenceEmailHtml);
 
     res.status(200).send({
       error: false,
