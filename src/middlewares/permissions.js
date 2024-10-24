@@ -131,6 +131,17 @@ module.exports = {
   /* ---------------------------------- */
   /*                Event               */
   /* ---------------------------------- */
+
+  isActiveEvent: async (req, res, next) => {
+    // if (!NODE_ENV) return next();
+    const event = await Event.findById(req.params.id);
+    if (event.isActive) {
+      return next(); // Event is active
+    } else {
+      throw new CustomError("No Permission: Event is no longer active.", 403);
+    }
+  },
+
   canCreateEvent: (req, res, next) => {
     // if (!NODE_ENV) return next();
     if (
@@ -446,6 +457,20 @@ module.exports = {
 
     const event = await Event.findById(req.body.eventId);
     const user = await User.findById(req.body.userId);
+
+    if (event.isActive) {
+      throw new CustomError(
+        "No Permission: This Event is no longer active.",
+        403
+      );
+    }
+
+    if (event.isDone) {
+      throw new CustomError(
+        "No Permission: This event has already been completed",
+        403
+      );
+    }
 
     if (!user) {
       throw new CustomError("No Permission: User not found.", 404);
