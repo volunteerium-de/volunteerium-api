@@ -498,10 +498,13 @@ module.exports = {
       },
       {
         path: "eventParticipantIds",
-        select: "email fullName",
         populate: {
-          path: "userDetailsId",
-          select: "avatar isFullNameDisplay",
+          path: "userId",
+          select: "email fullName",
+          populate: {
+            path: "userDetailsId",
+            select: "avatar isFullNameDisplay",
+          },
         },
       },
       {
