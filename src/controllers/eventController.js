@@ -13,6 +13,10 @@ const {
   validateUpdateEventPayload,
 } = require("../validators/eventValidator");
 const { CustomError } = require("../errors/customError");
+const {
+  getEventConfirmationEmailHtml,
+} = require("../utils/email/eventConfirmation/eventConfirmation");
+const { sendEmail } = require("../utils/email/emailService");
 
 module.exports = {
   list: async (req, res) => {
@@ -353,6 +357,23 @@ module.exports = {
       createdBy: req.user._id,
     });
     await conversation.save();
+
+    const createdEvent = await Event.findById(savedEvent._id).populate([
+      {
+        path: "createdBy",
+        select: "userType email fullName organizationName",
+      },
+      { path: "addressId" },
+    ]);
+
+    const confirmationSubject = "Volunteer Event Confirmation!";
+    const confirmationEmailHtml = getEventConfirmationEmailHtml(createdEvent);
+
+    await sendEmail(
+      createdEvent.createdBy.email,
+      confirmationSubject,
+      confirmationEmailHtml
+    );
 
     res.status(201).send({
       error: false,

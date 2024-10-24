@@ -36,17 +36,4 @@ const ConversationSchema = new mongoose.Schema(
   }
 );
 
-// Pre-save hook to check for at least one additional participant
-ConversationSchema.pre("save", function (next) {
-  if (this.participantIds.length < 1) {
-    return next(
-      new CustomError(
-        "At least one participant (besides createdBy) is required.",
-        400
-      )
-    );
-  }
-  next();
-});
-
 module.exports = mongoose.model("Conversation", ConversationSchema);

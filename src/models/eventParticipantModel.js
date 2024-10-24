@@ -26,9 +26,10 @@ const EventParticipantSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    hasJoined: {
-      type: Boolean,
-      default: false,
+    joinStatus: {
+      type: String,
+      enum: ["pending", "joined", "notJoined"],
+      default: "pending",
     },
   },
   {
@@ -79,7 +80,7 @@ EventParticipantSchema.statics.approveParticipant = async function (
   const eventParticipant = await findAndValidateParticipant(userId, eventId);
   eventParticipant.isApproved = true;
   eventParticipant.isPending = false;
-  eventParticipant.hasJoined = false;
+  eventParticipant.joinStatus = "pending";
   const updatedParticipant = await eventParticipant.save();
   return updatedParticipant;
 };
@@ -91,7 +92,7 @@ EventParticipantSchema.statics.rejectParticipant = async function (
   const eventParticipant = await findAndValidateParticipant(userId, eventId);
   eventParticipant.isPending = false;
   eventParticipant.isApproved = false;
-  eventParticipant.hasJoined = false;
+  eventParticipant.joinStatus = "pending";
   const updatedParticipant = await eventParticipant.save();
   return updatedParticipant;
 };
@@ -102,7 +103,7 @@ EventParticipantSchema.statics.confirmAttendance = async function (
 ) {
   const eventParticipant = await findAndValidateParticipant(userId, eventId);
 
-  if (eventParticipant.hasJoined) {
+  if (eventParticipant.joinStatus === "joined") {
     throw new CustomError(
       `User with ID ${userId} has already confirmed attendance for this event.`,
       400
@@ -125,12 +126,39 @@ EventParticipantSchema.statics.confirmAttendance = async function (
   }
 
   // Mark user as joined
-  eventParticipant.hasJoined = true;
+  eventParticipant.joinStatus = "joined";
   const updatedParticipant = await eventParticipant.save();
 
   // Increase user points
   userDetails.totalPoint = (userDetails.totalPoint || 0) + 10;
   await userDetails.save();
+
+  return updatedParticipant;
+};
+
+EventParticipantSchema.statics.confirmAbsence = async function (
+  userId,
+  eventId
+) {
+  const eventParticipant = await findAndValidateParticipant(userId, eventId);
+
+  if (eventParticipant.joinStatus === "notJoined") {
+    throw new CustomError(
+      `User with ID ${userId} has already confirmed not joining for this event.`,
+      400
+    );
+  }
+
+  if (!eventParticipant.isApproved) {
+    throw new CustomError(
+      `User with ID ${userId} is not approved to join this event.`,
+      400
+    );
+  }
+
+  // Mark user as not joined
+  eventParticipant.joinStatus = "notJoined";
+  const updatedParticipant = await eventParticipant.save();
 
   return updatedParticipant;
 };

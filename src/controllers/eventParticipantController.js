@@ -8,6 +8,10 @@ const Conversation = require("../models/conversationModel");
 const User = require("../models/userModel");
 const UserDetails = require("../models/userDetailsModel");
 const { getIoInstance } = require("../configs/socketInstance");
+const {
+  getAbsenceReportEmailHtml,
+} = require("../utils/email/absenceReport/absenceReport");
+const { sendEmail } = require("../utils/email/emailService");
 
 // Helper functions to check existance of requested data
 async function findEvent(eventId) {
@@ -44,7 +48,7 @@ module.exports = {
         description: 'List of event participants retrieved successfully',
         schema: {
           error: false,
-          data: [{ _id: 'participant-id', userId: 'user-id', eventId: 'event-id', isPending: true, isApproved: false, hasJoined: false }]
+          data: [{ _id: 'participant-id', userId: 'user-id', eventId: 'event-id', isPending: true, isApproved: false, joinStatus: false }]
         }
       }
     */
@@ -310,6 +314,76 @@ module.exports = {
     res.status(200).send({
       error: false,
       message: "User attendance confirmed and points updated.",
+      new: updatedParticipant,
+    });
+  },
+
+  confirmAbsence: async (req, res) => {
+    /*
+      #swagger.tags = ['EventParticipant']
+      #swagger.summary = 'Confirm absence of a participant'
+      #swagger.description = 'Confirm that a participant has not joined an event'
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          $userId: 'user-id',
+          $eventId: 'event-id'
+        }
+      }
+      #swagger.responses[200] = {
+        description: 'User absence recorded and email sent.',
+        schema: {
+          error: false,
+          message: "User absence recorded and email sent."
+        }
+      }
+      #swagger.responses[400] = {
+        description: 'Bad Request',
+        schema: {
+          error: true,
+          message: 'User is not approved to join this event.'
+        }
+      }
+    */
+    const { userId, eventId } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new CustomError("Participant not found", 404);
+    }
+
+    const event = await Event.findById(eventId).populate([
+      {
+        path: "createdBy",
+        select: "userType email fullName organizationName",
+      },
+      { path: "addressId" },
+    ]);
+
+    if (!event) {
+      throw new CustomError("Event not found", 404);
+    }
+
+    console.log(event);
+
+    const updatedParticipant = await EventParticipant.confirmAbsence(
+      userId,
+      eventId
+    );
+
+    const absenceSubject = "Volunteer Event Absence Report!";
+    const absenceEmailHtml = getAbsenceReportEmailHtml(
+      user.fullName.split(" ")[0],
+      event
+    );
+
+    await sendEmail(user.email, absenceSubject, absenceEmailHtml);
+
+    res.status(200).send({
+      error: false,
+      message: "User absence recorded and email sent.",
       new: updatedParticipant,
     });
   },

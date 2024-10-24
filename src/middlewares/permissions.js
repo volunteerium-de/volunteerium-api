@@ -495,7 +495,7 @@ module.exports = {
       String(eventParticipant.eventId) === String(req.body.eventId) &&
       !eventParticipant.isPending &&
       !eventParticipant.isApproved &&
-      !eventParticipant.hasJoined
+      eventParticipant.joinStatus !== "pending"
     ) {
       throw new CustomError(
         "No Permission: You cannot join this event as you have not been approved yet.",
@@ -505,7 +505,7 @@ module.exports = {
 
     if (
       String(eventParticipant.eventId) === String(req.body.eventId) &&
-      eventParticipant.hasJoined
+      eventParticipant.joinStatus
     ) {
       throw new CustomError("You have already joined this event.", 403);
     }
