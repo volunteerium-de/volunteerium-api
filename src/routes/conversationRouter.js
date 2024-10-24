@@ -20,11 +20,14 @@ const {
 
 router.use([isLogin, isActive, checkEmailVerification]);
 
-router.route("/").get(conversationController.list).post(
-  // canConversationOwner,
-  // canConversationParticipant,
-  conversationController.create
-);
+router
+  .route("/")
+  .get(conversationController.list)
+  .post(
+    canConversationOwner,
+    canConversationParticipant,
+    conversationController.create
+  );
 
 router
   .route("/:id")
