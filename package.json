@@ -1,7 +1,7 @@
 {
   "name": "volunteerium-api",
   "version": "1.0.0",
-  "description": "restful-api Volunteerium",
+  "description": "RESTful-API Volunteerium",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/volunteerium-de/volunteerium-api.git"
   },
-  "author": "info.volunteerium@gmail.com",
-  "license": "ISC",
+  "author": "Volunteerium",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/volunteerium-de/volunteerium-api/issues"
   },

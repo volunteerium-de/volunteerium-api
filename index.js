@@ -92,16 +92,20 @@ const io = new Server(server, {
 const socket = require("./socket");
 socket(io);
 
-app.all("/", (req, res) => {
+app.get("/", (req, res) => {
+  res.redirect(`/api/${VERSION}`);
+});
+
+app.all(`/api/${VERSION}`, (req, res) => {
   res.send({
     error: false,
     message: "Welcome to Volunteerium API",
-    // docs: {
-    //   swagger: "/documents/swagger",
-    //   redoc: "/documents/redoc",
-    //   json: "/documents/json",
-    // },
-    // user: req.user,
+    docs: {
+      swagger: `/api/${VERSION}/documentations/swagger`,
+      redoc: `/api/${VERSION}/documentations/redoc`,
+      json: `/api/${VERSION}/documentations/json`,
+    },
+    user: req.user,
   });
 });
 
