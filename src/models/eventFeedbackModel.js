@@ -18,7 +18,6 @@ const EventFeedbackSchema = new mongoose.Schema(
     feedback: {
       type: String,
       trim: true,
-      required: true,
       maxlength: 300,
     },
     rating: {

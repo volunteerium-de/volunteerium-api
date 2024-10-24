@@ -33,9 +33,7 @@ const EventReportSchema = new mongoose.Schema(
     content: {
       type: String,
       trim: true,
-      required: true,
-      minlength: 10,
-      maxlength: 1000,
+      maxlength: 300,
     },
   },
   {
