@@ -51,19 +51,16 @@ const EventSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Interest",
-        required: true,
         index: true,
       },
     ],
     contactName: {
       type: String,
       trim: true,
-      // required: true,
     },
     contactEmail: {
       type: String,
       trim: true,
-      // required: true,
       validate: {
         validator: function (value) {
           return emailRegex.test(value);
@@ -138,7 +135,7 @@ const EventSchema = new mongoose.Schema(
     isDone: {
       type: Boolean,
       default: false,
-      index: true
+      index: true,
     },
     maxParticipant: {
       type: Number,
@@ -171,6 +168,15 @@ EventSchema.pre("save", function (next) {
       new CustomError("Address is required if the event is not online.")
     );
   }
+
+  // Check if interestIds has minimum 1 and maximum 3 elements
+  if (this.interestIds.length < 1) {
+    return next(new CustomError("At least one interest is required."));
+  }
+  if (this.interestIds.length > 3) {
+    return next(new CustomError("You can select up to 3 interests only."));
+  }
+
   next();
 });
 
@@ -178,11 +184,23 @@ EventSchema.pre("save", function (next) {
 EventSchema.pre(["updateOne", "findOneAndUpdate"], function (next) {
   const update = this.getUpdate();
 
+  // Validate address if the event is offline
   if (update.isOnline === false && !update.addressId) {
     return next(
       new CustomError("Address is required if the event is not online.")
     );
   }
+
+  // Validate interestIds length in the update operation
+  if (update.interestIds) {
+    if (update.interestIds.length < 1) {
+      return next(new CustomError("At least one interest is required."));
+    }
+    if (update.interestIds.length > 3) {
+      return next(new CustomError("You can select up to 3 interests only."));
+    }
+  }
+
   next();
 });
 

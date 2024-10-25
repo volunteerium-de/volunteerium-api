@@ -28,15 +28,18 @@ const eventSchema = yup.object().shape({
   //       mongoose.Types.ObjectId.isValid(value)
   //     ),
   // }),
-  interestIds: yup.array().of(
-    yup
-      .string()
-      // .required()
-      .test("is-mongo-id", "Invalid MongoDB ID", (value) =>
-        mongoose.Types.ObjectId.isValid(value)
-      )
-  ),
-  // .required("At least one interest ID is required"),
+  interestIds: yup
+    .array()
+    .of(
+      yup
+        .string()
+        // .required()
+        .test("is-mongo-id", "Invalid MongoDB ID", (value) =>
+          mongoose.Types.ObjectId.isValid(value)
+        )
+    )
+    .max(3, "You can select up to 3 categories only.")
+    .min(1, "Please select at least one category."),
   contactName: yup.string().trim(),
   // .required("Contact name is required"),
   contactEmail: yup
@@ -108,7 +111,9 @@ const updateEventSchema = yup.object().shape({
         .test("is-mongo-id", "Invalid MongoDB ID", (value) =>
           value ? mongoose.Types.ObjectId.isValid(value) : true
         )
-    ),
+    )
+    .max(3, "You can select up to 3 categories only.")
+    .min(1, "Please select at least one category."),
   contactName: yup.string().trim(),
   contactEmail: yup.string().trim().matches(emailRegex, "Invalid email format"),
   contactPhone: yup
