@@ -14,6 +14,10 @@ module.exports = async (req, res, next) => {
   const auth = req.headers?.authorization || null; // Token ...tokenKey...
   const tokenKey = auth ? auth.split(" ") : null; // ['Token', '...tokenKey...']
 
+  // Accept-Language from client
+  req.language = req.headers["accept-language"];
+  console.log(req.language);
+
   if (tokenKey) {
     if (tokenKey[0] == "Token") {
       // SimpleToken:

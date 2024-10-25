@@ -37,7 +37,7 @@ module.exports = {
     if (req.user.isEmailVerified) {
       return next();
     } else {
-      throw new CustomError("NoPermission: Account not verified!", 403);
+      throw new ("NoPermission: Account not verified!", 403)();
     }
   },
 
@@ -446,7 +446,7 @@ module.exports = {
       return next();
     } else {
       throw new CustomError(
-        `NoPermission: This event has reached its maximum number of participants (${event.maxParticipant})`,
+        `NoPermission: This event has reached its maximum number of participants ${event.maxParticipant}`,
         403
       );
     }

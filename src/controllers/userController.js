@@ -245,15 +245,15 @@ module.exports = {
       { path: "documentIds", select: "-__v" },
     ]); // returns data
 
-    let message;
+    let message = "Changes have been saved successfully.";
 
-    if (req.body.password) {
-      message = "Password has been updated successfully.";
-    } else if (req.body.email || req.body.fullName) {
-      message = "Profile information has been updated successfully.";
-    } else {
-      message = "Changes have been saved successfully.";
-    }
+    // if (req.body.password) {
+    //   message = "Password has been updated successfully.";
+    // } else if (req.body.email || req.body.fullName) {
+    //   message = "Profile information has been updated successfully.";
+    // } else {
+    //   message = "Changes have been saved successfully.";
+    // }
 
     res.status(202).send({
       error: false,

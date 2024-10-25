@@ -69,7 +69,7 @@ module.exports = async (req, res, next) => {
     // other filters like userId, name ...
     if (!["startDate", "endDate", "category", "languages"].includes(key)) {
       if (typeof filter[key] !== "string" || filter[key].trim() === "") {
-        throw new CustomError(`Invalid filter format for ${key}!`, 400);
+        throw new CustomError(`Invalid filter format for ${key}`, 400);
       }
       filterCriteria[key] = filter[key];
     }

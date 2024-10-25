@@ -243,7 +243,7 @@ module.exports = {
 
     res.status(202).send({
       error: false,
-      message: "Notification updated successfully!",
+      message: "Notification successfully updated!",
       new: updatedNotification,
     });
   },
@@ -274,7 +274,7 @@ module.exports = {
       error: !data.deletedCount,
       message: data.deletedCount
         ? "Notification successfully deleted!"
-        : "Notification not found!",
+        : "Notification not found",
     });
   },
 };

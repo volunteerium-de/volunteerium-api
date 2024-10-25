@@ -75,7 +75,7 @@ module.exports = {
     if (req.body.userId && req.body.eventId) {
       const event = await Event.findById(req.body.eventId);
       if (!event) {
-        throw new CustomError("Event not found", 404);
+        throw new CustomError("Event not found!", 404);
       }
       event.documentIds.push(data._id);
       await event.save();
@@ -189,7 +189,7 @@ module.exports = {
     );
     res.status(data ? 202 : 404).send({
       error: !data,
-      message: data ? "Document updated successfully!" : "Document not found!",
+      message: data ? "Document successfully updated!" : "Document not found!",
       data,
     });
   },

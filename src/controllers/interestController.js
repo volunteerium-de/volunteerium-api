@@ -152,7 +152,7 @@ module.exports = {
     );
     res.status(data ? 202 : 404).send({
       error: !data,
-      message: data ? "Interest updated successfully!" : "Interest not found!",
+      message: data ? "Interest successfully updated!" : "Interest not found",
       data,
     });
   },

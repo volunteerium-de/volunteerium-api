@@ -1,6 +1,5 @@
 "use strict";
 
-const { CustomError } = require("../errors/customError");
 const EventFeedback = require("../models/eventFeedbackModel");
 const Event = require("../models/eventModel");
 
@@ -127,7 +126,7 @@ module.exports = {
     res.status(data ? 200 : 404).send({
       error: !data,
       data,
-      message: !data && "EventFeedback not found",
+      message: !data && "Event Feedback not found!",
     });
   },
   update: async (req, res) => {
@@ -184,8 +183,8 @@ module.exports = {
     res.status(data ? 202 : 404).send({
       error: !data,
       message: data
-        ? "EventFeedback updated successfully!"
-        : "EventFeedback not found!",
+        ? "Event Feedback successfully updated!"
+        : "Event Feedback not found!",
       data,
     });
   },

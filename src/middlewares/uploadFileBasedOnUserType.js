@@ -17,7 +17,7 @@ const uploadFileBasedOnUserType = (req, res, next) => {
     if (err) {
       return next(
         new CustomError(
-          `Please upload a file to the correct field: ${validField} for your user type.`,
+          `Please upload a file to the correct field! Valid field for your user type: ${validField}`,
           400
         )
       );

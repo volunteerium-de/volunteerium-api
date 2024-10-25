@@ -156,7 +156,7 @@ module.exports = {
 
     const data = {
       error: false,
-      message: "You are successfully logged in!",
+      message: "You are successfully logged in with Google!",
       bearer: {
         access: accessToken,
         refresh: refreshToken,
@@ -249,12 +249,6 @@ module.exports = {
           );
 
           await sendEmail(email, emailSubject, emailHtml);
-
-          // res.status(200).send({
-          //   error: false,
-          //   message:
-          //     "Verification email has been sent again. Please check your inbox.",
-          // });
 
           return res.redirect(`${CLIENT_URL}/verify-email`);
         } else {
@@ -430,7 +424,7 @@ module.exports = {
 
       if (!user.isActive) {
         throw new CustomError(
-          "Your account is not active. Please contact support team for further assistance.",
+          "Your account is suspended. Please contact support team for further assistance!",
           401
         );
       }
@@ -595,10 +589,7 @@ module.exports = {
     const { resetToken, resetCode, email } = req.body;
 
     if (!email || !resetToken || !resetCode) {
-      throw new CustomError(
-        "Email, reset token, and reset code are required",
-        400
-      );
+      throw new CustomError("Please try again with correct data!", 400);
     }
 
     let decoded;

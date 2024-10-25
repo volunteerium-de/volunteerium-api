@@ -131,7 +131,7 @@ module.exports = {
 
     res.status(201).send({
       error: false,
-      message: "New Message successfully created!",
+      message: "Your message has been sent successfully!",
       data: message,
     });
   },
@@ -231,7 +231,7 @@ module.exports = {
 
     res.status(204).send({
       error: false,
-      message: "Message deleted successfully",
+      message: "Message successfully deleted!",
     });
   },
 };

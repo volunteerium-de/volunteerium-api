@@ -17,7 +17,7 @@ const { sendEmail } = require("../utils/email/emailService");
 async function findEvent(eventId) {
   const event = await Event.findById(eventId);
   if (!event) {
-    throw new CustomError(`Event with ID ${eventId} not found.`, 404);
+    throw new CustomError(`Event not found: ID ${eventId}`, 404);
   }
   return event;
 }
@@ -25,7 +25,7 @@ async function findEvent(eventId) {
 async function findUser(userId) {
   const user = await User.findById(userId);
   if (!user) {
-    throw new CustomError(`User with ID ${userId} not found.`, 404);
+    throw new CustomError(`User not found: ID ${userId}`, 404);
   }
   return user;
 }
@@ -176,7 +176,7 @@ module.exports = {
       io.emit("receive_conversations");
     } else {
       throw new CustomError(
-        `No conversation found for eventId: ${eventId} and createdBy: ${event.createdBy}`,
+        `No conversation found for eventId: ${eventId}`,
         404
       );
     }
@@ -246,7 +246,7 @@ module.exports = {
       io.emit("receive_conversations");
     } else {
       throw new CustomError(
-        `No conversation found for eventId: ${eventId} and createdBy: ${event.createdBy}`,
+        `No conversation found for eventId: ${eventId}`,
         404
       );
     }
@@ -434,7 +434,7 @@ module.exports = {
           io.emit("receive_conversations");
         } else {
           throw new CustomError(
-            `No conversation found for eventId: ${event._id} and createdBy: ${event.createdBy}`,
+            `No conversation found for eventId: ${event._id}`,
             404
           );
         }
@@ -445,6 +445,6 @@ module.exports = {
       return res.status(204).send();
     }
 
-    throw new CustomError("Participant not found!", 404);
+    throw new CustomError("Participant not found", 404);
   },
 };
