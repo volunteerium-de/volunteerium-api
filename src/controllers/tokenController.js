@@ -94,7 +94,7 @@ module.exports = {
         description: 'Token not found',
         schema: {
           error: true,
-          message: 'User not found'
+          message: 'Token not found'
         }
       }
     */
@@ -102,7 +102,7 @@ module.exports = {
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       data,
-      meesage: "User not found",
+      meesage: "Token not found",
     });
   },
 };
