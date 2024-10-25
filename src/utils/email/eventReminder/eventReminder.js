@@ -9,17 +9,16 @@ const getReminderEmailHtml = (participantName, event) => {
     "utf8"
   );
 
-  const {
-    title,
-    description,
-    startDate,
-    endDate,
-    addressId,
-    eventPhoto,
-  } = event;
+  const { title, description, startDate, endDate, eventPhoto } = event;
 
-  const { streetName, streetNumber, zipCode, city, country } = addressId;
-  const eventLocation = `${streetNumber} ${streetName}, ${zipCode} ${city}, ${country}`;
+  let eventLocation;
+  if (event.addressId) {
+    const { streetName, streetNumber, zipCode, city, country } =
+      event.addressId;
+    eventLocation = `${streetNumber} ${streetName}, ${zipCode} ${city}, ${country}`;
+  } else {
+    eventLocation = "Online Event";
+  }
 
   html = html.replace("{{participantName}}", participantName);
   html = html.replace(/{{eventName}}/g, title);
