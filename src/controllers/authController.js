@@ -67,7 +67,7 @@ module.exports = {
     */
     const { fullName, email, password, userType } = req.body;
 
-    const validationError = await validateRegisterPayload(req.body);
+    const validationError = await validateRegisterPayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);
@@ -372,7 +372,7 @@ module.exports = {
       }
     */
 
-    const validationError = await validateLoginPayload(req.body);
+    const validationError = await validateLoginPayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);
@@ -641,7 +641,7 @@ module.exports = {
     const { email, password } = req.body;
     const { resetToken } = req.params;
 
-    const validationError = await validateUserUpdatePayload(req.body);
+    const validationError = await validateUserUpdatePayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);

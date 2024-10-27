@@ -300,7 +300,7 @@ module.exports = {
       }
     */
 
-    const validationError = await validateEventPayload(req.body);
+    const validationError = await validateEventPayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);
@@ -551,7 +551,7 @@ module.exports = {
       }
     */
 
-    const validationError = await validateUpdateEventPayload(req.body);
+    const validationError = await validateUpdateEventPayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);

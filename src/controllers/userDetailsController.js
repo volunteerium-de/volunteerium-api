@@ -96,7 +96,10 @@ module.exports = {
       }
     */
 
-    const validationError = await validateUserDetailsUpdatePayload(req.body);
+    const validationError = await validateUserDetailsUpdatePayload(
+      req.t,
+      req.body
+    );
 
     if (validationError) {
       throw new CustomError(validationError, 400);
