@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 const Interest = require("../models/interestModel");
 
 module.exports = {
@@ -63,7 +64,7 @@ module.exports = {
     const data = await Interest.create(req.body);
     res.status(201).send({
       error: false,
-      message: "New interest successfully created!",
+      message: req.t(translations.interest.create),
       data,
     });
   },
@@ -97,7 +98,7 @@ module.exports = {
     res.status(data ? 200 : 404).send({
       error: !data,
       data,
-      message: !data && "Interest not found",
+      message: !data && req.t(translations.interest.notFound),
     });
   },
   update: async (req, res) => {
@@ -152,7 +153,9 @@ module.exports = {
     );
     res.status(data ? 202 : 404).send({
       error: !data,
-      message: data ? "Interest successfully updated!" : "Interest not found",
+      message: data
+        ? req.t(translations.interest.update)
+        : req.t(translations.interest.notFound),
       data,
     });
   },
@@ -182,8 +185,8 @@ module.exports = {
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       message: data.deletedCount
-        ? "Interest successfully deleted!"
-        : "Interest not found!",
+        ? req.t(translations.interest.delete)
+        : req.t(translations.interest.notFound),
     });
   },
 };

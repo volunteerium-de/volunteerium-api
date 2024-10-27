@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 const { getIoInstance } = require("../configs/socketInstance");
 const Notification = require("../models/notificationModel");
 const User = require("../models/userModel");
@@ -75,7 +76,7 @@ module.exports = {
 
     res.status(200).send({
       error: false,
-      message: "All unread notifications marked as read successfully",
+      message: req.t(translations.notification.markAllAsRead),
       data: await Notification.find({
         userId: req.user._id,
       })
@@ -147,7 +148,7 @@ module.exports = {
 
     res.status(201).send({
       error: false,
-      message: "New notification successfully created!",
+      message: req.t(translations.notification.create),
       data: notification,
     });
   },
@@ -243,7 +244,7 @@ module.exports = {
 
     res.status(202).send({
       error: false,
-      message: "Notification successfully updated!",
+      message: req.t(translations.notification.update),
       new: updatedNotification,
     });
   },
@@ -273,8 +274,8 @@ module.exports = {
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       message: data.deletedCount
-        ? "Notification successfully deleted!"
-        : "Notification not found",
+        ? req.t(translations.notification.delete)
+        : req.t(translations.notification.notFound),
     });
   },
 };

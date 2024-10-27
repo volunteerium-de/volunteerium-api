@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 const EventFeedback = require("../models/eventFeedbackModel");
 const Event = require("../models/eventModel");
 
@@ -85,7 +86,7 @@ module.exports = {
 
     res.status(201).send({
       error: false,
-      message: "New feedback successfully created!",
+      message: req.t(translations.eventFeedback.create),
       data,
     });
   },
@@ -126,7 +127,7 @@ module.exports = {
     res.status(data ? 200 : 404).send({
       error: !data,
       data,
-      message: !data && "Event Feedback not found!",
+      message: !data && req.t(translations.eventFeedback.notFound),
     });
   },
   update: async (req, res) => {
@@ -183,8 +184,8 @@ module.exports = {
     res.status(data ? 202 : 404).send({
       error: !data,
       message: data
-        ? "Event Feedback successfully updated!"
-        : "Event Feedback not found!",
+        ? req.t(translations.eventFeedback.update)
+        : req.t(translations.eventFeedback.notFound),
       data,
     });
   },
@@ -222,7 +223,7 @@ module.exports = {
 
     res.status(404).send({
       error: true,
-      message: "Event Feedback not found!",
+      message: req.t(translations.eventFeedback.notFound),
     });
   },
 };

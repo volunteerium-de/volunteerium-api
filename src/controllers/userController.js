@@ -11,6 +11,7 @@ const { CustomError } = require("../errors/customError");
 const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
 const { extractDateNumber } = require("../utils/functions");
 const { validateUserUpdatePayload } = require("../validators/userValidator");
+const translations = require("../../locales/translations");
 
 module.exports = {
   // GET
@@ -159,7 +160,10 @@ module.exports = {
         email: req.body.email,
       });
       if (existingUser && existingUser._id.toString() !== req.params.id) {
-        throw new CustomError("Email already exists", 400);
+        throw new CustomError(
+          req.t(translations.auth.register.emailExist),
+          400
+        );
       }
     }
 
@@ -195,7 +199,7 @@ module.exports = {
 
       if (!oldPassword) {
         throw new CustomError(
-          "Current Password is required to update password",
+          req.t(translations.user.updatePassword.missing),
           400
         );
       } else {
@@ -206,7 +210,7 @@ module.exports = {
         );
         if (!isCorrectPassword) {
           throw new CustomError(
-            "Please provide correct current password!",
+            req.t(translations.user.updatePassword.incorrect),
             401
           );
         }
@@ -245,19 +249,9 @@ module.exports = {
       { path: "documentIds", select: "-__v" },
     ]); // returns data
 
-    let message = "Changes have been saved successfully.";
-
-    // if (req.body.password) {
-    //   message = "Password has been updated successfully.";
-    // } else if (req.body.email || req.body.fullName) {
-    //   message = "Profile information has been updated successfully.";
-    // } else {
-    //   message = "Changes have been saved successfully.";
-    // }
-
     res.status(202).send({
       error: false,
-      message,
+      message: req.t(translations.user.update),
       new: await User.findOne(customFilter).populate([
         {
           path: "userDetailsId",
@@ -356,7 +350,7 @@ module.exports = {
 
     res.status(204).send({
       error: false,
-      message: "Account successfully deleted!",
+      message: req.t(translations.user.delete),
     });
   },
 };

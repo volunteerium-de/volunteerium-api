@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 /* ---------------------------------- */
 /*          Volunteerium API          */
 /*       QueyHandler Middleware       */
@@ -24,7 +25,7 @@ module.exports = async (req, res, next) => {
   if (filter.startDate) {
     const startDate = new Date(filter.startDate);
     if (isNaN(startDate.getTime())) {
-      throw new CustomError("Invalid startDate format in query!", 400);
+      throw new CustomError(req.t(translations.queryHandler.startDate), 400);
     }
     filterCriteria.startDate = { $gte: startDate };
   }
@@ -32,14 +33,14 @@ module.exports = async (req, res, next) => {
   if (filter.endDate) {
     const endDate = new Date(filter.endDate);
     if (isNaN(endDate.getTime())) {
-      throw new CustomError("Invalid endDate format in query!", 400);
+      throw new CustomError(req.t(translations.queryHandler.endDate), 400);
     }
     filterCriteria.endDate = { $lte: endDate };
   }
 
   if (filter.category) {
     if (typeof filter.category !== "string" || filter.category.trim() === "") {
-      throw new CustomError("Invalid category format!", 400);
+      throw new CustomError(req.t(translations.queryHandler.category), 400);
     }
     const categories = filter.category
       .split(",")
@@ -69,7 +70,10 @@ module.exports = async (req, res, next) => {
     // other filters like userId, name ...
     if (!["startDate", "endDate", "category", "languages"].includes(key)) {
       if (typeof filter[key] !== "string" || filter[key].trim() === "") {
-        throw new CustomError(`Invalid filter format for ${key}`, 400);
+        throw new CustomError(
+          `${req.t(translations.queryHandler.global)} ${key}`,
+          400
+        );
       }
       filterCriteria[key] = filter[key];
     }
@@ -91,14 +95,14 @@ module.exports = async (req, res, next) => {
 
   if (search.title) {
     if (typeof search.title !== "string" || search.title.trim() === "") {
-      throw new CustomError("Invalid title format!", 400);
+      throw new CustomError(req.t(translations.queryHandler.title), 400);
     }
     searchCriteria.title = { $regex: search.title, $options: "i" };
   }
 
   if (search.location) {
     if (typeof search.location !== "string" || search.location.trim() === "") {
-      throw new CustomError("Invalid location format!", 400);
+      throw new CustomError(req.t(translations.queryHandler.location), 400);
     }
     const locationRegex = { $regex: search.location, $options: "i" };
     // Get matching address IDs from Address model
@@ -132,10 +136,7 @@ module.exports = async (req, res, next) => {
   // Validate sort format
   for (let key in sort) {
     if (!["asc", "desc"].includes(sort[key].toLowerCase())) {
-      throw new CustomError(
-        "Invalid sort direction. Use 'asc' or 'desc'.",
-        400
-      );
+      throw new CustomError(req.t(translations.queryHandler.sort), 400);
     }
   }
 

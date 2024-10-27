@@ -27,6 +27,9 @@ reminderCronJob.start();
 const { dbConnection } = require("./src/configs/dbConnection");
 dbConnection();
 
+// - i18next
+app.use(require("./src/configs/i18next"));
+
 // CORS
 const cors = require("cors");
 
@@ -95,6 +98,7 @@ const io = new Server(server, {
 
 // Socket.IO
 const socket = require("./socket");
+const translations = require("./locales/translations");
 socket(io);
 
 app.get("/", (req, res) => {
@@ -104,7 +108,7 @@ app.get("/", (req, res) => {
 app.all(`/api/${VERSION}`, (req, res) => {
   res.send({
     error: false,
-    message: "Welcome to Volunteerium API",
+    message: req.t(translations.welcome.message),
     docs: {
       swagger: `/api/${VERSION}/documentations/swagger`,
       redoc: `/api/${VERSION}/documentations/redoc`,
@@ -117,7 +121,7 @@ app.all(`/api/${VERSION}`, (req, res) => {
 app.use((req, res, next) => {
   res.status(404).send({
     error: true,
-    message: "Route not found",
+    message: req.t(translations.notFound.route),
   });
 });
 

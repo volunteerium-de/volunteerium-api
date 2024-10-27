@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 const Token = require("../models/tokenModel");
 
 module.exports = {
@@ -102,7 +103,7 @@ module.exports = {
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       data,
-      meesage: "Token not found",
+      meesage: req.t(translations.token.notFound),
     });
   },
 };

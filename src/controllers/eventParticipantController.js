@@ -12,20 +12,27 @@ const {
   getAbsenceReportEmailHtml,
 } = require("../utils/email/absenceReport/absenceReport");
 const { sendEmail } = require("../utils/email/emailService");
+const translations = require("../../locales/translations");
 
 // Helper functions to check existance of requested data
-async function findEvent(eventId) {
+async function findEvent(eventId, t) {
   const event = await Event.findById(eventId);
   if (!event) {
-    throw new CustomError(`Event not found: ID ${eventId}`, 404);
+    throw new CustomError(
+      `${t(translations.eventParticipant.eventNotFound)} ${eventId}`,
+      404
+    );
   }
   return event;
 }
 
-async function findUser(userId) {
+async function findUser(userId, t) {
   const user = await User.findById(userId);
   if (!user) {
-    throw new CustomError(`User not found: ID ${userId}`, 404);
+    throw new CustomError(
+      `${t(translations.eventParticipant.userNotFound)} ${userId}`,
+      404
+    );
   }
   return user;
 }
@@ -100,8 +107,10 @@ module.exports = {
     */
     const { userId, eventId } = req.body;
 
-    const event = await findEvent(eventId);
-    await findUser(userId);
+    const { t } = req;
+
+    const event = await findEvent(eventId, t);
+    await findUser(userId, t);
 
     const newParticipant = await EventParticipant.requestJoin(userId, eventId);
 
@@ -113,7 +122,7 @@ module.exports = {
 
     res.status(200).send({
       error: false,
-      message: "Join request sent successfully.",
+      message: req.t(translations.eventParticipant.join.success),
       data: newParticipant,
     });
   },
@@ -148,8 +157,10 @@ module.exports = {
     */
     const { userId, eventId } = req.body;
 
-    const event = await findEvent(eventId);
-    await findUser(userId);
+    const { t } = req;
+
+    const event = await findEvent(eventId, t);
+    await findUser(userId, t);
 
     const updatedParticipant = await EventParticipant.approveParticipant(
       userId,
@@ -176,14 +187,16 @@ module.exports = {
       io.emit("receive_conversations");
     } else {
       throw new CustomError(
-        `No conversation found for eventId: ${eventId}`,
+        `${req.t(
+          translations.eventParticipant.conversationNotFound
+        )} ${eventId}`,
         404
       );
     }
 
     res.status(200).send({
       error: false,
-      message: "Participant approved successfully.",
+      message: req.t(translations.eventParticipant.approve.success),
       new: updatedParticipant,
     });
   },
@@ -218,8 +231,10 @@ module.exports = {
     */
     const { userId, eventId } = req.body;
 
-    const event = await findEvent(eventId);
-    await findUser(userId);
+    const { t } = req;
+
+    const event = await findEvent(eventId, t);
+    await findUser(userId, t);
 
     const updatedParticipant = await EventParticipant.rejectParticipant(
       userId,
@@ -246,14 +261,16 @@ module.exports = {
       io.emit("receive_conversations");
     } else {
       throw new CustomError(
-        `No conversation found for eventId: ${eventId}`,
+        `${req.t(
+          translations.eventParticipant.conversationNotFound
+        )} ${eventId}`,
         404
       );
     }
 
     res.status(200).send({
       error: false,
-      message: "Participant rejected successfully.",
+      message: req.t(translations.eventParticipant.reject.success),
       new: updatedParticipant,
     });
   },
@@ -288,8 +305,10 @@ module.exports = {
     */
     const { userId, eventId } = req.body;
 
-    const event = await findEvent(eventId);
-    await findUser(userId);
+    const { t } = req;
+
+    const event = await findEvent(eventId, t);
+    await findUser(userId, t);
 
     const updatedParticipant = await EventParticipant.confirmAttendance(
       userId,
@@ -313,7 +332,7 @@ module.exports = {
 
     res.status(200).send({
       error: false,
-      message: "User attendance confirmed and points updated.",
+      message: req.t(translations.eventParticipant.confirmAttendance.success),
       new: updatedParticipant,
     });
   },
@@ -351,7 +370,7 @@ module.exports = {
     const user = await User.findById(userId);
 
     if (!user) {
-      throw new CustomError("Participant not found", 404);
+      throw new CustomError(req.t(translations.eventParticipant.notFound), 404);
     }
 
     const event = await Event.findById(eventId).populate([
@@ -363,10 +382,10 @@ module.exports = {
     ]);
 
     if (!event) {
-      throw new CustomError("Event not found", 404);
+      throw new CustomError(req.t(translations.event.notFound), 404);
     }
 
-    console.log(event);
+    // console.log(event);
 
     const updatedParticipant = await EventParticipant.confirmAbsence(
       userId,
@@ -383,7 +402,7 @@ module.exports = {
 
     res.status(200).send({
       error: false,
-      message: "User absence recorded and email sent.",
+      message: req.t(translations.eventParticipant.confirmAbsence.success),
       new: updatedParticipant,
     });
   },
@@ -434,7 +453,9 @@ module.exports = {
           io.emit("receive_conversations");
         } else {
           throw new CustomError(
-            `No conversation found for eventId: ${event._id}`,
+            `${req.t(translations.eventParticipant.conversationNotFound)} ${
+              event._id
+            }`,
             404
           );
         }
@@ -445,6 +466,6 @@ module.exports = {
       return res.status(204).send();
     }
 
-    throw new CustomError("Participant not found", 404);
+    throw new CustomError(req.t(translations.eventParticipant.notFound), 404);
   },
 };

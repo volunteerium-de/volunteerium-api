@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 const { getIoInstance } = require("../configs/socketInstance");
 const Conversation = require("../models/conversationModel");
 const Message = require("../models/messageModel");
@@ -175,7 +176,7 @@ module.exports = {
 
     res.status(201).send({
       error: false,
-      message: "New Conversation successfully created!",
+      message: req.t(translations.conversation.create),
       data: conversation,
     });
   },
@@ -266,7 +267,7 @@ module.exports = {
 
     res.status(204).send({
       error: false,
-      message: "Conversation and related messages deleted successfully",
+      message: req.t(translations.conversation.delete),
     });
   },
 };

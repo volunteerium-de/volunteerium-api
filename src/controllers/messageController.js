@@ -4,6 +4,7 @@ const Message = require("../models/messageModel");
 const Conversation = require("../models/conversationModel");
 const { CustomError } = require("../errors/customError");
 const { getIoInstance } = require("../configs/socketInstance");
+const translations = require("../../locales/translations");
 
 module.exports = {
   list: async (req, res) => {
@@ -75,7 +76,7 @@ module.exports = {
     });
 
     if (!message) {
-      throw new CustomError("Message not found", 404);
+      throw new CustomError(req.t(translations.message.notFound), 404);
     }
 
     res.status(200).send({ error: false, data: message });
@@ -131,7 +132,7 @@ module.exports = {
 
     res.status(201).send({
       error: false,
-      message: "Your message has been sent successfully!",
+      message: req.t(translations.message.create),
       data: message,
     });
   },
@@ -184,10 +185,6 @@ module.exports = {
       runValidators: true,
     });
 
-    if (!message) {
-      throw new CustomError("Message not found", 404);
-    }
-
     res.status(200).send({ error: false, new: message });
   },
   delete: async (req, res) => {
@@ -220,10 +217,6 @@ module.exports = {
 
     const message = await Message.findByIdAndDelete(id);
 
-    if (!message) {
-      throw new CustomError("Message not found", 404);
-    }
-
     // pull this message from related conversation
     await Conversation.findByIdAndUpdate(message.conversationId, {
       $pull: { messageIds: message._id },
@@ -231,7 +224,7 @@ module.exports = {
 
     res.status(204).send({
       error: false,
-      message: "Message successfully deleted!",
+      message: req.t(translations.message.delete),
     });
   },
 };
