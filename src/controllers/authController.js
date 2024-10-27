@@ -24,16 +24,61 @@ const {
   VERIFY_EMAIL_KEY,
   RESET_PASSWORD_KEY,
   REFRESH_KEY,
+  GOOGLE_RECAPTCHA_SECRET_KEY,
 } = require("../../setups");
-const { isTokenExpired } = require("../utils/functions");
 const {
   validateRegisterPayload,
   validateLoginPayload,
 } = require("../validators/authValidator");
 const { redirectWithError } = require("../errors/redirectWithError");
 const { validateUserUpdatePayload } = require("../validators/userValidator.js");
+const axios = require("axios");
 
 module.exports = {
+  verifyReCAPTCHA: async (req, res) => {
+    const token = req.body.token;
+
+    if (!token) {
+      console.log("reCAPTCHA token missing");
+      throw new CustomError(
+        "Missing security verification. Please try again.",
+        400
+      );
+    }
+
+    try {
+      const { data } = await axios.post(
+        `https://www.google.com/recaptcha/api/siteverify`,
+        null,
+        {
+          params: {
+            secret: GOOGLE_RECAPTCHA_SECRET_KEY,
+            response: token,
+          },
+        }
+      );
+
+      // console.log(data);
+
+      if (data.success) {
+        return res
+          .status(200)
+          .send({ error: false, message: "reCAPTCHA verified successfully" });
+      } else {
+        console.log("reCAPTCHA verification error:", data);
+        throw new CustomError(
+          "Verification failed. Please try the security check again.",
+          400
+        );
+      }
+    } catch (error) {
+      console.error("Server error during reCAPTCHA verification:", error);
+      throw new CustomError(
+        "A server error occurred. Please try again later.",
+        500
+      );
+    }
+  },
   register: async (req, res) => {
     /*
         #swagger.tags = ["Authentication"]

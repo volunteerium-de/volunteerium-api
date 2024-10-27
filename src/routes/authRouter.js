@@ -11,6 +11,7 @@ const {
   refresh,
   verifyEmail,
   authSuccess,
+  verifyReCAPTCHA,
 } = require("../controllers/authController");
 const passport = require("passport");
 const { CLIENT_URL } = require("../../setups");
@@ -24,6 +25,7 @@ router.get("/logout", logout);
 router.post("/refresh", refresh);
 
 router.post("/verify-email", verifyEmail);
+router.post("/verify-recaptcha", verifyReCAPTCHA);
 
 router.post("/forgot-password", forgot);
 router.post("/verify-reset", verifyReset);
