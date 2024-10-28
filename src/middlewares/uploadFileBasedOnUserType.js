@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 const { CustomError } = require("../errors/customError");
 const { uploadSingleToS3, upload } = require("./awsS3Upload");
 
@@ -17,7 +18,7 @@ const uploadFileBasedOnUserType = (req, res, next) => {
     if (err) {
       return next(
         new CustomError(
-          `Please upload a file to the correct field: ${validField} for your user type.`,
+          `${req.t(translations.awsS3Upload.single.userType)} ${validField}`,
           400
         )
       );
@@ -28,7 +29,9 @@ const uploadFileBasedOnUserType = (req, res, next) => {
       try {
         await uploadSingleToS3(validField)(req, res, next);
       } catch (err) {
-        return next(new CustomError("File upload to S3 failed.", 500));
+        return next(
+          new CustomError(req.t(translations.awsS3Upload.upload), 500)
+        );
       }
     } else {
       // If no file was uploaded, just move to the next middleware

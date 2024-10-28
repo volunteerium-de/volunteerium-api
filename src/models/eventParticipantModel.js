@@ -49,7 +49,7 @@ const findAndValidateParticipant = async (userId, eventId) => {
   });
   if (!participant) {
     throw new CustomError(
-      `User with ID ${userId} has not requested to join event with ID ${eventId}`,
+      "This User has not requested to join this event",
       400
     );
   }
@@ -62,10 +62,7 @@ EventParticipantSchema.statics.requestJoin = async function (userId, eventId) {
     eventId,
   });
   if (participant) {
-    throw new CustomError(
-      `User with ID ${userId} has already joined this event.`,
-      400
-    );
+    throw new CustomError("User has already joined this event.", 400);
   }
 
   const eventParticipant = new this({ userId, eventId });
@@ -105,16 +102,13 @@ EventParticipantSchema.statics.confirmAttendance = async function (
 
   if (eventParticipant.joinStatus === "joined") {
     throw new CustomError(
-      `User with ID ${userId} has already confirmed attendance for this event.`,
+      "User has already confirmed attendance for this event.",
       400
     );
   }
 
   if (!eventParticipant.isApproved) {
-    throw new CustomError(
-      `User with ID ${userId} is not approved to join this event.`,
-      400
-    );
+    throw new CustomError("User is not approved to join this event.", 400);
   }
 
   const userDetails = await UserDetails.findOne({ userId });
@@ -144,16 +138,13 @@ EventParticipantSchema.statics.confirmAbsence = async function (
 
   if (eventParticipant.joinStatus === "notJoined") {
     throw new CustomError(
-      `User with ID ${userId} has already confirmed not joining for this event.`,
+      "User has already confirmed not joining for this event.",
       400
     );
   }
 
   if (!eventParticipant.isApproved) {
-    throw new CustomError(
-      `User with ID ${userId} is not approved to join this event.`,
-      400
-    );
+    throw new CustomError("User is not approved to join this event.", 400);
   }
 
   // Mark user as not joined

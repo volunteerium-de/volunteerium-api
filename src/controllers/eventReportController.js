@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 const { CustomError } = require("../errors/customError");
 const EventReport = require("../models/eventReportModel");
 
@@ -83,7 +84,7 @@ module.exports = {
     const { eventId, reportType, content } = req.body;
 
     if (!eventId || !reportType || !content) {
-      throw new CustomError("Please fill all required fields!", 400);
+      throw new CustomError(req.t(translations.eventReport.failed), 400);
     }
 
     const data = await EventReport.create(req.body);
@@ -91,7 +92,7 @@ module.exports = {
     res.status(201).send({
       error: false,
       data,
-      message: "Your report has been received. It will be reviewed carefully.",
+      message: req.t(translations.eventReport.create),
     });
   },
   read: async (req, res) => {
@@ -132,7 +133,7 @@ module.exports = {
     if (!data) {
       res.status(404).send({
         error: true,
-        message: "Event report not found",
+        message: req.t(translations.eventReport.notFound),
       });
       return;
     }
@@ -167,7 +168,7 @@ module.exports = {
     if (data.deletedCount === 0) {
       res.status(404).send({
         error: true,
-        message: "Event report not found",
+        message: req.t(translations.eventReport.notFound),
       });
       return;
     }

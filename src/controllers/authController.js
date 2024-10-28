@@ -32,6 +32,7 @@ const {
 } = require("../validators/authValidator");
 const { redirectWithError } = require("../errors/redirectWithError");
 const { validateUserUpdatePayload } = require("../validators/userValidator.js");
+const translations = require("../../locales/translations.js");
 
 module.exports = {
   register: async (req, res) => {
@@ -66,7 +67,7 @@ module.exports = {
     */
     const { fullName, email, password, userType } = req.body;
 
-    const validationError = await validateRegisterPayload(req.body);
+    const validationError = await validateRegisterPayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);
@@ -75,7 +76,7 @@ module.exports = {
     // Check if user already exists
     let user = await User.findOne({ email });
     if (user) {
-      throw new CustomError("Email already exists!", 400);
+      throw new CustomError(req.t(translations.auth.register.emailExist), 400);
     }
 
     // Create new user
@@ -115,7 +116,7 @@ module.exports = {
 
     res.status(201).send({
       error: false,
-      message: "Please verify your email to complete your registration",
+      message: req.t(translations.auth.register.success),
     });
   },
   authSuccess: async (req, res) => {
@@ -156,7 +157,7 @@ module.exports = {
 
     const data = {
       error: false,
-      message: "You are successfully logged in!",
+      message: req.t(translations.auth.googleSuccess),
       bearer: {
         access: accessToken,
         refresh: refreshToken,
@@ -233,7 +234,7 @@ module.exports = {
             res,
             `${CLIENT_URL}/verify-email/failed`,
             301,
-            "No account found! Please sign up."
+            req.t(translations.auth.verifyEmail.noAccount)
           );
         }
 
@@ -250,37 +251,15 @@ module.exports = {
 
           await sendEmail(email, emailSubject, emailHtml);
 
-          // res.status(200).send({
-          //   error: false,
-          //   message:
-          //     "Verification email has been sent again. Please check your inbox.",
-          // });
-
           return res.redirect(`${CLIENT_URL}/verify-email`);
         } else {
           return redirectWithError(
             res,
             `${CLIENT_URL}/verify-email/failed`,
             301,
-            "Account is already verified. Please log in!"
+            req.t(translations.auth.verifyEmail.verified)
           );
         }
-
-        return redirectWithError(
-          res,
-          `${CLIENT_URL}/verify-email/failed`,
-          301,
-          "Invalid or expired verification link! Please request verification link again."
-        );
-        // return res.redirect(
-        //   `${CLIENT_URL}/verify-email/failed?payload=${encodeURIComponent(
-        //     JSON.stringify({
-        //       statusCode: 301,
-        //       message:
-        //         "Invalid or expired verification link! Please request verification link again.",
-        //     })
-        //   )}`
-        // );
       }
 
       // Find user
@@ -306,7 +285,7 @@ module.exports = {
           res,
           `${CLIENT_URL}/verify-email/failed`,
           301,
-          "No account found! Please sign up."
+          req.t(translations.auth.verifyEmail.noAccount)
         );
       }
 
@@ -315,7 +294,7 @@ module.exports = {
           res,
           `${CLIENT_URL}/verify-email/failed`,
           301,
-          "Account is already verifed! Please log in."
+          req.t(translations.auth.verifyEmail.verified)
         );
       } else {
         // Verify user email
@@ -329,7 +308,7 @@ module.exports = {
       // Success response
       res.status(200).send({
         error: false,
-        message: "Successfully verified!",
+        message: req.t(translations.auth.verifyEmail.success),
         bearer: {
           access: accessToken,
           refresh: refreshToken,
@@ -342,7 +321,7 @@ module.exports = {
         res,
         `${CLIENT_URL}/not-found`,
         301,
-        "Invalid request. Please try again!"
+        req.t(translations.auth.verifyEmail.invalid)
       );
     }
   },
@@ -393,7 +372,7 @@ module.exports = {
       }
     */
 
-    const validationError = await validateLoginPayload(req.body);
+    const validationError = await validateLoginPayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);
@@ -422,24 +401,15 @@ module.exports = {
       // console.log("User found:", user);
 
       if (!user) {
-        throw new CustomError(
-          "Wrong email or password. Please try to register or login again!",
-          401
-        );
+        throw new CustomError(req.t(translations.auth.login.noUser), 401);
       }
 
       if (!user.isActive) {
-        throw new CustomError(
-          "Your account is not active. Please contact support team for further assistance.",
-          401
-        );
+        throw new CustomError(req.t(translations.auth.login.suspended), 401);
       }
 
       if (!user.isEmailVerified) {
-        throw new CustomError(
-          "Your account is not verified. Please check your email for verification link.",
-          401
-        );
+        throw new CustomError(req.t(translations.auth.login.notVerified), 401);
       }
 
       const isPasswordMatch = await bcrypt.compare(password, user.password);
@@ -474,7 +444,7 @@ module.exports = {
         //! Response for TOKEN and JWT
         res.status(200).send({
           error: false,
-          message: "You are successfully logged in!",
+          message: req.t(translations.auth.login.success),
           bearer: {
             access: accessToken,
             refresh: refreshToken,
@@ -534,7 +504,7 @@ module.exports = {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new CustomError("No account found!", 401);
+      throw new CustomError(req.t(translations.auth.forgot.noAccount), 401);
     }
 
     const { resetCode, resetPasswordToken } = generateResetPasswordCode(user);
@@ -555,8 +525,7 @@ module.exports = {
       res.status(200).send({
         error: false,
         resetToken: resetPasswordToken,
-        message:
-          "Password reset code has been sent to your e-mail. Please check your mailbox.",
+        message: req.t(translations.auth.forgot.success),
       });
     }
   },
@@ -595,10 +564,7 @@ module.exports = {
     const { resetToken, resetCode, email } = req.body;
 
     if (!email || !resetToken || !resetCode) {
-      throw new CustomError(
-        "Email, reset token, and reset code are required",
-        400
-      );
+      throw new CustomError("Please try again with correct data!", 400);
     }
 
     let decoded;
@@ -607,14 +573,14 @@ module.exports = {
     } catch (err) {
       return res.status(400).send({
         error: true,
-        message: "Invalid or expired reset token",
+        message: req.t(translations.auth.verifyReset.expiredToken),
       });
     }
 
     if (decoded.email !== email || decoded.code !== resetCode) {
       return res.status(400).send({
         error: true,
-        message: "Invalid reset code or email",
+        message: req.t(translations.auth.verifyReset.expiredCode),
       });
     }
 
@@ -627,7 +593,7 @@ module.exports = {
     return res.status(200).send({
       error: false,
       resetToken: newResetToken,
-      message: "Code verified successfully!",
+      message: req.t(translations.auth.verifyReset.success),
     });
   },
   // POST
@@ -675,14 +641,14 @@ module.exports = {
     const { email, password } = req.body;
     const { resetToken } = req.params;
 
-    const validationError = await validateUserUpdatePayload(req.body);
+    const validationError = await validateUserUpdatePayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);
     }
 
     if (!email || !password || !resetToken) {
-      throw new CustomError("Missing required fields!", 400);
+      throw new CustomError(req.t(translations.auth.reset.missingData), 400);
     }
 
     let decoded;
@@ -691,21 +657,24 @@ module.exports = {
     } catch (err) {
       return res.status(400).send({
         error: true,
-        message: "Invalid or expired reset token",
+        message: req.t(translations.auth.reset.expiredToken),
       });
     }
 
     if (decoded.email !== email || !decoded.isVerified) {
       return res.status(400).send({
         error: true,
-        message: "Invalid reset token or email",
+        message: req.t(translations.auth.reset.invalid),
       });
     }
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new CustomError("No user found with this email", 404);
+      throw new CustomError(
+        req.t(translations.auth.reset.notFoundAccount),
+        404
+      );
     }
 
     const hashedNewPassword = bcrypt.hashSync(password, 10);
@@ -721,7 +690,7 @@ module.exports = {
 
     res.status(200).send({
       error: false,
-      message: "Your password has been successfully reset!",
+      message: req.t(translations.auth.reset.success),
     });
   },
   // POST
@@ -792,24 +761,27 @@ module.exports = {
               });
             } else {
               throw new CustomError(
-                "Unverified Account. Please verify your email address!",
+                req.t(translations.auth.refresh.unverifiedUser),
                 401
               );
             }
           } else {
-            throw new CustomError("Wrong user data!", 401);
+            throw new CustomError(
+              req.t(translations.auth.refresh.wrongData),
+              401
+            );
           }
         } else {
-          throw new CustomError("No data found in refresh token!", 404);
+          throw new CustomError(req.t(translations.auth.refresh.noData), 404);
         }
       } else {
         throw new CustomError(
-          "JWT refresh token has expired or is invalid!",
+          req.t(translations.auth.refresh.tokenExpired),
           401
         );
       }
     } else {
-      throw new CustomError("No refresh token provided!", 401);
+      throw new CustomError(req.t(translations.auth.refresh.noToken), 401);
     }
   },
   // GET
@@ -854,15 +826,15 @@ module.exports = {
         deleted = true;
       }
     } else {
-      throw new CustomError("No Authorization Header provided!", 401);
+      throw new CustomError(req.t(translations.auth.logout.noAuthHeader), 401);
     }
 
     res.status(deleted !== null ? 200 : 400).send({
       error: !deleted !== null,
       message:
         deleted !== null
-          ? "You are successfully logged out!"
-          : "Logout failed. Please try again!",
+          ? req.t(translations.auth.logout.success)
+          : req.t(translations.auth.logout.failed),
     });
   },
 };
