@@ -46,7 +46,7 @@ EventFeedbackSchema.pre("save", async function (next) {
     if (exists) {
       return next(
         new CustomError(
-          "This user has already given feedback about this event.",
+          "You have has already given feedback about this event.",
           400
         )
       );

@@ -6,6 +6,7 @@ const { CustomError } = require("../errors/customError");
 const {
   validateUserDetailsUpdatePayload,
 } = require("../validators/userValidator");
+const translations = require("../../locales/translations");
 
 module.exports = {
   // GET
@@ -95,7 +96,10 @@ module.exports = {
       }
     */
 
-    const validationError = await validateUserDetailsUpdatePayload(req.body);
+    const validationError = await validateUserDetailsUpdatePayload(
+      req.t,
+      req.body
+    );
 
     if (validationError) {
       throw new CustomError(validationError, 400);
@@ -104,7 +108,7 @@ module.exports = {
     const userDetails = await UserDetails.findOne({ _id: req.params.id });
 
     if (!userDetails) {
-      throw new CustomError("User details not found", 404);
+      throw new CustomError(req.t(translations.userDetails.notFound), 404);
     }
 
     // console.log("req.user._id", req.user._id);
@@ -115,7 +119,7 @@ module.exports = {
     const user = await User.findOne({ _id: userId });
 
     if (!user) {
-      throw new CustomError("User not found", 404);
+      throw new CustomError(req.t(translations.user.notFound), 404);
     }
 
     req.body.userId = userId;
@@ -141,7 +145,7 @@ module.exports = {
 
     res.status(202).send({
       error: false,
-      message: "Changes have been saved successfully.",
+      message: req.t(translations.userDetails.update),
       new: await User.findOne({ _id: user._id }).populate([
         {
           path: "userDetailsId",

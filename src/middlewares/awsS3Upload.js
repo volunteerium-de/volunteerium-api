@@ -11,6 +11,7 @@ const {
   AWS_SECRET_ACCESS_KEY,
   AWS_S3_BUCKET_NAME,
 } = require("../../setups");
+const translations = require("../../locales/translations");
 
 // Configure multer for memory storage
 const storage = multer.memoryStorage();
@@ -72,10 +73,7 @@ const uploadSingleToS3 = (fieldName) => async (req, res, next) => {
 
   // Check if the file type is allowed
   if (!allowedMimeTypes.includes(fileToUpload.mimetype)) {
-    throw new CustomError(
-      "File type error. Allowed file types are JPEG, JPG, PNG, PDF, DOC, DOCX, and TXT.",
-      400
-    );
+    throw new CustomError(req.t(translations.awsS3Upload.typeError), 400);
   }
 
   const params = {
@@ -96,7 +94,7 @@ const uploadSingleToS3 = (fieldName) => async (req, res, next) => {
     )}`; // Store the file location for later use
     next(); // Proceed to the next middleware
   } catch (err) {
-    throw new CustomError("Failed to upload single file.", 500);
+    throw new CustomError(req.t(translations.awsS3Upload.single.failed), 500);
   }
 };
 
@@ -109,10 +107,7 @@ const uploadArrayToS3 = (type) => async (req, res, next) => {
   try {
     const uploadPromises = req.files.map((file) => {
       if (!allowedMimeTypes.includes(file.mimetype)) {
-        throw new CustomError(
-          "File type error. Allowed file types are JPEG, JPG, PNG, PDF, DOC, DOCX, and TXT.",
-          400
-        );
+        throw new CustomError(req.t(translations.awsS3Upload.typeError), 400);
       }
 
       const params = {
@@ -141,7 +136,7 @@ const uploadArrayToS3 = (type) => async (req, res, next) => {
     req.filesLocations = results.map((result) => result.location);
     next();
   } catch (err) {
-    throw new CustomError("Failed to upload files.", 500);
+    throw new CustomError(req.t(translations.awsS3Upload.array.failed), 500);
   }
 };
 

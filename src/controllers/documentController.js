@@ -5,6 +5,7 @@ const User = require("../models/userModel");
 const Event = require("../models/eventModel");
 const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
 const { extractDateNumber } = require("../utils/functions");
+const translations = require("../../locales/translations");
 
 module.exports = {
   list: async (req, res) => {
@@ -75,7 +76,7 @@ module.exports = {
     if (req.body.userId && req.body.eventId) {
       const event = await Event.findById(req.body.eventId);
       if (!event) {
-        throw new CustomError("Event not found", 404);
+        throw new CustomError(req.t(translations.event.notFound), 404);
       }
       event.documentIds.push(data._id);
       await event.save();
@@ -83,7 +84,7 @@ module.exports = {
       const user = await User.findById(req.body.userId);
 
       if (!user) {
-        throw new CustomError("User not found", 404);
+        throw new CustomError(req.t(translations.user.notFound), 404);
       }
       user.documentIds.push(data._id);
       await user.save();
@@ -91,7 +92,7 @@ module.exports = {
 
     res.status(201).send({
       error: false,
-      message: "New document successfully created!",
+      message: req.t(translations.document.create),
       data,
     });
   },
@@ -189,7 +190,9 @@ module.exports = {
     );
     res.status(data ? 202 : 404).send({
       error: !data,
-      message: data ? "Document updated successfully!" : "Document not found!",
+      message: data
+        ? req.t(translations.document.update)
+        : req.t(translations.document.notFound),
       data,
     });
   },
@@ -244,8 +247,8 @@ module.exports = {
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       message: data.deletedCount
-        ? "Document successfully deleted!"
-        : "Document not found!",
+        ? req.t(translations.document.delete)
+        : req.t(translations.document.notFound),
     });
   },
 };

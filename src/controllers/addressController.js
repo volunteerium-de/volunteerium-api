@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 const Address = require("../models/addressModel");
 
 module.exports = {
@@ -98,7 +99,7 @@ module.exports = {
     const data = await Address.create(req.body);
     res.status(201).send({
       error: false,
-      message: "New address successfully created!",
+      message: req.t(translations.address.create),
       data,
     });
   },
@@ -219,7 +220,9 @@ module.exports = {
     );
     res.status(data ? 202 : 404).send({
       error: !data,
-      message: data ? "Address updated successfully!" : "Address not found!",
+      message: data
+        ? req.t(translations.address.update)
+        : req.t(translations.address.notFound),
       new: data,
     });
   },
@@ -257,8 +260,8 @@ module.exports = {
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       message: data.deletedCount
-        ? "Address successfully deleted!"
-        : "Address not found!",
+        ? req.t(translations.address.delete)
+        : req.t(translations.address.notFound),
     });
   },
 };

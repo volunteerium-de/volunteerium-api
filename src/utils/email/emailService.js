@@ -41,7 +41,7 @@ const sendFeedbackEmail = async (name, email, subject, feedback) => {
     console.log("Email sent successfully.", info.messageId);
   } catch (error) {
     console.error("Email sending error: ", error);
-    throw new CustomError("Failed to send feedback email. Please try again.");
+    throw new CustomError("Failed to send email. Please try again.");
   }
 };
 

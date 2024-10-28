@@ -103,9 +103,9 @@ userDetailsSchema.pre("findOneAndUpdate", async function (next) {
 
   if (user.userType === "organization") {
     const requiredFields = {
-      organizationDesc: "organizationDesc is required for organizations",
-      organizationLogo: "organizationLogo is required for organizations",
-      addressId: "addressId is required for organizations",
+      organizationDesc: "Description is required for organizations",
+      organizationLogo: "Logo is required for organizations",
+      addressId: "Address is required for organizations",
     };
 
     for (const [field, message] of Object.entries(requiredFields)) {

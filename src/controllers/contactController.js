@@ -1,5 +1,6 @@
 "use strict";
 
+const translations = require("../../locales/translations");
 const { CustomError } = require("../errors/customError");
 const Contact = require("../models/contactModel");
 const { sendFeedbackEmail } = require("../utils/email/emailService");
@@ -84,7 +85,7 @@ module.exports = {
     const { name, email, subject, message } = req.body;
 
     if (!name || !email || !subject || !message) {
-      throw new CustomError("Please fill the contact form!", 400);
+      throw new CustomError(req.t(translations.contact.create.failed), 400);
     }
 
     const data = await Contact.create(req.body);
@@ -95,7 +96,7 @@ module.exports = {
     res.status(201).send({
       error: false,
       data,
-      message: "Thank you. We will get back to you as soon as possible!",
+      message: req.t(translations.contact.create.success),
     });
   },
   read: async (req, res) => {
@@ -165,7 +166,7 @@ module.exports = {
     if (data.deletedCount === 0) {
       res.status(404).send({
         error: true,
-        message: "Contact not found",
+        message: req.t(translations.contact.notFound),
       });
       return;
     }

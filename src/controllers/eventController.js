@@ -17,6 +17,7 @@ const {
   getEventConfirmationEmailHtml,
 } = require("../utils/email/eventConfirmation/eventConfirmation");
 const { sendEmail } = require("../utils/email/emailService");
+const translations = require("../../locales/translations");
 
 module.exports = {
   list: async (req, res) => {
@@ -186,7 +187,7 @@ module.exports = {
     if (!participantRecords.length) {
       return res.status(404).send({
         error: true,
-        message: "No participated events found for this user.",
+        message: req.t(translations.event.listParticipatedEvents),
       });
     }
 
@@ -299,7 +300,7 @@ module.exports = {
       }
     */
 
-    const validationError = await validateEventPayload(req.body);
+    const validationError = await validateEventPayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);
@@ -377,7 +378,7 @@ module.exports = {
 
     res.status(201).send({
       error: false,
-      message: "New Event successfully created!",
+      message: req.t(translations.event.create),
       data: savedEvent,
     });
   },
@@ -550,7 +551,7 @@ module.exports = {
       }
     */
 
-    const validationError = await validateUpdateEventPayload(req.body);
+    const validationError = await validateUpdateEventPayload(req.t, req.body);
 
     if (validationError) {
       throw new CustomError(validationError, 400);
@@ -656,7 +657,7 @@ module.exports = {
 
     res.status(202).send({
       error: false,
-      message: "Event successfully updated!",
+      message: req.t(translations.event.update),
       new: updatedEvent,
     });
   },
@@ -750,8 +751,8 @@ module.exports = {
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       message: data.deletedCount
-        ? "Event and related files successfully deleted!"
-        : "Event not found",
+        ? req.t(translations.event.delete)
+        : req.t(translations.event.notFound),
     });
   },
 };

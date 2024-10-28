@@ -9,6 +9,7 @@ const EventParticipant = require("../models/eventParticipantModel");
 const EventFeedback = require("../models/eventFeedbackModel");
 const Message = require("../models/messageModel");
 const Conversation = require("../models/conversationModel");
+const translations = require("../../locales/translations");
 
 module.exports = {
   /* ---------------------------------- */
@@ -19,7 +20,7 @@ module.exports = {
     if (req.user) {
       return next();
     } else {
-      throw new CustomError("NoPermission: You must be logged in!", 403);
+      throw new CustomError(req.t(translations.permission.isLogin), 403);
     }
   },
 
@@ -28,7 +29,7 @@ module.exports = {
     if (req.user.isActive) {
       return next();
     } else {
-      throw new CustomError("NoPermission: Inactive account!", 403);
+      throw new CustomError(req.t(translations.permission.isActive), 403);
     }
   },
 
@@ -37,7 +38,7 @@ module.exports = {
     if (req.user.isEmailVerified) {
       return next();
     } else {
-      throw new CustomError("NoPermission: Account not verified!", 403);
+      throw new (req.t(translations.permission.checkEmailVerification), 403)();
     }
   },
 
@@ -46,7 +47,7 @@ module.exports = {
     if (req.user?.userType?.toLowerCase() === "admin") {
       return next();
     } else {
-      throw new CustomError("NoPermission: You must be an Admin User.", 403);
+      throw new CustomError(req.t(translations.permission.isAdmin), 403);
     }
   },
 
@@ -56,7 +57,7 @@ module.exports = {
       return next();
     } else {
       throw new CustomError(
-        "NoPermission: You must be an Individual User.",
+        req.t(translations.permission.isIndividualUser),
         403
       );
     }
@@ -67,7 +68,7 @@ module.exports = {
     if (req.user?.userType?.toLowerCase() === "organization") {
       return next();
     } else {
-      throw new CustomError("NoPermission: You must be an Organization.", 403);
+      throw new CustomError(req.t(translations.permission.isOrganization), 403);
     }
   },
 
@@ -80,7 +81,7 @@ module.exports = {
       return next();
     } else {
       throw new CustomError(
-        "NoPermission: You must be an Organization or Admin.",
+        req.t(translations.permission.isOrganizationOrAdmin),
         403
       );
     }
@@ -97,7 +98,7 @@ module.exports = {
       return next(); // User must be the owner of the user
     } else {
       throw new CustomError(
-        "No Permission: Only user owner can view or edit their profile.",
+        req.t(translations.permission.isUserOwnerOrAdmin),
         403
       );
     }
@@ -113,7 +114,7 @@ module.exports = {
       return next(); // User must be the owner of the userDetails
     } else {
       throw new CustomError(
-        "No Permission: Only user owner can view or edit their profile details.",
+        req.t(translations.permission.isUserDetailsOwnerOrAdmin),
         403
       );
     }
@@ -124,7 +125,10 @@ module.exports = {
     if (req.body.userType !== "admin") {
       return next();
     } else {
-      throw new CustomError("No Permission: Admin already exist!", 403);
+      throw new CustomError(
+        req.t(translations.permission.checkAdminUserType),
+        403
+      );
     }
   },
 
@@ -138,7 +142,7 @@ module.exports = {
     if (event.isActive) {
       return next(); // Event is active
     } else {
-      throw new CustomError("No Permission: Event is no longer active.", 403);
+      throw new CustomError(req.t(translations.permission.isActiveEvent), 403);
     }
   },
 
@@ -150,10 +154,7 @@ module.exports = {
     ) {
       return next(); // Both Individual users and Organizations can create volunteering events
     } else {
-      throw new CustomError(
-        "NoPermission: Only Individual users or Organizations can create volunteering events.",
-        403
-      );
+      throw new CustomError(req.t(translations.permission.canCreateEvent), 403);
     }
   },
 
@@ -166,7 +167,10 @@ module.exports = {
     ) {
       return next(); // User must be the owner of the event or an admin
     } else {
-      throw new CustomError("No Permission: Only event owner or admin.", 403);
+      throw new CustomError(
+        req.t(translations.permission.isEventOwnerOrAdmin),
+        403
+      );
     }
   },
 
@@ -178,7 +182,7 @@ module.exports = {
 
     if (req.user.userType !== "individual") {
       throw new CustomError(
-        "No Permission: Only Individual users can give feedback for events.",
+        req.t(translations.permission.canGiveFeedback.individual),
         403
       );
     }
@@ -188,7 +192,7 @@ module.exports = {
       return next(); // Participants of the event can give feedback
     } else {
       throw new CustomError(
-        "NoPermission: You do not have permission to give feedback for this event.",
+        req.t(translations.permission.canGiveFeedback.notAllowed),
         403
       );
     }
@@ -205,7 +209,7 @@ module.exports = {
       return next(); // Only event feedback owners and admin can manage their feedbacks
     } else {
       throw new CustomError(
-        "NoPermission: You do not have permission to manage this feedback for this event.",
+        req.t(translations.permission.isFeedbackOwnerOrAdmin),
         403
       );
     }
@@ -235,27 +239,10 @@ module.exports = {
     }
 
     throw new CustomError(
-      "NoPermission: You do not have permission to manage this document.",
+      req.t(translations.permission.isDocumentOwnerOrAdmin),
       403
     );
   },
-
-  // // Check if user has required interest for event
-  // hasEventInterest: async (req, res, next) => {
-  //   // if (!NODE_ENV) return next();
-  //   const event = await Event.findById(req.params.id);
-  //   const userInterests = req.user.interestIds || [];
-  //   const eventInterests = event.interestIds || [];
-
-  //   if (userInterests.some((interest) => eventInterests.includes(interest))) {
-  //     return next();
-  //   } else {
-  //     throw new CustomError(
-  //       "No Permission: You must have an interest matching the event.",
-  //       403
-  //     );
-  //   }
-  // },
 
   /* ---------------------------------- */
   /*               Message              */
@@ -263,12 +250,18 @@ module.exports = {
   canSendMessage: async (req, res, next) => {
     const conversation = await Conversation.findById(req.body.conversationId);
     if (!conversation) {
-      throw new CustomError("Message could not be sent!", 404);
+      throw new CustomError(
+        req.t(translations.permission.canSendMessage.failed),
+        404
+      );
     }
 
     const event = await Event.findById(conversation.eventId);
     if (!event) {
-      throw new CustomError("Message could not be sent!", 404);
+      throw new CustomError(
+        req.t(translations.permission.canSendMessage.failed),
+        404
+      );
     }
 
     const isAdmin = req.user?.userType?.toLowerCase() === "admin";
@@ -282,7 +275,7 @@ module.exports = {
       next(); // Allow anyone to send messages in conversations not created by the event owner
     } else {
       throw new CustomError(
-        "NoPermission: You do not have permission to send messages.",
+        req.t(translations.permission.canSendMessage.notAllowed),
         403
       );
     }
@@ -298,7 +291,7 @@ module.exports = {
       return next(); // User must be the sender of this message or an admin
     } else {
       throw new CustomError(
-        "NoPermission: You do not have permission to manage this message.",
+        req.t(translations.permission.isMessageOwnerOrAdmin),
         403
       );
     }
@@ -313,7 +306,7 @@ module.exports = {
     const event = await Event.findById(req.body.eventId);
 
     if (!event) {
-      throw new CustomError("NoPermission: Event not found.", 404);
+      throw new (req.t(translations.event.notFound), 404)();
     }
 
     const isAdmin = req.user?.userType?.toLowerCase() === "admin";
@@ -328,13 +321,15 @@ module.exports = {
 
         if (!isRelatedParticipant) {
           throw new CustomError(
-            "NoPermission: You can only chat with admin or the related event owner!",
+            req.t(
+              translations.permission.canConversationOwner.relatedParticipant
+            ),
             403
           );
         }
       } else if (participantCount > 1) {
         throw new CustomError(
-          "NoPermission: Only the event owner can create this conversation.",
+          req.t(translations.permission.canConversationOwner.participant),
           403
         );
       }
@@ -353,7 +348,7 @@ module.exports = {
       return next(); // User must be the owner of the conversation or an admin
     } else {
       throw new CustomError(
-        "NoPermission: You do not have permission to manage this conversation.",
+        req.t(translations.permission.isConversationOwnerOrAdmin),
         403
       );
     }
@@ -364,7 +359,7 @@ module.exports = {
     const event = await Event.findById(req.body.eventId);
 
     if (!event) {
-      throw new CustomError("NoPermission: Event not found.", 404);
+      throw new CustomError(req.t(translations.event.notFound), 404);
     }
 
     const { participantIds } = req.body;
@@ -379,7 +374,7 @@ module.exports = {
 
       if (!isValidParticipant) {
         throw new CustomError(
-          `NoPermission: All participants must be event participants, the event owner, or admin!`,
+          req.t(translations.permission.canConversationParticipant.participant),
           403
         );
       }
@@ -399,7 +394,7 @@ module.exports = {
       return next(); // User must be the participant or creator of the conversation or an admin
     } else {
       throw new CustomError(
-        "NoPermission: You do not have permission to access this conversation",
+        req.t(translations.permission.isConversationParticipant),
         403
       );
     }
@@ -426,7 +421,7 @@ module.exports = {
     }
 
     throw new CustomError(
-      "No Permission: You do not have permission to manage this address.",
+      req.t(translations.permission.addressOwnerOrAdmin),
       403
     );
   },
@@ -439,14 +434,16 @@ module.exports = {
     const event = await Event.findById(req.body.eventId);
 
     if (!event) {
-      throw new CustomError("No Permission: Event not found.", 404);
+      throw new CustomError("Event not found.", 404);
     }
 
     if (event.eventParticipantIds.length <= event.maxParticipant) {
       return next();
     } else {
       throw new CustomError(
-        `NoPermission: This event has reached its maximum number of participants (${event.maxParticipant})`,
+        `${req.t(translations.permission.checkMaxParticipant.maxReached)} ${
+          event.maxParticipant
+        }`,
         403
       );
     }
@@ -460,20 +457,20 @@ module.exports = {
 
     if (event.isActive) {
       throw new CustomError(
-        "No Permission: This Event is no longer active.",
+        req.t(translations.permission.canJoinEvent.eventActive),
         403
       );
     }
 
     if (event.isDone) {
       throw new CustomError(
-        "No Permission: This event has already been completed",
+        req.t(translations.permission.canJoinEvent.eventDone),
         403
       );
     }
 
     if (!user) {
-      throw new CustomError("No Permission: User not found.", 404);
+      throw new CustomError(req.t(translations.user.notFound), 404);
     }
 
     const eventParticipant = await EventParticipant.findOne({
@@ -486,7 +483,7 @@ module.exports = {
 
     if (String(event.createdBy) === String(req.body.userId)) {
       throw new CustomError(
-        "No Permission: You cannot join your own event.",
+        req.t(translations.permission.canJoinEvent.eventOwner),
         403
       );
     }
@@ -498,7 +495,7 @@ module.exports = {
       eventParticipant.joinStatus !== "pending"
     ) {
       throw new CustomError(
-        "No Permission: You cannot join this event as you have not been approved yet.",
+        req.t(translations.permission.canJoinEvent.notApproved),
         403
       );
     }
@@ -507,7 +504,10 @@ module.exports = {
       String(eventParticipant.eventId) === String(req.body.eventId) &&
       eventParticipant.joinStatus
     ) {
-      throw new CustomError("You have already joined this event.", 403);
+      throw new CustomError(
+        req.t(translations.permission.canJoinEvent.alreadyJoined),
+        403
+      );
     }
 
     return next(); // User can join the event
@@ -519,11 +519,11 @@ module.exports = {
     const user = await User.findById(req.body.userId);
 
     if (!user) {
-      throw new CustomError("No Permission: User not found.", 404);
+      throw new CustomError(req.t(translations.user.notFound), 404);
     }
 
     if (!event) {
-      throw new CustomError("No Permission: Event not found.", 404);
+      throw new CustomError(req.t(translations.event.notFound), 404);
     }
 
     const isAdmin = req.user?.userType?.toLowerCase() === "admin";
@@ -531,7 +531,7 @@ module.exports = {
 
     if (!isAdmin && !isCreator) {
       throw new CustomError(
-        "No Permission: You do not have permission to manage this event.",
+        req.t(translations.permission.canManageParticipants),
         403
       );
     }

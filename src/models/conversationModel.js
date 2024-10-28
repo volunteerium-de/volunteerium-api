@@ -1,7 +1,6 @@
 "use strict";
 
 const { mongoose } = require("../configs/dbConnection");
-const { CustomError } = require("../errors/customError");
 
 const ConversationSchema = new mongoose.Schema(
   {
