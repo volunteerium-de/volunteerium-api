@@ -16,12 +16,19 @@ const NotificationSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    content: {
+    contentEN: {
       type: String,
       required: true,
       trim: true,
       minLength: 5,
-      maxLength: 200,
+      maxLength: 250,
+    },
+    contentDE: {
+      type: String,
+      required: true,
+      trim: true,
+      minLength: 5,
+      maxLength: 250,
     },
     notificationType: {
       type: String,
@@ -56,7 +63,7 @@ NotificationSchema.statics.generate = async function (
   badgeType = ""
 ) {
   // Generate content based on notificationType
-  const content = notificationContentGenerator(
+  const { en, de } = notificationContentGenerator(
     notificationType,
     eventTitle,
     badgeType
@@ -64,7 +71,8 @@ NotificationSchema.statics.generate = async function (
 
   const notification = new this({
     userId,
-    content,
+    contentEN: en,
+    contentDE: de,
     notificationType,
   });
 
