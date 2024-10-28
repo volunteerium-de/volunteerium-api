@@ -28,6 +28,12 @@ const translations = {
       verified: "verify-email-verified",
       invalid: "verify-email-invalid",
     },
+    verifyReCAPTCHA: {
+      success: "verify-recaptcha-success",
+      failed: "verify-recaptcha-failed",
+      missing: "verify-recaptcha-missing",
+      server: "verify-recaptcha-server",
+    },
     forgot: {
       noAccount: "forgot-no-account",
       success: "forgot-200",

@@ -42,7 +42,7 @@ module.exports = {
     if (!token) {
       console.log("reCAPTCHA token missing");
       throw new CustomError(
-        "Missing security verification. Please try again.",
+        req.t(translations.auth.verifyReCAPTCHA.missing),
         400
       );
     }
@@ -64,18 +64,21 @@ module.exports = {
       if (data.success) {
         return res
           .status(200)
-          .send({ error: false, message: "reCAPTCHA verified successfully" });
+          .send({
+            error: false,
+            message: req.t(translations.auth.verifyReCAPTCHA.success),
+          });
       } else {
-        console.log("reCAPTCHA verification error:", data);
+        // console.log("reCAPTCHA verification error:", data);
         throw new CustomError(
-          "Verification failed. Please try the security check again.",
+          req.t(translations.auth.verifyReCAPTCHA.failed),
           400
         );
       }
     } catch (error) {
-      console.error("Server error during reCAPTCHA verification:", error);
+      // console.error("Server error during reCAPTCHA verification:", error);
       throw new CustomError(
-        "A server error occurred. Please try again later.",
+        req.t(translations.auth.verifyReCAPTCHA.server),
         500
       );
     }
