@@ -2,6 +2,7 @@
 
 const User = require("../models/userModel");
 const UserDetails = require("../models/userDetailsModel");
+const Address = require("../models/addressModel");
 const { CustomError } = require("../errors/customError");
 const {
   validateUserDetailsUpdatePayload,
@@ -120,6 +121,57 @@ module.exports = {
 
     if (!user) {
       throw new CustomError(req.t(translations.user.notFound), 404);
+    }
+
+    if (user.userType === "individual") {
+      const updateData = {
+        city: req.body.city,
+        country: req.body.country,
+      };
+      if (Object.keys(updateData).length > 0) {
+        if (userDetails.addressId) {
+          await Address.findOneAndUpdate(
+            { _id: userDetails.addressId },
+            updateData
+          );
+        } else {
+          const address = new Address(updateData);
+          const savedAddress = await address.save();
+          userDetails.addressId = savedAddress._id;
+          await userDetails.save();
+        }
+      }
+    }
+
+    if (user.userType === "organization") {
+      const requiredFields = [
+        "city",
+        "country",
+        "zipCode",
+        "state",
+        "streetName",
+        "streetNumber",
+      ];
+      const updateData = {};
+
+      for (const field of requiredFields) {
+        if (!req.body[field] || req.body[field].trim() === "") {
+          throw new CustomError(`${field} is required for an organization.`);
+        }
+        updateData[field] = req.body[field];
+      }
+
+      if (userDetails.addressId) {
+        await Address.findOneAndUpdate(
+          { _id: userDetails.addressId },
+          updateData
+        );
+      } else {
+        const address = new Address(updateData);
+        const savedAddress = await address.save();
+        userDetails.addressId = savedAddress._id;
+        await userDetails.save();
+      }
     }
 
     req.body.userId = userId;

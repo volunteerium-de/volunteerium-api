@@ -105,11 +105,10 @@ userDetailsSchema.pre("findOneAndUpdate", async function (next) {
     const requiredFields = {
       organizationDesc: "Description is required for organizations",
       organizationLogo: "Logo is required for organizations",
-      addressId: "Address is required for organizations",
     };
 
     for (const [field, message] of Object.entries(requiredFields)) {
-      if (!update[field]) {
+      if (update[field] && update[field].trim() === "") {
         return next(new CustomError(message, 400));
       }
     }
