@@ -171,6 +171,10 @@ module.exports = {
       }
     */
 
+    if (req.fileLocation) {
+      req.body.fileUrl = req.fileLocation;
+    }
+
     // Ensure we do not allow userId and eventId updates
     if (req.body.userId) {
       delete req.body.userId;
