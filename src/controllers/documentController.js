@@ -132,7 +132,7 @@ module.exports = {
       user.documentIds.push(data._id);
       await user.save();
 
-      responseData = await User.findOne({ _id: req.params.id }).populate([
+      responseData = await User.findOne({ _id: req.body.userId }).populate([
         {
           path: "userDetailsId",
           populate: [
