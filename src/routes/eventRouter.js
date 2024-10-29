@@ -3,7 +3,6 @@
 const router = require("express").Router();
 const eventController = require("../controllers/eventController");
 const { uploadSingleToS3, upload } = require("../middlewares/awsS3Upload");
-const checkExpiredEvents = require("../middlewares/checkExpiredEvents");
 const { checkEventPhotoUpload } = require("../middlewares/fileUploadHandler");
 const idValidation = require("../middlewares/idValidation");
 const {
@@ -19,7 +18,7 @@ const {
 
 router
   .route("/")
-  .get(checkExpiredEvents, eventController.list)
+  .get(eventController.list)
   .post(
     isLogin,
     isActive,

@@ -18,6 +18,19 @@ module.exports = {
     // console.log("One hour later (UTC):", oneHourLater.toISOString());
 
     try {
+      // Set isDone true
+      await Event.updateMany(
+        {
+          startDate: {
+            $gte: now,
+            $lte: oneHourLater,
+          },
+          isDone: false,
+        },
+        { isDone: true }
+      );
+
+      // Find them and populate
       const events = await Event.find({
         startDate: {
           $gte: now.toISOString(),
