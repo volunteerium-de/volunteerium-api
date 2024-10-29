@@ -250,7 +250,7 @@ module.exports = {
 
     // filter out past events based on the endDate before aggregating the language statistics
     const languageStats = await Event.aggregate([
-      { $match: { endDate: { $gte: currentDate } } },
+      { $match: { isActive: true, isDone: false } },
       { $unwind: "$languages" },
       {
         $group: {
