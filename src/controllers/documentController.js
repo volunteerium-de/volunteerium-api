@@ -73,6 +73,8 @@ module.exports = {
 
     const data = await Document.create(req.body);
 
+    let responseData;
+
     if (req.body.userId && req.body.eventId) {
       const event = await Event.findById(req.body.eventId);
       if (!event) {
@@ -80,6 +82,47 @@ module.exports = {
       }
       event.documentIds.push(data._id);
       await event.save();
+
+      responseData = await Event.findById(req.body.eventId).populate([
+        {
+          path: "createdBy",
+          select: "userType email fullName organizationName",
+          populate: {
+            path: "userDetailsId",
+            select:
+              "avatar isFullNameDisplay organizationLogo organizationDesc organizationUrl",
+          },
+        },
+        {
+          path: "addressId",
+        },
+        {
+          path: "interestIds",
+          select: "name",
+        },
+        {
+          path: "eventParticipantIds",
+          populate: {
+            path: "userId",
+            select: "email fullName",
+            populate: {
+              path: "userDetailsId",
+              select: "avatar isFullNameDisplay",
+            },
+          },
+        },
+        {
+          path: "eventFeedbackIds",
+          populate: {
+            path: "userId",
+            select: "email fullName",
+            populate: {
+              path: "userDetailsId",
+              select: "avatar isFullNameDisplay",
+            },
+          },
+        },
+      ]);
     } else if (req.body.userId && !req.body.eventId) {
       const user = await User.findById(req.body.userId);
 
@@ -88,12 +131,29 @@ module.exports = {
       }
       user.documentIds.push(data._id);
       await user.save();
+
+      responseData = await User.findOne({ _id: req.params.id }).populate([
+        {
+          path: "userDetailsId",
+          populate: [
+            {
+              path: "interestIds",
+              select: "name _id",
+            },
+            {
+              path: "addressId",
+              select: "-createdAt -updatedAt -__v",
+            },
+          ],
+        },
+        { path: "documentIds", select: "-__v" },
+      ]);
     }
 
     res.status(201).send({
       error: false,
       message: req.t(translations.document.create),
-      data,
+      new: responseData,
     });
   },
   read: async (req, res) => {
