@@ -293,7 +293,7 @@ module.exports = {
         { _id: documentData.userId },
         { $pull: { documentIds: documentData._id } }
       );
-      responseData = await Event.findById(req.body.eventId).populate([
+      responseData = await Event.findById(documentData.eventId).populate([
         {
           path: "createdBy",
           select: "userType email fullName organizationName",
@@ -342,7 +342,7 @@ module.exports = {
         { $pull: { documentIds: documentData._id } }
       );
 
-      responseData = await User.findOne({ _id: req.body.userId }).populate([
+      responseData = await User.findOne({ _id: documentData.userId }).populate([
         {
           path: "userDetailsId",
           populate: [
@@ -367,7 +367,7 @@ module.exports = {
 
     const data = await Document.deleteOne({ _id: req.params.id });
 
-    res.status(data.deletedCount ? 204 : 404).send({
+    res.status(data.deletedCount ? 201 : 404).send({
       error: !data.deletedCount,
       message: data.deletedCount
         ? req.t(translations.document.delete)
