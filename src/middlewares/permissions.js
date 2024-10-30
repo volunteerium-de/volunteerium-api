@@ -222,11 +222,13 @@ module.exports = {
     // if (!NODE_ENV) return next();
 
     const event = await Event.findOne({
-      $in: { documentIds: [req.params.id] },
+      documentIds: { $in: [req.params.id] },
     });
+
     const user = await User.findOne({
-      $in: { documentIds: [req.params.id] },
+      documentIds: { $in: [req.params.id] },
     });
+
     if (req.user.userType === "admin") {
       return next();
     }
