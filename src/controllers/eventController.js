@@ -748,7 +748,7 @@ module.exports = {
     // Delete the event
     const data = await Event.deleteOne({ _id: req.params.id });
 
-    res.status(data.deletedCount ? 204 : 404).send({
+    res.status(data.deletedCount ? 200 : 404).send({
       error: !data.deletedCount,
       message: data.deletedCount
         ? req.t(translations.event.delete)

@@ -348,7 +348,7 @@ module.exports = {
       await deleteObjectByDateKeyNumber(identifierForLogo); // delete existing organization logo from s3 bucket
     }
 
-    res.status(204).send({
+    res.status(200).send({
       error: false,
       message: req.t(translations.user.delete),
     });

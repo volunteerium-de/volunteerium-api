@@ -265,7 +265,7 @@ module.exports = {
     const io = getIoInstance();
     io.emit("receive_conversations");
 
-    res.status(204).send({
+    res.status(200).send({
       error: false,
       message: req.t(translations.conversation.delete),
     });
