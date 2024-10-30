@@ -293,6 +293,32 @@ module.exports = {
         { _id: documentData.userId },
         { $pull: { documentIds: documentData._id } }
       );
+
+      responseData = await User.findOne({ _id: documentData.userId }).populate([
+        {
+          path: "userDetailsId",
+          populate: [
+            {
+              path: "interestIds",
+              select: "name _id",
+            },
+            {
+              path: "addressId",
+              select: "-createdAt -updatedAt -__v",
+            },
+          ],
+        },
+        { path: "documentIds", select: "-__v" },
+      ]);
+    }
+
+    // Event related document will be also deleted in Event
+    if (documentData.userId && documentData.eventId) {
+      await Event.updateOne(
+        { _id: documentData.eventId },
+        { $pull: { documentIds: documentData._id } }
+      );
+
       responseData = await Event.findById(documentData.eventId).populate([
         {
           path: "createdBy",
@@ -332,31 +358,6 @@ module.exports = {
             },
           },
         },
-      ]);
-    }
-
-    // Event related document will be also deleted in Event
-    if (documentData.userId && documentData.eventId) {
-      await Event.updateOne(
-        { _id: documentData.eventId },
-        { $pull: { documentIds: documentData._id } }
-      );
-
-      responseData = await User.findOne({ _id: documentData.userId }).populate([
-        {
-          path: "userDetailsId",
-          populate: [
-            {
-              path: "interestIds",
-              select: "name _id",
-            },
-            {
-              path: "addressId",
-              select: "-createdAt -updatedAt -__v",
-            },
-          ],
-        },
-        { path: "documentIds", select: "-__v" },
       ]);
     }
 
