@@ -285,12 +285,54 @@ module.exports = {
 
     const documentData = await Document.findById(req.params.id);
 
+    let responseData;
+
     // User releated document will be also deleted in User
     if (documentData.userId && !documentData.eventId) {
       await User.updateOne(
         { _id: documentData.userId },
         { $pull: { documentIds: documentData._id } }
       );
+      responseData = await Event.findById(req.body.eventId).populate([
+        {
+          path: "createdBy",
+          select: "userType email fullName organizationName",
+          populate: {
+            path: "userDetailsId",
+            select:
+              "avatar isFullNameDisplay organizationLogo organizationDesc organizationUrl",
+          },
+        },
+        {
+          path: "addressId",
+        },
+        {
+          path: "interestIds",
+          select: "name",
+        },
+        {
+          path: "eventParticipantIds",
+          populate: {
+            path: "userId",
+            select: "email fullName",
+            populate: {
+              path: "userDetailsId",
+              select: "avatar isFullNameDisplay",
+            },
+          },
+        },
+        {
+          path: "eventFeedbackIds",
+          populate: {
+            path: "userId",
+            select: "email fullName",
+            populate: {
+              path: "userDetailsId",
+              select: "avatar isFullNameDisplay",
+            },
+          },
+        },
+      ]);
     }
 
     // Event related document will be also deleted in Event
@@ -299,6 +341,23 @@ module.exports = {
         { _id: documentData.eventId },
         { $pull: { documentIds: documentData._id } }
       );
+
+      responseData = await User.findOne({ _id: req.body.userId }).populate([
+        {
+          path: "userDetailsId",
+          populate: [
+            {
+              path: "interestIds",
+              select: "name _id",
+            },
+            {
+              path: "addressId",
+              select: "-createdAt -updatedAt -__v",
+            },
+          ],
+        },
+        { path: "documentIds", select: "-__v" },
+      ]);
     }
 
     // Delete document from AWS-S3 Bucket
@@ -313,6 +372,7 @@ module.exports = {
       message: data.deletedCount
         ? req.t(translations.document.delete)
         : req.t(translations.document.notFound),
+      new: responseData,
     });
   },
 };
