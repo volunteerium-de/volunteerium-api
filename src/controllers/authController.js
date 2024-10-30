@@ -62,12 +62,10 @@ module.exports = {
       // console.log(data);
 
       if (data.success) {
-        return res
-          .status(200)
-          .send({
-            error: false,
-            message: req.t(translations.auth.verifyReCAPTCHA.success),
-          });
+        return res.status(200).send({
+          error: false,
+          message: req.t(translations.auth.verifyReCAPTCHA.success),
+        });
       } else {
         // console.log("reCAPTCHA verification error:", data);
         throw new CustomError(
@@ -501,13 +499,10 @@ module.exports = {
           user,
         });
       } else {
-        throw new CustomError(
-          "Wrong email or password. Please try again!",
-          401
-        );
+        throw new CustomError(req.t(translations.auth.login.wrongData), 401);
       }
     } else {
-      throw new CustomError("Please provide a valid email and password", 401);
+      throw new CustomError(req.t(translations.auth.login.noEmail), 401);
     }
   },
   // POST
