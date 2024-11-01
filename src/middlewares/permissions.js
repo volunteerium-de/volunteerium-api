@@ -387,7 +387,7 @@ module.exports = {
 
   isConversationParticipant: async (req, res, next) => {
     // if (!NODE_ENV) return next();
-    const conversation = await Conversation.findById(req.body.id);
+    const conversation = await Conversation.findById(req.params.id);
     if (
       req.user?.userType?.toLowerCase() === "admin" ||
       conversation.participantIds.includes(req.user._id) ||
