@@ -76,6 +76,7 @@
   "eventParticipant-reject-already": "User has already confirmed not joining for this event.",
   "eventParticipant-confirmAttendance-200": "User attendance confirmed and points updated.",
   "eventParticipant-confirmAbsence-200": "User absence recorded and email sent.",
+  "eventParticipant-delete-200": "Your request to participate in the event has been successfully canceled.",
   "eventParticipant-404": "Participant not found",
   "eventParticipant-event-404": "Event not found: ID",
   "eventParticipant-user-404": "User not found: ID",

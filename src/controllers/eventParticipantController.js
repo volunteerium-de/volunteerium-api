@@ -178,21 +178,22 @@ module.exports = {
       createdBy: event.createdBy,
     });
 
-    if (conversation) {
+    if (conversation && !conversation.participantIds.includes(userId)) {
       await Conversation.findByIdAndUpdate(conversation._id, {
         $push: { participantIds: userId },
       });
 
       const io = getIoInstance();
       io.emit("receive_conversations");
-    } else {
-      throw new CustomError(
-        `${req.t(
-          translations.eventParticipant.conversationNotFound
-        )} ${eventId}`,
-        404
-      );
     }
+    // else {
+    //   throw new CustomError(
+    //     `${req.t(
+    //       translations.eventParticipant.conversationNotFound
+    //     )} ${eventId}`,
+    //     404
+    //   );
+    // }
 
     res.status(200).send({
       error: false,
@@ -444,26 +445,25 @@ module.exports = {
           createdBy: event.createdBy,
         });
 
-        if (conversation) {
+        if (
+          conversation &&
+          conversation.participantIds.includes(participant.userId)
+        ) {
           await Conversation.findByIdAndUpdate(conversation._id, {
             $pull: { participantIds: participant.userId },
           });
 
           const io = getIoInstance();
           io.emit("receive_conversations");
-        } else {
-          throw new CustomError(
-            `${req.t(translations.eventParticipant.conversationNotFound)} ${
-              event._id
-            }`,
-            404
-          );
         }
       }
 
       await EventParticipant.findByIdAndDelete(req.params.id);
 
-      return res.status(204).send();
+      return res.status(200).send({
+        error: false,
+        message: req.t(translations.eventParticipant.delete),
+      });
     }
 
     throw new CustomError(req.t(translations.eventParticipant.notFound), 404);

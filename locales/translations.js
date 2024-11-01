@@ -130,6 +130,7 @@ const translations = {
       success: "eventParticipant-confirmAbsence-200",
     },
     notFound: "eventParticipant-404",
+    delete: "eventParticipant-delete-200",
     eventNotFound: "eventParticipant-event-404",
     userNotFound: "eventParticipant-user-404",
   },

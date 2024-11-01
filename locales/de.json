@@ -76,6 +76,7 @@
   "eventParticipant-reject-already": "Benutzer hat bereits die Nicht-Teilnahme bestätigt.",
   "eventParticipant-confirmAttendance-200": "Teilnahme des Benutzers bestätigt und Punkte aktualisiert.",
   "eventParticipant-confirmAbsence-200": "Benutzerabwesenheit registriert und E-Mail gesendet.",
+  "eventParticipant-delete-200": "Ihre Anfrage zur Teilnahme an der Veranstaltung wurde erfolgreich storniert.",
   "eventParticipant-404": "Teilnehmer nicht gefunden",
   "eventParticipant-event-404": "Veranstaltung nicht gefunden: ID",
   "eventParticipant-user-404": "Benutzer nicht gefunden: ID",
