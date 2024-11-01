@@ -457,7 +457,7 @@ module.exports = {
     const event = await Event.findById(req.body.eventId);
     const user = await User.findById(req.body.userId);
 
-    if (event.isActive) {
+    if (!event.isActive) {
       throw new CustomError(
         req.t(translations.permission.canJoinEvent.eventActive),
         403
