@@ -114,6 +114,10 @@ module.exports = {
 
     const newParticipant = await EventParticipant.requestJoin(userId, eventId);
 
+    await Event.findByIdAndUpdate(eventId, {
+      $push: { eventParticipantIds: newParticipant._id },
+    });
+
     await Notification.generate(
       event.createdBy,
       "eventJoinRequest",
@@ -166,10 +170,6 @@ module.exports = {
       userId,
       eventId
     );
-
-    await Event.findByIdAndUpdate(eventId, {
-      $push: { eventParticipantIds: updatedParticipant._id },
-    });
 
     await Notification.generate(userId, "eventApproveParticipant", event.title);
 
