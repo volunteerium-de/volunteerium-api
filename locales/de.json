@@ -132,7 +132,7 @@
   "permission-canSendMessage-404": "Nachricht konnte nicht gesendet werden!",
   "permission-canSendMessage": "Sie haben keine Berechtigung, Nachrichten zu senden.",
   "permission-isMessageOwnerOrAdmin": "Sie haben keine Berechtigung, diese Nachricht zu verwalten.",
-  "permission-canConversationOwner-relatedParticipant": "Sie können nur mit dem Admin oder dem jeweiligen Veranstalter chatten!",
+  "permission-canConversationOwner-relatedParticipant": "Sie können nur mit dem jeweiligen Veranstalter chatten!",
   "permission-canConversationOwner-participant": "Nur der Veranstalter kann diese Konversation erstellen.",
   "permission-isConversationOwnerOrAdmin": "Sie haben keine Berechtigung, diese Konversation zu verwalten.",
   "permission-canConversationParticipant-participant": "Alle Teilnehmer müssen Veranstaltungsteilnehmer, der Veranstalter oder Admin sein!",

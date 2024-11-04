@@ -133,7 +133,7 @@
   "permission-canSendMessage": "You do not have permission to send messages.",
   "permission-isMessageOwnerOrAdmin": "You do not have permission to manage this message.",
   "permission-canConversationOwner-404": "Event not found.",
-  "permission-canConversationOwner-relatedParticipant": "You can only chat with admin or the related event owner!",
+  "permission-canConversationOwner-relatedParticipant": "You can only chat with related event owner!",
   "permission-canConversationOwner-participant": "Only the event owner can create this conversation.",
   "permission-isConversationOwnerOrAdmin": "You do not have permission to manage this conversation.",
   "permission-canConversationParticipant-participant": "All participants must be event participants, the event owner, or admin!",

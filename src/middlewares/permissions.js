@@ -318,8 +318,7 @@ module.exports = {
     if (!isAdmin && !isCreator) {
       if (participantCount === 1) {
         const isRelatedParticipant =
-          event.eventParticipantIds.includes(String(event.createdBy)) ||
-          event.eventParticipantIds.includes(String(ADMIN_ID));
+          String(event.createdBy) === String(req.body.participantIds[0]);
 
         if (!isRelatedParticipant) {
           throw new CustomError(
@@ -328,6 +327,8 @@ module.exports = {
             ),
             403
           );
+        } else {
+          return next(); // User can create a conversation with the event owner
         }
       } else if (participantCount > 1) {
         throw new CustomError(
