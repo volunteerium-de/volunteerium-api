@@ -90,24 +90,58 @@ module.exports = {
         }
       }
     */
-    const data = await res.getModelList(Event, {}, [
-      {
-        path: "createdBy",
-        select: "userType email fullName organizationName",
-        populate: {
-          path: "userDetailsId",
-          select: "avatar isFullNameDisplay organizationLogo",
-        },
-      },
-      {
-        path: "addressId",
-        select: "city country zipCode",
-      },
-      {
-        path: "interestIds",
-        select: "name",
-      },
-    ]);
+
+    const customPopulate =
+      req.user.userType === "admin"
+        ? [
+            {
+              path: "createdBy",
+              select: "userType email fullName organizationName",
+              populate: {
+                path: "userDetailsId",
+                select: "avatar organizationLogo",
+              },
+            },
+            {
+              path: "addressId",
+              select: "city country zipCode",
+            },
+            {
+              path: "eventParticipantIds",
+              populate: {
+                path: "userId",
+                select: "email fullName",
+                populate: {
+                  path: "userDetailsId",
+                  select: "avatar isFullNameDisplay",
+                },
+              },
+            },
+            {
+              path: "interestIds",
+              select: "name",
+            },
+          ]
+        : [
+            {
+              path: "createdBy",
+              select: "userType email fullName organizationName",
+              populate: {
+                path: "userDetailsId",
+                select: "avatar isFullNameDisplay organizationLogo",
+              },
+            },
+            {
+              path: "addressId",
+              select: "city country zipCode",
+            },
+            {
+              path: "interestIds",
+              select: "name",
+            },
+          ];
+
+    const data = await res.getModelList(Event, {}, customPopulate);
 
     res.status(200).send({
       error: false,
