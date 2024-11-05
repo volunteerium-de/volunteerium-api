@@ -139,7 +139,7 @@ module.exports = {
   isActiveEvent: async (req, res, next) => {
     // if (!NODE_ENV) return next();
     const event = await Event.findById(req.params.id);
-    if (event.isActive) {
+    if (req.user.userType === "admin" || event.isActive) {
       return next(); // Event is active
     } else {
       throw new CustomError(req.t(translations.permission.isActiveEvent), 403);

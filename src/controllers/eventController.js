@@ -92,7 +92,7 @@ module.exports = {
     */
 
     const customPopulate =
-      req.user.userType === "admin"
+      req.user && req.user.userType === "admin"
         ? [
             {
               path: "createdBy",
@@ -664,7 +664,46 @@ module.exports = {
         new: true,
         runValidators: true,
       }
-    ).populate("addressId");
+    ).populate([
+      {
+        path: "createdBy",
+        select: "userType email fullName organizationName",
+        populate: {
+          path: "userDetailsId",
+          select:
+            "avatar isFullNameDisplay organizationLogo organizationDesc organizationUrl",
+        },
+      },
+      {
+        path: "addressId",
+      },
+      {
+        path: "interestIds",
+        select: "name",
+      },
+      {
+        path: "eventParticipantIds",
+        populate: {
+          path: "userId",
+          select: "email fullName",
+          populate: {
+            path: "userDetailsId",
+            select: "avatar isFullNameDisplay",
+          },
+        },
+      },
+      {
+        path: "eventFeedbackIds",
+        populate: {
+          path: "userId",
+          select: "email fullName",
+          populate: {
+            path: "userDetailsId",
+            select: "avatar isFullNameDisplay",
+          },
+        },
+      },
+    ]);
 
     // console.log(updatedEvent);
 
