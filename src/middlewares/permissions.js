@@ -187,8 +187,14 @@ module.exports = {
       );
     }
 
-    const event = await Event.findById(req.body.eventId);
-    if (event.eventParticipantIds.includes(req.user._id)) {
+    const event = await Event.findById(req.body.eventId).populate(
+      "eventParticipantIds"
+    );
+    if (
+      event.eventParticipantIds.find(
+        (participant) => String(participant.userId) === String(req.user._id)
+      )
+    ) {
       return next(); // Participants of the event can give feedback
     } else {
       throw new CustomError(
