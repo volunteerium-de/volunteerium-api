@@ -104,6 +104,17 @@ module.exports = {
         select: "city country zipCode",
       },
       {
+        path: "eventParticipantIds",
+        populate: {
+          path: "userId",
+          select: "email fullName",
+          populate: {
+            path: "userDetailsId",
+            select: "avatar isFullNameDisplay",
+          },
+        },
+      },
+      {
         path: "interestIds",
         select: "name",
       },
