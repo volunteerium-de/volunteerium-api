@@ -24,7 +24,6 @@ const sendEmail = async (to, subject, html) => {
     console.log("Email sent successfully.", info.messageId);
   } catch (error) {
     console.error("Error sending email:", error);
-    throw new CustomError("Request failed. Please contact support!");
   }
 };
 
@@ -41,7 +40,6 @@ const sendFeedbackEmail = async (name, email, subject, feedback) => {
     console.log("Email sent successfully.", info.messageId);
   } catch (error) {
     console.error("Email sending error: ", error);
-    throw new CustomError("Failed to send email. Please try again.");
   }
 };
 
