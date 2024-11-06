@@ -18,6 +18,7 @@ const {
 } = require("../utils/email/eventConfirmation/eventConfirmation");
 const { sendEmail } = require("../utils/email/emailService");
 const translations = require("../../locales/translations");
+const mongoose = require("../configs/dbConnection");
 
 module.exports = {
   list: async (req, res) => {
@@ -191,25 +192,28 @@ module.exports = {
       }
     */
 
-    const userId = req.params.id;
-
-    const participantRecords = await EventParticipant.find({ userId });
-
-    if (!participantRecords.length) {
+    // Fetch participant records for the given user ID
+    const participantRecords = await EventParticipant.find({
+      userId: req.params.id,
+    });
+    // Filter participant records to include only approved and non-pending records
+    const filteredParticipantRecords = participantRecords.filter(
+      (record) => record.isApproved === true && record.isPending === false
+    );
+    // Check if no participant records match the criteria
+    if (!filteredParticipantRecords.length) {
       return res.status(404).send({
         error: true,
         message: req.t(translations.event.listParticipatedEvents),
       });
     }
-
-    const participantIds = participantRecords.map(
-      (participant) => participant._id
-    );
-
-    const data = await res.getModelList(
+    // Extract event IDs from the filtered participant records
+    const eventIds = filteredParticipantRecords.map((record) => record.eventId);
+    // Fetch events based on the extracted event IDs using getModelList
+    const events = await res.getModelList(
       Event,
       {
-        eventParticipantIds: { $in: participantIds },
+        _id: { $in: eventIds },
       },
       [
         {
@@ -230,13 +234,15 @@ module.exports = {
         },
       ]
     );
-
+    // Get detailed information of the events using getModelListDetails
+    const details = await res.getModelListDetails(Event, {
+      _id: { $in: eventIds },
+    });
+    // Send the fetched events in the response
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(Event, {
-        eventParticipantIds: { $in: participantIds },
-      }),
-      data,
+      details,
+      data: events,
     });
   },
   listEventLanguages: async (req, res) => {
