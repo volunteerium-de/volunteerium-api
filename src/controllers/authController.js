@@ -193,6 +193,11 @@ module.exports = {
     if (!req.user) {
       return res.redirect(`${CLIENT_URL}/auth/failure?provider=google`);
     }
+
+    if (!req.user.isActive) {
+      return res.redirect(`${CLIENT_URL}/auth/failure?provider=google`);
+    }
+
     // console.log("User: ", req.user);
     // res.redirect(`${CLIENT_URL}/auth/success?provider=google`);
     // Successful authentication, send user data to frontend
