@@ -161,7 +161,8 @@
   "id-validation": "Id is not valid!",
   "sendEmail-fail": "Request failed. Please contact support!",
   "sendEmail-contact": "Failed to send email. Please try again.",
-
+  "limiter-general": "Too many requests from this IP, please try again later!",
+  "limiter-email": "You have reached the email sending limit. Please try again later.",
   "yup-required-email": "Email is required!",
   "yup-required-password": "Password is required!",
   "yup-required-userType": "User type is required!",

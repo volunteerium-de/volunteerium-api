@@ -5,6 +5,7 @@ const router = require("express").Router();
 const contactController = require("../controllers/contactController");
 const idValidation = require("../middlewares/idValidation");
 const { isLogin, isAdmin } = require("../middlewares/permissions");
+const { emailLimiter } = require("../middlewares/rateLimiters");
 
 /* ------------------------------------------------------- */
 
@@ -13,7 +14,7 @@ const { isLogin, isAdmin } = require("../middlewares/permissions");
 router
   .route("/")
   .get(isLogin, isAdmin, contactController.list)
-  .post(contactController.create);
+  .post(emailLimiter, contactController.create);
 
 router
   .route("/:id")

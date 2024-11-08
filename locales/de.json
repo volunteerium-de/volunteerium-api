@@ -160,6 +160,8 @@
   "id-validation": "ID ist ungültig!",
   "sendEmail-fail": "Anfrage fehlgeschlagen. Bitte wenden Sie sich an den Support!",
   "sendEmail-contact": "E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+  "limiter-general": "Zu viele Anfragen von dieser IP, bitte versuchen Sie es später erneut!",
+  "limiter-email": "Sie haben das E-Mail-Sendekontingent erreicht. Bitte versuchen Sie es später erneut.",
   "yup-required-email": "E-Mail ist erforderlich!",
   "yup-required-password": "Passwort ist erforderlich!",
   "yup-required-userType": "Benutzertyp ist erforderlich!",

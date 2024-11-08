@@ -258,6 +258,10 @@ const translations = {
     fail: "sendEmail-fail",
     contact: "sendEmail-contact",
   },
+  limiter: {
+    general: "limiter-general",
+    email: "limiter-email",
+  },
   yup: {
     required: {
       email: "yup-required-email",
