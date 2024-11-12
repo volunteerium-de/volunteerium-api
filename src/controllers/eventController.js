@@ -19,6 +19,8 @@ const {
 const { sendEmail } = require("../utils/email/emailService");
 const translations = require("../../locales/translations");
 const mongoose = require("../configs/dbConnection");
+const { extractDateNumber } = require("../utils/functions");
+const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
 
 module.exports = {
   list: async (req, res) => {
@@ -377,7 +379,7 @@ module.exports = {
     }
 
     const event = new Event(req.body);
-    const savedEvent = await event.save();
+    const savedEvent = await event.customSave();
 
     const conversation = new Conversation({
       eventId: savedEvent._id,
@@ -607,7 +609,7 @@ module.exports = {
     // Get the existing event
     const event = await Event.findById(req.params.id);
     if (!event) {
-      throw new Error("Event not found.", 404);
+      throw new CustomError(req.t(translations.event.notFound), 404);
     }
 
     // Use the event's existing addressId
@@ -649,19 +651,11 @@ module.exports = {
       await Address.deleteOne({ _id: addressId });
     }
 
-    const updatedEvent = await Event.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    ).populate("addressId");
-
-    // console.log(updatedEvent);
+    // Use the customUpdate method to update the event
+    const updatedEventResult = await event.customUpdate(req.body, {}, req.t);
 
     // Generate notifications for participants
-    for (const participantId of updatedEvent.eventParticipantIds) {
+    for (const participantId of updatedEventResult.eventParticipantIds) {
       // console.log(participantId);
       const participant = await EventParticipant.findById(participantId);
 
@@ -674,7 +668,7 @@ module.exports = {
         await Notification.generate(
           participant.userId,
           "eventUpdate",
-          updatedEvent.title
+          updatedEventResult.title
         );
       } else {
         console.warn(`No user found with ID: ${participant.userId}`);
@@ -684,7 +678,7 @@ module.exports = {
     res.status(202).send({
       error: false,
       message: req.t(translations.event.update),
-      new: updatedEvent,
+      new: updatedEventResult,
     });
   },
   delete: async (req, res) => {

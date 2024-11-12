@@ -162,8 +162,10 @@ const EventSchema = new mongoose.Schema(
 );
 
 // Pre-save hook to validate addressId based on isOnline
-EventSchema.pre("save", function (next) {
-  if (!this.isOnline && !this.addressId) {
+EventSchema.pre("save", function (next, opts) {
+  const { t } = opts;
+
+  if (this.isOnline && !this.addressId) {
     return next(
       new CustomError("Address is required if the event is not online.")
     );
@@ -181,7 +183,9 @@ EventSchema.pre("save", function (next) {
 });
 
 // Pre-update hook for updateOne and findOneAndUpdate
-EventSchema.pre(["updateOne", "findOneAndUpdate"], function (next) {
+EventSchema.pre(["updateOne", "findOneAndUpdate"], function (next, opts) {
+  const { t } = opts;
+
   const update = this.getUpdate();
 
   // Validate address if the event is offline
@@ -203,5 +207,26 @@ EventSchema.pre(["updateOne", "findOneAndUpdate"], function (next) {
 
   next();
 });
+
+// Custom save method to accept translation function
+EventSchema.methods.customSave = function (t) {
+  return this.save({ t });
+};
+
+// Custom update method to accept translation function
+EventSchema.methods.customUpdate = function (update, options, translate) {
+  // Add translate to the options for validation
+  if (translate) {
+    update.translate = translate;
+  }
+
+  return this.model("Event")
+    .findOneAndUpdate({ _id: this._id }, update, {
+      new: true,
+      runValidators: true,
+      ...options, // Ensure other options are passed along
+    })
+    .populate("addressId");
+};
 
 module.exports = mongoose.model("Event", EventSchema);
