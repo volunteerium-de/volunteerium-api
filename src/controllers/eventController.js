@@ -354,9 +354,19 @@ module.exports = {
     } = req.body;
 
     if (!req.body.isOnline) {
-      if (!city || !country || !zipCode || !streetName || !streetNumber) {
-        throw new Error(
-          "Address informations are required for physical events."
+      const missingFields = [];
+
+      if (!city) missingFields.push("city");
+      if (!country) missingFields.push("country");
+      if (!zipCode) missingFields.push("zipCode");
+      if (!streetName) missingFields.push("streetName");
+      if (!streetNumber) missingFields.push("streetNumber");
+
+      if (missingFields.length > 0) {
+        const missingFieldsMessage = missingFields.join(", ");
+        throw new CustomError(
+          `${req.t(translations.event.address)} - (${missingFieldsMessage})`,
+          404
         );
       }
 
@@ -379,7 +389,7 @@ module.exports = {
     }
 
     const event = new Event(req.body);
-    const savedEvent = await event.customSave();
+    const savedEvent = await event.customSave(req.t);
 
     const conversation = new Conversation({
       eventId: savedEvent._id,

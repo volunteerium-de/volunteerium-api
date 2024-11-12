@@ -4,6 +4,7 @@ const { mongoose } = require("../configs/dbConnection");
 const fs = require("fs");
 const path = require("path");
 const { CustomError } = require("../errors/customError");
+const translations = require("../../locales/translations");
 
 const languagesData = JSON.parse(
   fs.readFileSync(
@@ -162,21 +163,19 @@ const EventSchema = new mongoose.Schema(
 );
 
 // Pre-save hook to validate addressId based on isOnline
-EventSchema.pre("save", function (next, opts) {
-  const { t } = opts;
+EventSchema.pre("save", function (next) {
+  const t = this.translate;
 
-  if (this.isOnline && !this.addressId) {
-    return next(
-      new CustomError("Address is required if the event is not online.")
-    );
+  if (!this.isOnline && !this.addressId) {
+    return next(new CustomError(t(translations.event.address), 404));
   }
 
   // Check if interestIds has minimum 1 and maximum 3 elements
   if (this.interestIds.length < 1) {
-    return next(new CustomError("At least one interest is required."));
+    return next(new CustomError(t(translations.event.interestMin), 404));
   }
   if (this.interestIds.length > 3) {
-    return next(new CustomError("You can select up to 3 interests only."));
+    return next(new CustomError(t(translations.event.interestMax), 404));
   }
 
   next();
@@ -184,24 +183,22 @@ EventSchema.pre("save", function (next, opts) {
 
 // Pre-update hook for updateOne and findOneAndUpdate
 EventSchema.pre(["updateOne", "findOneAndUpdate"], function (next, opts) {
-  const { t } = opts;
+  const t = this.translate;
 
   const update = this.getUpdate();
 
   // Validate address if the event is offline
   if (update.isOnline === false && !update.addressId) {
-    return next(
-      new CustomError("Address is required if the event is not online.")
-    );
+    return next(new CustomError(t(translations.event.address), 404));
   }
 
   // Validate interestIds length in the update operation
   if (update.interestIds) {
     if (update.interestIds.length < 1) {
-      return next(new CustomError("At least one interest is required."));
+      return next(new CustomError(t(translations.event.interestMin), 404));
     }
     if (update.interestIds.length > 3) {
-      return next(new CustomError("You can select up to 3 interests only."));
+      return next(new CustomError(t(translations.event.interestMax), 404));
     }
   }
 
@@ -210,14 +207,15 @@ EventSchema.pre(["updateOne", "findOneAndUpdate"], function (next, opts) {
 
 // Custom save method to accept translation function
 EventSchema.methods.customSave = function (t) {
-  return this.save({ t });
+  this.translate = t; // Add the translation function to the instance for later use
+  return this.save();
 };
 
 // Custom update method to accept translation function
-EventSchema.methods.customUpdate = function (update, options, translate) {
+EventSchema.methods.customUpdate = function (update, options, t) {
   // Add translate to the options for validation
-  if (translate) {
-    update.translate = translate;
+  if (t) {
+    update.translate = t; // Store the translation function in the update object
   }
 
   return this.model("Event")
