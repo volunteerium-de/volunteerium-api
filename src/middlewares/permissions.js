@@ -139,6 +139,11 @@ module.exports = {
   isActiveEvent: async (req, res, next) => {
     // if (!NODE_ENV) return next();
     const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      throw new CustomError(req.t(translations.event.notFound), 404);
+    }
+
     if (event.isActive) {
       return next(); // Event is active
     } else {
