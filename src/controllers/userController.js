@@ -4,8 +4,10 @@ const User = require("../models/userModel");
 const UserDetails = require("../models/userDetailsModel");
 const Documents = require("../models/documentModel");
 const Events = require("../models/eventModel");
+const EventParticipant = require("../models/eventParticipantModel");
 const Messages = require("../models/messageModel");
 const Conversations = require("../models/conversationModel");
+const Address = require("../models/addressModel");
 const bcrypt = require("bcryptjs");
 const { CustomError } = require("../errors/customError");
 const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
@@ -298,21 +300,16 @@ module.exports = {
       }
     */
 
-    const idFilter =
-      req.user?.userType.toLowerCase() !== "admin"
-        ? { _id: req.params.id }
-        : { _id: req.user?._id };
-    //console.log("idFilter":, idFilter);
+    const isAdmin = req.user?.userType.toLowerCase() === "admin";
+    const id = isAdmin ? req.params?.id : req.user?._id;
+    const idFilter = { _id: id };
+    const userIdFilter = { userId: id };
 
-    const userIdFilter =
-      req.user?.userType.toLowerCase() !== "admin"
-        ? { userId: req.params.id }
-        : { userId: req.user?._id };
+    // Get user details before deleting
+    const userDetails = await UserDetails.findOne(userIdFilter);
 
-    // Find all documents related to this user
+    // Find and delete documents related to this user
     const documents = await Documents.find(userIdFilter);
-
-    // Delete each document from AWS S3
     for (const doc of documents) {
       if (doc.fileUrl) {
         const identifierForDocument = extractDateNumber(doc.fileUrl);
@@ -320,35 +317,49 @@ module.exports = {
       }
     }
 
-    // Delete all events, documents and messages etc. related to this user
-    await Events.deleteMany(userIdFilter);
-    await Conversations.deleteMany({
-      createdBy:
-        req.user?.userType.toLowerCase() !== "admin"
-          ? req.params.id
-          : req.user?._id,
-    });
-    await Messages.deleteMany({
-      senderId:
-        req.user?.userType.toLowerCase() !== "admin"
-          ? req.params.id
-          : req.user?._id,
-    });
-    await Documents.deleteMany(userIdFilter);
+    // Get events to delete and collect addressIds
+    const events = await Events.find({ createdBy: id });
+    const addressIds = events
+      .map((event) => event.addressId)
+      .filter((id) => id);
 
-    // Delete user
-    await User.findOneAndDelete(idFilter);
-    const result = await UserDetails.findOneAndDelete(userIdFilter);
-
-    if (result.avatar) {
-      const identifierForImage = extractDateNumber(result.avatar);
-      await deleteObjectByDateKeyNumber(identifierForImage); // delete existing user avatar from s3 bucket
-    } else if (result.organizationLogo) {
-      const identifierForLogo = extractDateNumber(result.organizationLogo);
-      await deleteObjectByDateKeyNumber(identifierForLogo); // delete existing organization logo from s3 bucket
+    // Add userDetails addressId if exists
+    if (userDetails?.addressId) {
+      addressIds.push(userDetails.addressId);
     }
 
-    res.status(200).send({
+    // Delete all related entities
+    await Promise.all([
+      Events.deleteMany({ createdBy: id }),
+      Conversations.deleteMany({ createdBy: id }),
+      Messages.deleteMany({ senderId: id }),
+      Documents.deleteMany(userIdFilter),
+      EventParticipant.deleteMany({ userId: id }),
+      User.findOneAndDelete(idFilter),
+      UserDetails.findOneAndDelete(userIdFilter),
+    ]);
+
+    // Delete addresses if there are any
+    if (addressIds.length > 0) {
+      await Address.deleteMany({ _id: { $in: addressIds } });
+    }
+
+    // Delete user avatar or organization logo from S3 bucket
+    const deleteS3Object = async (url) => {
+      if (url) {
+        const identifier = extractDateNumber(url);
+        await deleteObjectByDateKeyNumber(identifier);
+      }
+    };
+
+    if (userDetails) {
+      await Promise.all([
+        deleteS3Object(userDetails.avatar),
+        deleteS3Object(userDetails.organizationLogo),
+      ]);
+    }
+
+    res.status(202).send({
       error: false,
       message: req.t(translations.user.delete),
     });
