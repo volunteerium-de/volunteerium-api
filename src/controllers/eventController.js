@@ -353,7 +353,8 @@ module.exports = {
       additional,
     } = req.body;
 
-    if (!req.body.isOnline) {
+    if (req.body.isOnline !== "true") {
+      req.body.isOnline = false;
       const missingFields = [];
 
       if (!city) missingFields.push("city");
@@ -382,6 +383,8 @@ module.exports = {
 
       const savedAddress = await address.save();
       req.body.addressId = savedAddress._id;
+    } else {
+      req.body.isOnline = true;
     }
 
     if (req.fileLocation) {
@@ -641,7 +644,7 @@ module.exports = {
           },
           { new: true, runValidators: true }
         );
-      } else if (!addressId && !req.body.isOnline) {
+      } else if (!addressId && req.body.isOnline === "false") {
         // If no addressId and the event is not online, create a new address
         const address = new Address({
           city,
@@ -655,7 +658,7 @@ module.exports = {
         const savedAddress = await address.save();
         req.body.addressId = savedAddress._id;
       }
-    } else if (addressId && req.body.isOnline) {
+    } else if (addressId && req.body.isOnline === "true") {
       // if the event is online and no address data provided, then we set addressId to null!
       req.body.addressId = null;
       await Address.deleteOne({ _id: addressId });
