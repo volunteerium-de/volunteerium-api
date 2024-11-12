@@ -197,9 +197,7 @@ module.exports = {
       userId: req.params.id,
     });
     // Filter participant records to include only approved and non-pending records
-    const filteredParticipantRecords = participantRecords.filter(
-      (record) => record.isApproved === true && record.isPending === false
-    );
+    const filteredParticipantRecords = participantRecords;
     // Check if no participant records match the criteria
     if (!filteredParticipantRecords.length) {
       return res.status(404).send({
@@ -747,6 +745,8 @@ module.exports = {
     // Generate notifications for participants
     for (const participantId of event.eventParticipantIds) {
       const participant = await EventParticipant.findById(participantId);
+      console.log("bune", participant);
+
       await Notification.generate(
         participant.userId,
         "eventCancellation",

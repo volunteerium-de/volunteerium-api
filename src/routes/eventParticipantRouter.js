@@ -49,7 +49,7 @@ router.post(
   eventParticipantController.confirmAbsence
 ); // only event owner or admin can confirm attendance of participants
 
-router.delete("/:id", idValidation, isAdmin, eventParticipantController.delete);
+router.delete("/:id", idValidation, eventParticipantController.delete);
 
 /* ------------------------------------------------------- */
 module.exports = router;
