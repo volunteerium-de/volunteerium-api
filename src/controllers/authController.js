@@ -191,11 +191,19 @@ module.exports = {
       }
     */
     if (!req.user) {
-      return res.redirect(`${CLIENT_URL}/auth/failure?provider=google`);
+      return res.redirect(
+        `${CLIENT_URL}/auth/failure?provider=google&message=${encodeURIComponent(
+          JSON.stringify(req.t(translations.auth.googleFailed))
+        )}`
+      );
     }
 
     if (!req.user.isActive) {
-      return res.redirect(`${CLIENT_URL}/auth/failure?provider=google`);
+      return res.redirect(
+        `${CLIENT_URL}/auth/failure?provider=google&message=${encodeURIComponent(
+          JSON.stringify(req.t(translations.auth.login.suspended))
+        )}`
+      );
     }
 
     // console.log("User: ", req.user);
