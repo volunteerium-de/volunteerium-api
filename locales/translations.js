@@ -11,6 +11,7 @@ const translations = {
   auth: {
     googleSuccess: "auth-success",
     googleFailed: "auth-failed",
+    googlePassword: "auth-password",
     register: {
       success: "register-success",
       emailExist: "register-email-exist",

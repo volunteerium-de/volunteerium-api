@@ -4,6 +4,7 @@
   "register-success": "Please verify your email to complete your registration",
   "auth-success": "You are successfully logged in with Google!",
   "auth-failed": "There was an issue with the Google provider. Please try again later.",
+  "auth-password": "There was an issue setting your password. Please try again.",
   "register-email-exist": "Email already exists!",
   "verify-email-200": "Successfully verified!",
   "verify-email-no-account": "No account found! Please sign up.",

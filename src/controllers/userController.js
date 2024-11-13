@@ -199,12 +199,15 @@ module.exports = {
     if (req.body.password) {
       const oldPassword = req.body.oldPassword;
 
-      if (!oldPassword) {
+      if (!user.password && user.googleId) {
+        // User has no password set and is using Google, directly hash the new password
+        req.body.password = bcrypt.hashSync(req.body.password, 10);
+      } else if (!oldPassword && user.password) {
         throw new CustomError(
           req.t(translations.user.updatePassword.missing),
           400
         );
-      } else {
+      } else if (oldPassword) {
         // Check if old password is correct
         const isCorrectPassword = bcrypt.compareSync(
           oldPassword,
@@ -216,15 +219,16 @@ module.exports = {
             401
           );
         }
-      }
-      // Compare new password with current hashed password
-      const isSamePassword = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
-      // If new password is different, hash the new password
-      if (!isSamePassword) {
-        req.body.password = bcrypt.hashSync(req.body.password, 10);
+
+        // Compare new password with current hashed password
+        const isSamePassword = bcrypt.compareSync(
+          req.body.password,
+          user.password
+        );
+        // If new password is different, hash the new password
+        if (!isSamePassword) {
+          req.body.password = bcrypt.hashSync(req.body.password, 10);
+        }
       }
     }
 
