@@ -4,6 +4,7 @@
   "register-success": "Bitte bestätigen Sie Ihre E-Mail, um Ihre Registrierung abzuschließen.",
   "auth-success": "Sie haben sich erfolgreich mit Google angemeldet!",
   "auth-failed": "Es gab ein Problem mit dem Google-Anbieter. Bitte versuchen Sie es später noch einmal.",
+  "auth-password": "Beim Einrichten Ihres Passworts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.",
   "register-email-exist": "E-Mail existiert bereits!",
   "verify-email-200": "Erfolgreich verifiziert!",
   "verify-email-no-account": "Kein Konto gefunden! Bitte registrieren Sie sich.",

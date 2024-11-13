@@ -227,7 +227,7 @@ module.exports = {
     res.redirect(
       `${CLIENT_URL}/auth/success?provider=google&user=${encodeURIComponent(
         JSON.stringify(data)
-      )}`
+      )}&new=${req.user.password ? "false" : "true"}`
     );
   },
   // POST
