@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta content="telephone=no" name="format-detection" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Subscription Success - Welcome to Volunteerium</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 1rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        text-align: center;
+        padding-bottom: 25px;
+      }
+
+      .logo img {
+        width: 100px;
+      }
+
+      .divider {
+        height: 1px;
+        background-color: #7f9d9d;
+        margin: 10px 0;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: #10054d;
+      }
+
+      h1 {
+        font-size: 34px;
+        margin-bottom: 20px;
+      }
+
+      h2 {
+        font-size: 28px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+
+      h3 {
+        font-size: 20px;
+        margin-bottom: 15px;
+      }
+
+      p {
+        font-size: 16px;
+        color: #10054d;
+        margin-bottom: 15px;
+      }
+
+      a {
+        color: #007bff;
+        text-decoration: underline;
+      }
+
+      a.es-button,
+      button.es-button {
+        padding: 10px 25px;
+        display: inline-block;
+        background: #69957b;
+        border-radius: 10px;
+        font-weight: normal;
+        text-align: center;
+        color: #ffffff;
+        text-decoration: none;
+      }
+
+      .footer {
+        margin-top: 30px;
+        text-align: center;
+      }
+
+      @media only screen and (max-width: 600px) {
+        h1 {
+          font-size: 30px;
+        }
+
+        h2 {
+          font-size: 24px;
+        }
+
+        h3 {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="logo">
+        <img
+          src="https://demo.stripocdn.email/content/guids/03743a69-03fe-4a9b-9316-88c6bb79e14f/images/logo.png"
+          alt="Logo"
+          title="Logo"
+        />
+      </div>
+      <div class="divider"></div>
+      <h1 style="text-align: center">Welcome to Volunteerium!</h1>
+      <p>
+        Thank you for subscribing to Volunteerium! 🌟 We're thrilled to have you
+        as part of our community of volunteers making a difference in the world.
+      </p>
+      <p>
+        You're all set to receive notifications about volunteer opportunities,
+        news, and updates that align with your passions and skills. Together, we
+        can make a lasting impact.
+      </p>
+
+      <h2>Stay Connected</h2>
+      <p>
+        You can manage your subscription preferences anytime by visiting your
+        profile. If you'd ever like to unsubscribe, just click the button below:
+      </p>
+
+      <div>
+        <a
+          href="{{clientUrl}}/unsubscribe?email={{subscriptionEmail}}&identifier={{subscriptionId}}"
+          class="es-button"
+          >Unsubscribe</a
+        >
+      </div>
+
+      <h2>Need Assistance?</h2>
+      <p>
+        If you have any questions or need help, feel free to reply to this email
+        or contact our support team at
+        <a href="mailto:info.volunteerium@gmail.com"
+          >info.volunteerium@gmail.com</a
+        >.
+      </p>
+
+      <div class="footer">
+        <p>Best regards,</p>
+        <p><strong>Your Volunteerium Team</strong></p>
+      </div>
+    </div>
+  </body>
+</html>

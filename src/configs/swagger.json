@@ -32,11 +32,59 @@
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "paths": {
-    "/tokens/": {
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/tokens/": {
       "get": {
         "tags": ["Token"],
         "summary": "Get all tokens",
         "description": "Retrieve a list of all tokens",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of tokens retrieved successfully",
@@ -99,6 +147,42 @@
         "description": "Create a new token and save it to the database",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
@@ -153,11 +237,56 @@
         }
       }
     },
-    "/tokens/{id}": {
+    "/api/v1/tokens/{id}": {
       "get": {
         "tags": ["Token"],
         "summary": "Get a token by ID",
         "description": "Retrieve a specific token by its ID",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Token ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Token retrieved successfully",
@@ -197,6 +326,51 @@
         "tags": ["Token"],
         "summary": "Delete a token by ID",
         "description": "Delete a specific token by its ID",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Token ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "204": {
             "description": "Token deleted successfully"
@@ -212,7 +386,7 @@
                 },
                 "message": {
                   "type": "string",
-                  "example": "User not found"
+                  "example": "Token not found"
                 }
               },
               "xml": {
@@ -223,12 +397,48 @@
         }
       }
     },
-    "/auth/register": {
+    "/api/v1/auth/register": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Register",
         "description": "Register with valid fullName, email, and password",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -298,12 +508,48 @@
         }
       }
     },
-    "/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Login",
         "description": "Login with email and password to get simpleToken and JWT",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -330,11 +576,49 @@
         }
       }
     },
-    "/auth/logout": {
+    "/api/v1/auth/logout": {
       "get": {
         "tags": ["Authentication"],
         "summary": "SimpleToken: Logout",
         "description": "Delete simple token key and bypass JWT token",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Logout successful",
@@ -396,12 +680,48 @@
         }
       }
     },
-    "/auth/refresh": {
+    "/api/v1/auth/refresh": {
       "post": {
         "tags": ["Authentication"],
         "summary": "JWT: Refresh",
         "description": "Refresh accessToken with  ",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -488,12 +808,48 @@
         }
       }
     },
-    "/auth/verify-email": {
+    "/api/v1/auth/verify-email": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Verify Email",
         "description": "Verify user email with a verification token",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "token",
             "in": "path",
@@ -530,12 +886,108 @@
         }
       }
     },
-    "/auth/forgot-password": {
+    "/api/v1/auth/verify-recaptcha": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/forgot-password": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Forgot Password",
         "description": "Request a URL with email to reset password",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -616,12 +1068,48 @@
         }
       }
     },
-    "/auth/verify-reset": {
+    "/api/v1/auth/verify-reset": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Verify Reset Code",
         "description": "Verify reset code and token for password reset",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -691,16 +1179,52 @@
         }
       }
     },
-    "/auth/reset/{resetToken}": {
+    "/api/v1/auth/reset/{resetToken}": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Reset Password",
         "description": "Reset password with email, new password, and reset token.",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "resetToken",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
             "type": "string"
           },
           {
@@ -790,9 +1314,47 @@
         }
       }
     },
-    "/auth/google": {
+    "/api/v1/auth/google": {
       "get": {
         "description": "",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -800,11 +1362,49 @@
         }
       }
     },
-    "/auth/google/callback": {
+    "/api/v1/auth/google/callback": {
       "get": {
         "tags": ["Authentication"],
         "summary": "Successful Authentication Callback",
         "description": "Handles successful authentication, generates tokens, and redirects the user to the client URL with user data encoded in the query parameters.",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "302": {
             "description": "Redirects to the client URL with user data",
@@ -840,11 +1440,49 @@
         }
       }
     },
-    "/users/": {
+    "/api/v1/users/": {
       "get": {
         "tags": ["Users"],
         "summary": "List Users",
         "description": "\r  You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -852,18 +1490,54 @@
         }
       }
     },
-    "/users/{id}": {
+    "/api/v1/users/{id}": {
       "get": {
         "tags": ["Users"],
         "summary": "Get Single User",
         "description": "",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "User ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -878,11 +1552,47 @@
         "description": "",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "User ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -905,14 +1615,53 @@
         "description": "",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "User ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
+          "202": {
+            "description": "Accepted"
+          },
           "204": {
             "description": "User   successfully",
             "schema": {
@@ -959,11 +1708,47 @@
         "description": "",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "User ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -981,11 +1766,49 @@
         }
       }
     },
-    "/details/users/": {
+    "/api/v1/details/users/": {
       "get": {
         "tags": ["Details"],
         "summary": "List Users' Details",
         "description": "\r  You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -993,18 +1816,54 @@
         }
       }
     },
-    "/details/users/{id}": {
+    "/api/v1/details/users/{id}": {
       "get": {
         "tags": ["Details"],
         "summary": "Get Single User's Details",
         "description": "",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "User ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -1019,11 +1878,47 @@
         "description": "",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "User ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -1046,11 +1941,47 @@
         "description": "",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "User ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -1068,11 +1999,49 @@
         }
       }
     },
-    "/events/": {
+    "/api/v1/events/": {
       "get": {
         "tags": ["Event"],
         "summary": "List all events",
         "description": "\r  Retrieve a list of events based on search and filter criteria. You can send query parameters to filter, sort, and paginate the results.\r  <ul>\r  <li>Search by title: <b>search[title]=charity</b></li>\r  <li>Search by location: <b>search[location]=berlin</b></li>\r  <li>Filter events by start date: <b>filter[startDate]=2024-10-10</b></li>\r  <li>Filter events by end date: <b>filter[endDate]=2024-10-28</b></li>\r  <li>Filter by categories: <b>filter[category]=health,animal,education</b></li>\r  <li>Sort events by creation date: <b>sort[createdAt]=desc</b></li>\r  <li>Pagination: <b>page=1</b> and <b>limit=5</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1084,6 +2053,42 @@
         "summary": "Create a new event",
         "description": "Create a new event and save it to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1115,18 +2120,54 @@
         }
       }
     },
-    "/events/participant/{id}": {
+    "/api/v1/events/participant/{id}": {
       "get": {
         "tags": ["Event"],
         "summary": "List events participated by a user",
         "description": "Retrieve a list of events that a specific user has participated in, based on user ID from the EventParticipant model.",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "User ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -1139,11 +2180,49 @@
         }
       }
     },
-    "/events/languages": {
+    "/api/v1/events/languages": {
       "get": {
         "tags": ["Event"],
         "summary": "List languages with event count",
         "description": "Retrieve a list of languages and the count of events for each language",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1151,18 +2230,54 @@
         }
       }
     },
-    "/events/{id}": {
+    "/api/v1/events/{id}": {
       "get": {
         "tags": ["Event"],
         "summary": "Get an event by ID",
         "description": "Retrieve a specific event by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Event ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -1176,6 +2291,49 @@
         "summary": "Update an event by ID",
         "description": "Update a specific event by its ID and save the changes to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Event ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1215,14 +2373,53 @@
         "description": "Delete a specific event by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Event ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
           "204": {
             "description": "Event deleted successfully"
           },
@@ -1252,6 +2449,49 @@
         "summary": "Update an event by ID",
         "description": "Update a specific event by its ID and save the changes to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Event ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1286,11 +2526,49 @@
         }
       }
     },
-    "/interests/": {
+    "/api/v1/interests/": {
       "get": {
         "tags": ["Interest"],
         "summary": "Get all interests",
         "description": "\r  You can send query parameters for search[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>search[name]=value1</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of interests retrieved successfully",
@@ -1348,6 +2626,42 @@
         "summary": "Create a new interest",
         "description": "Create a new interest and save it to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1419,11 +2733,56 @@
         }
       }
     },
-    "/interests/{id}": {
+    "/api/v1/interests/{id}": {
       "get": {
         "tags": ["Interest"],
         "summary": "Get an interest by ID",
         "description": "Retrieve a specific interest by its ID",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Interest ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Interest retrieved successfully",
@@ -1479,6 +2838,49 @@
         "summary": "Update an existing interest",
         "description": "Update the details of an existing interest by its ID",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Interest ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1572,7 +2974,51 @@
         "tags": ["Interest"],
         "summary": "Delete an interest by ID",
         "description": "Delete a specific interest by its ID",
-
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Interest ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "204": {
             "description": "Interest deleted successfully"
@@ -1603,6 +3049,49 @@
         "summary": "Update an existing interest",
         "description": "Update the details of an existing interest by its ID",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Interest ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1693,11 +3182,49 @@
         }
       }
     },
-    "/addresses/": {
+    "/api/v1/addresses/": {
       "get": {
         "tags": ["Address"],
         "summary": "Get all addresses",
         "description": "\r  You can send query parameters for search[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>search[city]=value1</b></li>\r  <li>URL/?<b>sort[city]=1&sort[country]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1708,6 +3235,44 @@
         "tags": ["Address"],
         "summary": "Create a new address",
         "description": "Create a new address and save it to the database",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -1715,11 +3280,56 @@
         }
       }
     },
-    "/addresses/{id}": {
+    "/api/v1/addresses/{id}": {
       "get": {
         "tags": ["Address"],
         "summary": "Get an address by ID",
         "description": "Retrieve a specific address by its ID",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Address ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1733,6 +3343,51 @@
         "tags": ["Address"],
         "summary": "Update an existing address",
         "description": "Update the details of an existing address by its ID",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Address ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "202": {
             "description": "Accepted"
@@ -1749,7 +3404,51 @@
         "tags": ["Address"],
         "summary": "Delete an address by ID",
         "description": "Delete a specific address by its ID",
-
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Address ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "204": {
             "description": "Address deleted successfully"
@@ -1779,7 +3478,51 @@
         "tags": ["Address"],
         "summary": "Update an existing address",
         "description": "Update the details of an existing address by its ID",
-
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Address ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "202": {
             "description": "Accepted"
@@ -1793,11 +3536,49 @@
         }
       }
     },
-    "/documents/": {
+    "/api/v1/documents/": {
       "get": {
         "tags": ["Document"],
         "summary": "Get all documents",
         "description": "\r  You can send query parameters for search[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>search[title]=value1</b></li>\r  <li>URL/?<b>sort[title]=1&sort[createdAt]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of documents retrieved successfully",
@@ -1841,6 +3622,42 @@
         "summary": "Create a new document",
         "description": "Create a new document and save it to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1928,12 +3745,56 @@
         }
       }
     },
-    "/documents/{id}": {
+    "/api/v1/documents/{id}": {
       "get": {
         "tags": ["Document"],
         "summary": "Get a document by ID",
         "description": "Retrieve a specific document by its ID",
-
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Document ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Document retrieved successfully",
@@ -1993,6 +3854,49 @@
         "summary": "Update an existing document",
         "description": "Update the details of an existing document by its ID",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Document ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -2094,8 +3998,55 @@
         "tags": ["Document"],
         "summary": "Delete a document by ID",
         "description": "Delete a specific document by its ID",
-
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Document ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
           "204": {
             "description": "Document deleted successfully"
           },
@@ -2125,6 +4076,49 @@
         "summary": "Update an existing document",
         "description": "Update the details of an existing document by its ID",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Document ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -2223,11 +4217,49 @@
         }
       }
     },
-    "/event-feedbacks/": {
+    "/api/v1/event-feedbacks/": {
       "get": {
         "tags": ["EventFeedback"],
         "summary": "Get all event feedbacks",
         "description": "\r  You can send query parameters for search[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>search[feedback]=value1</b></li>\r  <li>URL/?<b>filter[eventId]=value1</b></li>\r  <li>URL/?<b>sort[rating]=1&sort[createdAt]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of event feedbacks retrieved successfully",
@@ -2297,6 +4329,42 @@
         "summary": "Create a new event feedback",
         "description": "Create a new event feedback and save it to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -2392,11 +4460,56 @@
         }
       }
     },
-    "/event-feedbacks/{id}": {
+    "/api/v1/event-feedbacks/{id}": {
       "get": {
         "tags": ["EventFeedback"],
         "summary": "Get feedback by ID",
         "description": "Retrieve a specific feedback by its ID",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "EventFeedback ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "EventFeedback retrieved successfully",
@@ -2464,6 +4577,49 @@
         "summary": "Update an existing feedback",
         "description": "Update the details of an existing feedback by its ID",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "EventFeedback ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -2575,11 +4731,47 @@
         "description": "Delete a specific feedback by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "EventFeedback ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -2613,11 +4805,47 @@
         "description": "Update the details of an existing feedback by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "EventFeedback ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -2725,11 +4953,49 @@
         }
       }
     },
-    "/notifications/": {
+    "/api/v1/notifications/": {
       "get": {
         "tags": ["Notification"],
         "summary": "Get all notifications for a user",
         "description": "Retrieve all notifications for the authenticated user.\r  You can send query parameters for search[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>search[content]=value1</b></li>\r  <li>URL/?<b>sort[createdAt]=1&sort[notificationType]=-1</b></li>\r  <li>URL/?<b>page=2&limit=10</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of notifications retrieved successfully",
@@ -2799,6 +5065,42 @@
         "summary": "Create a new notification",
         "description": "Create a new notification and save it to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -2890,11 +5192,49 @@
         }
       }
     },
-    "/notifications/read-all": {
+    "/api/v1/notifications/read-all": {
       "get": {
         "tags": ["Notification"],
         "summary": "Mark all notifications as read for a user",
         "description": "Mark all unread notifications as read for the authenticated user",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "All notifications marked as read successfully",
@@ -2918,18 +5258,54 @@
         }
       }
     },
-    "/notifications/{id}": {
+    "/api/v1/notifications/{id}": {
       "get": {
         "tags": ["Notification"],
         "summary": "Get a notification by ID",
         "description": "Retrieve a specific notification by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Notification ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -3000,11 +5376,47 @@
         "description": "Update the details of an existing notification by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Notification ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -3121,11 +5533,47 @@
         "description": "Delete a specific notification by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Notification ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -3159,11 +5607,47 @@
         "description": "Update the details of an existing notification by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Notification ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -3275,11 +5759,49 @@
         }
       }
     },
-    "/event-participants/": {
+    "/api/v1/event-participants/": {
       "get": {
         "tags": ["EventParticipant"],
         "summary": "Get all event participants",
         "description": "You can send query parameters for search[], filter[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>filter[eventId]=value1</b></li>\r  <li>URL/?<b>filter[userId]=value2</b></li>\r  <li>URL/?<b>sort[createdAt]=-1</b></li>\r  <li>URL/?<b>page=2&limit=10</b></li>\r  </ul>",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of event participants retrieved successfully",
@@ -3331,12 +5853,48 @@
         }
       }
     },
-    "/event-participants/join": {
+    "/api/v1/event-participants/join": {
       "post": {
         "tags": ["EventParticipant"],
         "summary": "Request to join an event",
         "description": "User sends a request to join an event",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -3399,12 +5957,48 @@
         }
       }
     },
-    "/event-participants/approve": {
+    "/api/v1/event-participants/approve": {
       "post": {
         "tags": ["EventParticipant"],
         "summary": "Approve an event participant",
         "description": "Approve a participant to join an event",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -3467,12 +6061,48 @@
         }
       }
     },
-    "/event-participants/reject": {
+    "/api/v1/event-participants/reject": {
       "post": {
         "tags": ["EventParticipant"],
         "summary": "Reject an event participant",
         "description": "Reject a participant from joining an event",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -3535,12 +6165,48 @@
         }
       }
     },
-    "/event-participants/confirm-attendance": {
+    "/api/v1/event-participants/confirm-attendance": {
       "post": {
         "tags": ["EventParticipant"],
         "summary": "Confirm attendance of a participant",
         "description": "Confirm that a participant has joined an event",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -3603,12 +6269,48 @@
         }
       }
     },
-    "/event-participants/confirm-absence": {
+    "/api/v1/event-participants/confirm-absence": {
       "post": {
         "tags": ["EventParticipant"],
         "summary": "Confirm absence of a participant",
         "description": "Confirm that a participant has not joined an event",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -3671,21 +6373,60 @@
         }
       }
     },
-    "/event-participants/{id}": {
+    "/api/v1/event-participants/{id}": {
       "delete": {
         "tags": ["EventParticipant"],
         "summary": "Delete a participant by ID",
         "description": "Delete a specific participant by their ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "EventParticipant ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
           "204": {
             "description": "Participant deleted successfully"
           },
@@ -3711,11 +6452,49 @@
         }
       }
     },
-    "/conversations/": {
+    "/api/v1/conversations/": {
       "get": {
         "tags": ["Conversation"],
         "summary": "Get all conversations",
         "description": "\r  You can send query parameters for search[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>search[field1]=value1</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[createdAt]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -3727,6 +6506,42 @@
         "summary": "Create a new conversation",
         "description": "Create a new conversation and save it to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -3839,18 +6654,54 @@
         }
       }
     },
-    "/conversations/{id}": {
+    "/api/v1/conversations/{id}": {
       "get": {
         "tags": ["Conversation"],
         "summary": "Get a conversation by ID",
         "description": "Retrieve a specific conversation by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Conversation ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -3865,11 +6716,47 @@
         "description": "Update the details of an existing conversation by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Conversation ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -3968,11 +6855,47 @@
         "description": "Delete a specific conversation by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Conversation ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -3994,9 +6917,6 @@
                 "name": "main"
               }
             }
-          },
-          "204": {
-            "description": "No Content"
           },
           "404": {
             "description": "Conversation not found",
@@ -4025,11 +6945,47 @@
         "description": "Update the details of an existing conversation by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Conversation ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -4123,11 +7079,49 @@
         }
       }
     },
-    "/messages/": {
+    "/api/v1/messages/": {
       "get": {
         "tags": ["Message"],
         "summary": "Get all messages",
         "description": "\r  You can send query parameters for search[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>search[field1]=value1</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[createdAt]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of messages retrieved successfully",
@@ -4199,6 +7193,42 @@
         "summary": "Create a new message",
         "description": "Create a new message and save it to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -4286,18 +7316,54 @@
         }
       }
     },
-    "/messages/{id}": {
+    "/api/v1/messages/{id}": {
       "get": {
         "tags": ["Message"],
         "summary": "Get a message by ID",
         "description": "Retrieve a specific message by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Message ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -4376,11 +7442,47 @@
         "description": "Update the details of an existing message by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Message ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -4495,11 +7597,47 @@
         "description": "Delete a specific message by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Message ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -4552,11 +7690,47 @@
         "description": "Update the details of an existing message by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Message ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "body",
@@ -4666,11 +7840,49 @@
         }
       }
     },
-    "/event-reports/": {
+    "/api/v1/event-reports/": {
       "get": {
         "tags": ["EventReport"],
         "summary": "Get all event reports",
         "description": "\r  Retrieve a list of all event reports. You can send query parameters for search[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>search[field1]=value1</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[createdAt]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of event reports retrieved successfully",
@@ -4741,6 +7953,42 @@
         "summary": "Create a new event report",
         "description": "Create a new event report and save it to the database",
         "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -4839,18 +8087,54 @@
         }
       }
     },
-    "/event-reports/{id}": {
+    "/api/v1/event-reports/{id}": {
       "get": {
         "tags": ["EventReport"],
         "summary": "Get an event report by ID",
         "description": "Retrieve a specific event report by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Event Report ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -4929,11 +8213,47 @@
         "description": "Delete a specific event report by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Event Report ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -4962,11 +8282,49 @@
         }
       }
     },
-    "/contacts/": {
+    "/api/v1/contacts/": {
       "get": {
         "tags": ["Contact"],
         "summary": "Get all contacts",
         "description": "\r  Retrieve a list of all contacts.You can send query parameters for search[], sort[], page, and limit.\r  <ul>\r  <li>URL/?<b>search[field1]=value1</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[createdAt]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of contacts retrieved successfully",
@@ -5038,6 +8396,42 @@
         "description": "Handles user contact&message submission by validating input and sending contact form via email.",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
@@ -5071,18 +8465,54 @@
         }
       }
     },
-    "/contacts/{id}": {
+    "/api/v1/contacts/{id}": {
       "get": {
         "tags": ["Contact"],
         "summary": "Get a contact by ID",
         "description": "Retrieve a specific contact by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Contact ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -5161,11 +8591,47 @@
         "description": "Delete a specific contact by its ID",
         "parameters": [
           {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "Contact ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -5190,6 +8656,329 @@
                 "name": "main"
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/subscriptions/": {
+      "get": {
+        "tags": ["Subscription"],
+        "summary": "Get all subscriptions",
+        "description": "Retrieve a list of all subscriptions",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of subscriptions retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "details": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "object"
+                        }
+                      }
+                    }
+                  }
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "subscription-id"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "subscription-email"
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Subscription"],
+        "summary": "Create a new subscription",
+        "description": "Create a new subscription and save it to the database",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "subscription-email"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Subscription created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Successfully   to our newsletter. Stay tuned for updates!"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "subscription-id"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "subscription-email"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid email or email already exists",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Failed to subscribe. Please try again later."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/subscriptions/{id}": {
+      "delete": {
+        "tags": ["Subscription"],
+        "summary": "Unsubscribe from a subscription by ID",
+        "description": "Unsubscribe a user by their subscription ID.",
+        "parameters": [
+          {
+            "name": "VERSION",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Subscription ID"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successfully  ",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Successfully   from our newsletter. We're sorry to see you go!"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid subscription ID",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Failed to unsubscribe. Please try again later."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Subscription not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Subscription not found"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -5593,10 +9382,6 @@
               "type": "boolean",
               "example": true
             },
-            "required": {
-              "type": "boolean",
-              "example": true
-            },
             "maxlength": {
               "type": "number",
               "example": 300
@@ -5707,10 +9492,6 @@
               "ref": {
                 "type": "string",
                 "example": "Interest"
-              },
-              "required": {
-                "type": "boolean",
-                "example": true
               },
               "index": {
                 "type": "boolean",
@@ -6324,17 +10105,9 @@
               "type": "boolean",
               "example": true
             },
-            "required": {
-              "type": "boolean",
-              "example": true
-            },
-            "minlength": {
-              "type": "number",
-              "example": 10
-            },
             "maxlength": {
               "type": "number",
-              "example": 1000
+              "example": 300
             }
           }
         }
@@ -6464,7 +10237,7 @@
             }
           }
         },
-        "content": {
+        "contentEN": {
           "type": "object",
           "properties": {
             "type": {
@@ -6484,7 +10257,31 @@
             },
             "maxLength": {
               "type": "number",
-              "example": 200
+              "example": 250
+            }
+          }
+        },
+        "contentDE": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "function"
+            },
+            "required": {
+              "type": "boolean",
+              "example": true
+            },
+            "trim": {
+              "type": "boolean",
+              "example": true
+            },
+            "minLength": {
+              "type": "number",
+              "example": 5
+            },
+            "maxLength": {
+              "type": "number",
+              "example": 250
             }
           }
         },

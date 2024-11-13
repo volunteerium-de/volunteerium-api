@@ -37,5 +37,7 @@ router.use("/event-reports", require("./eventReportRouter"));
 router.use("/contacts", require("./contactRouter"));
 // documentations:
 router.use("/documentations", require("./documentationRouter"));
+// subscriptions:
+router.use("/subscriptions", require("./subscriptionRouter"));
 /* ------------------------------------------------------- */
 module.exports = router;
