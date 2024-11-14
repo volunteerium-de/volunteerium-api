@@ -571,7 +571,7 @@ module.exports = {
       // Send forgot request email to user
       const forgotEmailSubject = "Password Reset Request!";
       const forgotEmailHtml = getForgotPasswordEmailHtml(
-        user.fullName.split(" ")[0],
+        user.fullName.split(" ")[0] || user.organizationName,
         resetPasswordToken,
         resetCode
       );
@@ -739,7 +739,7 @@ module.exports = {
 
     const resetEmailSubject = "Password Reset Confirmation!";
     const resetEmailHtml = getResetPasswordEmailHtml(
-      user.fullName.split(" ")[0]
+      user.fullName.split(" ")[0] || user.organizationName
     );
 
     await sendEmail(email, resetEmailSubject, resetEmailHtml);
