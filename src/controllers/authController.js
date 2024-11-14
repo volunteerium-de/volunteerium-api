@@ -154,7 +154,7 @@ module.exports = {
     // Send email to user
     const emailSubject = "Welcome to Volunteerium!";
     const emailHtml = getWelcomeEmailHtml(
-      fullName.split(" ")[0],
+      fullName?.split(" ")[0] || fullName,
       encodeURIComponent(verifyEmailToken)
     );
 
@@ -304,7 +304,7 @@ module.exports = {
           // Send email to user
           const emailSubject = "Verify Your Email for Volunteerium!";
           const emailHtml = getWelcomeEmailHtml(
-            user.fullName.split(" ")[0],
+            user?.fullName?.split(" ")[0] || user?.organizationName,
             encodeURIComponent(verifyEmailToken)
           );
 
@@ -571,7 +571,7 @@ module.exports = {
       // Send forgot request email to user
       const forgotEmailSubject = "Password Reset Request!";
       const forgotEmailHtml = getForgotPasswordEmailHtml(
-        user?.fullName.split(" ")[0] || user?.organizationName,
+        user?.fullName?.split(" ")[0] || user?.organizationName,
         resetPasswordToken,
         resetCode
       );
@@ -739,7 +739,7 @@ module.exports = {
 
     const resetEmailSubject = "Password Reset Confirmation!";
     const resetEmailHtml = getResetPasswordEmailHtml(
-      user?.fullName.split(" ")[0] || user?.organizationName
+      user?.fullName?.split(" ")[0] || user?.organizationName
     );
 
     await sendEmail(email, resetEmailSubject, resetEmailHtml);
