@@ -76,6 +76,7 @@ const translations = {
 
   unsubscription: {
     success: "unsubscription-success",
+    admin: "unsubscription-admin",
     failed: "unsubscription-failed",
     emailNotExists: "unsubscription-emailNotExists",
   },

@@ -9,6 +9,7 @@
   "subscription-fail": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es später erneut.",
   "subscription-emailExists": "Die E-Mail-Adresse existiert bereits. Bitte verwenden Sie eine andere E-Mail-Adresse.",
   "unsubscription-success": "Erfolgreich von unserem Newsletter abgemeldet. Es tut uns leid, Sie gehen zu sehen!",
+  "unsubscription-admin": "Abonnement erfolgreich aus der Datenbank gelöscht.",
   "unsubscription-fail": "Abmeldung fehlgeschlagen. Bitte versuchen Sie es später erneut.",
   "unsubscription-emailNotExists": "Diese E-Mail-Adresse ist bereits nicht abonniert. Bitte überprüfen Sie sie und versuchen Sie es erneut.",
   "register-email-exist": "E-Mail existiert bereits!",

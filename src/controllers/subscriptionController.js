@@ -141,7 +141,10 @@ module.exports = {
 
       res.status(202).send({
         error: false,
-        message: req.t(translations.unsubscription.success),
+        message:
+          req?.user?.userType === "admin"
+            ? req.t(translations.unsubscription.admin)
+            : req.t(translations.unsubscription.success),
       });
     } catch (error) {
       res.status(500).send({
