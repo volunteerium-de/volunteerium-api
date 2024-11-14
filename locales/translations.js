@@ -68,6 +68,18 @@ const translations = {
     },
   },
 
+  subscription: {
+    success: "subscription-success",
+    failed: "subscription-failed",
+    emailExists: "subscription-emailExists",
+  },
+
+  unsubscription: {
+    success: "unsubscription-success",
+    failed: "unsubscription-failed",
+    emailNotExists: "unsubscription-emailNotExists",
+  },
+
   address: {
     create: "address-create-201",
     update: "address-update-202",
