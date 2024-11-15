@@ -104,7 +104,6 @@ module.exports = {
       },
       {
         path: "addressId",
-        select: "city country zipCode",
       },
       {
         path: "eventParticipantIds",
@@ -226,7 +225,6 @@ module.exports = {
         },
         {
           path: "addressId",
-          select: "city country zipCode",
         },
         {
           path: "eventParticipantIds",
