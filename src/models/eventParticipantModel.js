@@ -38,9 +38,6 @@ const EventParticipantSchema = new mongoose.Schema(
   }
 );
 
-// Unique index to ensure a user can join an event only once
-EventParticipantSchema.index({ userId: 1, eventId: 1 }, { unique: true });
-
 // Helper function to check if a participant exists
 const findAndValidateParticipant = async (userId, eventId) => {
   const participant = await mongoose.models.EventParticipant.findOne({
@@ -61,7 +58,7 @@ EventParticipantSchema.statics.requestJoin = async function (userId, eventId) {
     userId,
     eventId,
   });
-  if (participant) {
+  if (participant && participant.isApproved) {
     throw new CustomError("User has already joined this event.", 400);
   }
 
@@ -81,19 +78,6 @@ EventParticipantSchema.statics.approveParticipant = async function (
   const updatedParticipant = await eventParticipant.save();
   return updatedParticipant;
 };
-
-EventParticipantSchema.statics.rejectParticipant = async function (
-  userId,
-  eventId
-) {
-  const eventParticipant = await findAndValidateParticipant(userId, eventId);
-  eventParticipant.isPending = false;
-  eventParticipant.isApproved = false;
-  eventParticipant.joinStatus = "pending";
-  const updatedParticipant = await eventParticipant.save();
-  return updatedParticipant;
-};
-
 EventParticipantSchema.statics.confirmAttendance = async function (
   userId,
   eventId

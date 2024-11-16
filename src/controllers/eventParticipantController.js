@@ -279,16 +279,30 @@ module.exports = {
     const event = await findEvent(eventId, t);
     await findUser(userId, t);
 
-    const updatedParticipant = await EventParticipant.rejectParticipant(
-      userId,
-      eventId
-    );
-
-    if (event.eventParticipantIds.includes(updatedParticipant._id)) {
-      await Event.findByIdAndUpdate(eventId, {
-        $pull: { eventParticipantIds: updatedParticipant._id },
+    if (event && event.eventParticipantIds.includes(participant._id)) {
+      await Event.findByIdAndUpdate(participant.eventId, {
+        $pull: { eventParticipantIds: participant._id },
       });
+
+      const conversation = await Conversation.findOne({
+        eventId: event._id,
+        createdBy: event.createdBy,
+      });
+
+      if (
+        conversation &&
+        conversation.participantIds.includes(participant.userId)
+      ) {
+        await Conversation.findByIdAndUpdate(conversation._id, {
+          $pull: { participantIds: participant.userId },
+        });
+
+        const io = getIoInstance();
+        io.emit("receive_conversations");
+      }
     }
+
+    await EventParticipant.findByIdAndDelete(req.params.id);
 
     const conversation = await Conversation.findOne({
       eventId,
