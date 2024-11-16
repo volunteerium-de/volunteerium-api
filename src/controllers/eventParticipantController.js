@@ -279,6 +279,8 @@ module.exports = {
     const event = await findEvent(eventId, t);
     await findUser(userId, t);
 
+    const participant = await EventParticipant.findOne({ userId, eventId });
+
     if (event && event.eventParticipantIds.includes(participant._id)) {
       await Event.findByIdAndUpdate(participant.eventId, {
         $pull: { eventParticipantIds: participant._id },
