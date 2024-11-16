@@ -302,7 +302,7 @@ module.exports = {
       }
     }
 
-    await EventParticipant.findByIdAndDelete(req.params.id);
+    await EventParticipant.deleteOne({ userId, eventId });
 
     const conversation = await Conversation.findOne({
       eventId,
@@ -328,7 +328,6 @@ module.exports = {
     res.status(200).send({
       error: false,
       message: req.t(translations.eventParticipant.reject.success),
-      new: updatedParticipant,
     });
   },
 
