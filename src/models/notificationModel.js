@@ -37,6 +37,7 @@ const NotificationSchema = new mongoose.Schema(
         "eventUpdate",
         "eventJoinRequest",
         "eventApproveParticipant",
+        "eventRejectParticipant",
         "eventCancellation",
         "confirmEventParticipants",
         "scoreUpdate",
