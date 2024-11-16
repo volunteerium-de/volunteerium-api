@@ -516,7 +516,7 @@ module.exports = {
 
     if (
       String(eventParticipant.eventId) === String(req.body.eventId) &&
-      eventParticipant.joinStatus
+      eventParticipant.isApproved
     ) {
       throw new CustomError(
         req.t(translations.permission.canJoinEvent.alreadyJoined),
