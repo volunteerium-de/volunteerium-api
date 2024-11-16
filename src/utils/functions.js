@@ -39,6 +39,11 @@ function notificationContentGenerator(
         en: `Your request to join the event "${eventTitle}" has been approved.`,
         de: `Ihre Anfrage, an der Veranstaltung "${eventTitle}" teilzunehmen, wurde genehmigt.`,
       };
+    case "eventRejectParticipant":
+      return {
+        en: `We regret to inform you that your request to join the event "${eventTitle}" has been rejected.`,
+        de: `Wir bedauern, Ihnen mitteilen zu müssen, dass Ihre Anfrage, an der Veranstaltung "${eventTitle}" teilzunehmen, abgelehnt wurde.`,
+      };
     case "eventCancellation":
       return {
         en: `We regret to inform you that the event "${eventTitle}" has been cancelled.`,

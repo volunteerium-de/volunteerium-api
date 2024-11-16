@@ -281,6 +281,8 @@ module.exports = {
 
     const participant = await EventParticipant.findOne({ userId, eventId });
 
+    await Notification.generate(userId, "eventRejectParticipant", event.title);
+
     if (event && event.eventParticipantIds.includes(participant._id)) {
       await Event.findByIdAndUpdate(participant.eventId, {
         $pull: { eventParticipantIds: participant._id },

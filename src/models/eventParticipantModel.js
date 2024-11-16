@@ -78,6 +78,7 @@ EventParticipantSchema.statics.approveParticipant = async function (
   const updatedParticipant = await eventParticipant.save();
   return updatedParticipant;
 };
+
 EventParticipantSchema.statics.confirmAttendance = async function (
   userId,
   eventId
