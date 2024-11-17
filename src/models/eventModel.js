@@ -183,9 +183,8 @@ EventSchema.pre("save", function (next) {
 
 // Pre-update hook for updateOne and findOneAndUpdate
 EventSchema.pre(["updateOne", "findOneAndUpdate"], function (next, opts) {
-  const t = this.translate;
-
   const update = this.getUpdate();
+  const t = update.translate;
 
   // Validate address if the event is offline
   if (update.isOnline === false && !update.addressId) {
