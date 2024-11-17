@@ -224,7 +224,46 @@ EventSchema.methods.customUpdate = function (update, options, t) {
       runValidators: true,
       ...options, // Ensure other options are passed along
     })
-    .populate("addressId");
+    .populate([
+      {
+        path: "createdBy",
+        select: "userType email fullName organizationName",
+        populate: {
+          path: "userDetailsId",
+          select:
+            "avatar isFullNameDisplay organizationLogo organizationDesc organizationUrl",
+        },
+      },
+      {
+        path: "addressId",
+      },
+      {
+        path: "interestIds",
+        select: "name",
+      },
+      {
+        path: "eventParticipantIds",
+        populate: {
+          path: "userId",
+          select: "email fullName",
+          populate: {
+            path: "userDetailsId",
+            select: "avatar isFullNameDisplay",
+          },
+        },
+      },
+      {
+        path: "eventFeedbackIds",
+        populate: {
+          path: "userId",
+          select: "email fullName",
+          populate: {
+            path: "userDetailsId",
+            select: "avatar isFullNameDisplay",
+          },
+        },
+      },
+    ]);
 };
 
 module.exports = mongoose.model("Event", EventSchema);
