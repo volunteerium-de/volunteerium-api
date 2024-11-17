@@ -2,6 +2,8 @@
 
 const translations = require("../../locales/translations");
 const Interest = require("../models/interestModel");
+const Event = require("../models/eventModel");
+const UserDetails = require("../models/userDetailsModel");
 
 module.exports = {
   list: async (req, res) => {
@@ -151,11 +153,14 @@ module.exports = {
         runValidators: true,
       }
     );
-    res.status(data ? 202 : 404).send({
-      error: !data,
-      message: data
-        ? req.t(translations.interest.update)
-        : req.t(translations.interest.notFound),
+
+    if (!data) {
+      throw new CustomError(req.t(translations.interest.notFound), 404);
+    }
+
+    res.status(202).send({
+      error: false,
+      message: req.t(translations.interest.update),
       data,
     });
   },
@@ -170,7 +175,7 @@ module.exports = {
         type: 'string',
         description: 'Interest ID'
       }
-      #swagger.responses[204] = {
+      #swagger.responses[200] = {
         description: 'Interest deleted successfully'
       }
       #swagger.responses[404] = {
@@ -181,12 +186,31 @@ module.exports = {
         }
       }
     */
-    const data = await Interest.deleteOne({ _id: req.params.id });
-    res.status(data.deletedCount ? 204 : 404).send({
-      error: !data.deletedCount,
-      message: data.deletedCount
-        ? req.t(translations.interest.delete)
-        : req.t(translations.interest.notFound),
+    const interestId = req.params.id;
+
+    const data = await Interest.deleteOne({ _id: interestId });
+
+    if (!data.deletedCount) {
+      return res.status(404).send({
+        error: true,
+        message: req.t(translations.interest.notFound),
+      });
+    }
+
+    await Promise.all([
+      Event.updateMany(
+        { interestIds: interestId },
+        { $pull: { interestIds: interestId } }
+      ),
+      UserDetails.updateMany(
+        { interestIds: interestId },
+        { $pull: { interestIds: interestId } }
+      ),
+    ]);
+
+    res.status(200).send({
+      error: false,
+      message: req.t(translations.interest.delete),
     });
   },
 };

@@ -10,6 +10,12 @@ const InterestSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    nameDE: {
+      type: String,
+      trim: true,
+      required: true,
+      unique: true,
+    },
   },
   {
     collection: "interests",
