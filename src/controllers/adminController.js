@@ -14,13 +14,13 @@ const models = {
   User: require("../models/userModel"),
   Interest: require("../models/interestModel"),
   Contact: require("../models/contactModel"),
-  Address: require("../models/addressModel"),
   EventFeedback: require("../models/eventFeedbackModel"),
   EventParticipant: require("../models/eventParticipantModel"),
   EventReport: require("../models/eventReportModel"),
   Subscription: require("../models/subscriptionModel"),
   Conversation: require("../models/conversationModel"),
   Message: require("../models/messageModel"),
+  Address: require("../models/addressModel"),
   Document: require("../models/documentModel"),
 };
 
