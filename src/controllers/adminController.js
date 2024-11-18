@@ -5,7 +5,7 @@ const {
 } = require("../utils/email/resetDatabase/resetDatabase");
 const { generateResetDatabaseCode } = require("../helpers/tokenGenerator");
 const { sendEmail } = require("../utils/email/emailService");
-const { ADMIN_EMAIL, RESET_DATABASE_KEY } = require("../../setups");
+const { ADMIN_ID, ADMIN_EMAIL, RESET_DATABASE_KEY } = require("../../setups");
 const jwt = require("jsonwebtoken");
 const translations = require("../../locales/translations");
 
@@ -13,6 +13,7 @@ const models = {
   User: require("../models/userModel"),
   Event: require("../models/eventModel"),
   Address: require("../models/addressModel"),
+  Contact: require("../models/contactModel"),
   Interest: require("../models/interestModel"),
   EventParticipant: require("../models/eventParticipantModel"),
   EventFeedback: require("../models/eventFeedbackModel"),
@@ -21,6 +22,9 @@ const models = {
   Conversation: require("../models/conversationModel"),
   Message: require("../models/messageModel"),
   Document: require("../models/documentModel"),
+  Token: require("../models/tokenModel"),
+  Notification: require("../models/notificationModel"),
+  UserDetails: require("../models/userDetailsModel"),
 };
 
 module.exports = {
@@ -53,9 +57,14 @@ module.exports = {
 
     // Use Promise.all to run all count queries in parallel for better performance
     const statistics = await Promise.all(
-      Object.entries(models).map(([key, model]) =>
-        model.countDocuments({}).then((count) => ({ [`${key}`]: count }))
-      )
+      Object.entries(models)
+        .filter(
+          ([key]) =>
+            key !== "Token" && key !== "Notification" && key !== "UserDetails"
+        )
+        .map(([key, model]) =>
+          model.countDocuments({}).then((count) => ({ [`${key}`]: count }))
+        )
     );
 
     // Combine the results into one object
@@ -135,23 +144,23 @@ module.exports = {
     }
 
     // Delete all data from all collections except admin account (User -_id- and UserDetails -userId- collections)
-    // await Promise.all(
-    //   Object.keys(models).map(async (modelKey) => {
-    //     const model = models[modelKey];
+    await Promise.all(
+      Object.keys(models).map(async (modelKey) => {
+        const model = models[modelKey];
 
-    //     if (modelKey === "User") {
-    //       await model.deleteMany({
-    //         _id: { $ne: ADMIN_ID },
-    //       });
-    //     } else if (modelKey === "UserDetails") {
-    //       await model.deleteMany({
-    //         userId: { $ne: ADMIN_ID },
-    //       });
-    //     } else {
-    //       await model.deleteMany({});
-    //     }
-    //   })
-    // );
+        if (modelKey === "User") {
+          await model.deleteMany({
+            _id: { $ne: ADMIN_ID },
+          });
+        } else if (modelKey === "UserDetails") {
+          await model.deleteMany({
+            userId: { $ne: ADMIN_ID },
+          });
+        } else {
+          await model.deleteMany({});
+        }
+      })
+    );
 
     res.status(200).send({
       error: false,

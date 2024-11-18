@@ -18,16 +18,37 @@ module.exports = {
     // console.log("One hour later (UTC):", oneHourLater.toISOString());
 
     try {
-      // Set isDone true
+      // First update: mark isDone as true for events in the next hour or those that have already passed
+      await Event.updateMany(
+        {
+          $or: [
+            {
+              startDate: {
+                $gte: now,
+                $lte: oneHourLater,
+              },
+              isDone: false,
+            },
+            {
+              startDate: {
+                $lte: now,
+              },
+              isDone: false,
+            },
+          ],
+        },
+        { isDone: true }
+      );
+
+      // Second update: mark isDone as false for events that are later than 1 hour from now
       await Event.updateMany(
         {
           startDate: {
-            $gte: now,
-            $lte: oneHourLater,
+            $gt: oneHourLater, // Start date is more than 1 hour from now
           },
-          isDone: false,
+          isDone: true, // Only update if isDone is true
         },
-        { isDone: true }
+        { isDone: false }
       );
 
       // Find them and populate
