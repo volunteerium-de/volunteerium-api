@@ -215,7 +215,7 @@ module.exports = {
     const eventFeedback = await EventFeedback.findById(req.params.id);
     if (
       req.user.userType === "admin" ||
-      String(eventFeedback.userId) === String(req.user.id)
+      String(eventFeedback.userId) === String(req.user._id)
     ) {
       return next(); // Only event feedback owners and admin can manage their feedbacks
     } else {

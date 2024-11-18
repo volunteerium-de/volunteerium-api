@@ -14,7 +14,7 @@ const handleS3FileDeletionAndAssignment = async (
 ) => {
   if (modelData[field]) {
     const identifierForImage = extractDateNumber(modelData[field]);
-    console.log(`Deleting existing ${field} from S3`);
+    // console.log(`Deleting existing ${field} from S3`);
     await deleteObjectByDateKeyNumber(identifierForImage);
   }
 

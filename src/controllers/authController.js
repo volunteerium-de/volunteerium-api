@@ -40,7 +40,6 @@ module.exports = {
     const token = req.body.token;
 
     if (!token) {
-      console.log("reCAPTCHA token missing");
       throw new CustomError(
         req.t(translations.auth.verifyReCAPTCHA.missing),
         400
@@ -494,11 +493,11 @@ module.exports = {
           refreshToken = generateRefreshToken(user);
         }
 
-        console.log("Login response data:", {
-          accessToken,
-          refreshToken,
-          simpleToken,
-        }); // Debugging
+        // console.log("Login response data:", {
+        //   accessToken,
+        //   refreshToken,
+        //   simpleToken,
+        // }); // Debugging
 
         //! Response for TOKEN and JWT
         res.status(200).send({

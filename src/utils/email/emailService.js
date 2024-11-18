@@ -21,9 +21,9 @@ const sendEmail = async (to, subject, html) => {
       subject,
       html,
     });
-    console.log("Email sent successfully.", info.messageId);
+    // console.log("Email sent successfully.", info.messageId);
   } catch (error) {
-    console.error("Error sending email:", error);
+    // console.error("Error sending email:", error);
   }
 };
 
@@ -37,9 +37,9 @@ const sendFeedbackEmail = async (name, email, subject, feedback) => {
       subject: `Feedback: ${subject}`,
       html: htmlContent,
     });
-    console.log("Email sent successfully.", info.messageId);
+    // console.log("Email sent successfully.", info.messageId);
   } catch (error) {
-    console.error("Email sending error: ", error);
+    // console.error("Email sending error: ", error);
   }
 };
 

@@ -39,5 +39,7 @@ router.use("/contacts", require("./contactRouter"));
 router.use("/documentations", require("./documentationRouter"));
 // subscriptions:
 router.use("/subscriptions", require("./subscriptionRouter"));
+// administration:
+router.use("/administration", require("./adminRouter"));
 /* ------------------------------------------------------- */
 module.exports = router;

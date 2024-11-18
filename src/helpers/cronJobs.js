@@ -51,7 +51,6 @@ module.exports = {
       for (const event of events) {
         for (const participant of event.eventParticipantIds) {
           if (participant) {
-            console.log("Participant: ", participant);
             if (participant.isApproved) {
               const reminderSubject = `Reminder: Upcoming Event "${event.title}"`;
               const reminderEmailHtml = getReminderEmailHtml(

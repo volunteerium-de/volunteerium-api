@@ -208,5 +208,11 @@
   "yup-password-specialChar": "Password must contain at least one special character (@$?!%&*)!",
   "yup-oneOf-userType": "User type must be one of: admin,organization, individual",
   "yup-oneOf-gender": "Gender must be one of: male, female, n/a",
-  "yup-oneOf-ageRange": "Age range type must be one of: 16-25, 26-35, 35+"
+  "yup-oneOf-ageRange": "Age range type must be one of: 16-25, 26-35, 35+",
+  "resetDatabase-failed": "Database reset failed. Please try again.",
+  "resetDatabase-success": "Database reset successfully.",
+  "resetDatabase-request": "Database reset request received. Please check your email for further instructions.",
+  "resetDatabase-unauthorized": "Unauthorized request. Please contact support.",
+  "resetDatabase-badRequest": "Invalid request. Please try again.",
+  "resetDatabase-invalidToken": "Invalid token. Please try again."
 }
