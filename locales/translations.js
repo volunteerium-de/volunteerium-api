@@ -326,6 +326,14 @@ const translations = {
       ageRange: "yup-oneOf-ageRange",
     },
   },
+  resetDatabase: {
+    failed: "resetDatabase-failed",
+    success: "resetDatabase-success",
+    request: "resetDatabase-request",
+    badRequest: "resetDatabase-badRequest",
+    unauthorized: "resetDatabase-unauthorized",
+    invalidToken: "resetDatabase-invalidToken",
+  },
 };
 
 module.exports = translations;

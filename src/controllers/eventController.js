@@ -733,9 +733,9 @@ module.exports = {
     // Delete event photo from S3 if it exists
     if (event.eventPhoto) {
       const identifierForImage = extractDateNumber(event.eventPhoto);
-      console.log(
-        `Deleting existing Event photo from S3: ${identifierForImage}`
-      );
+      // console.log(
+      //   `Deleting existing Event photo from S3: ${identifierForImage}`
+      // );
       deletePromises.push(deleteObjectByDateKeyNumber(identifierForImage));
     }
 
@@ -743,9 +743,9 @@ module.exports = {
       // Prepare document deletion
       for (const documentData of event.documentIds) {
         const identifierForImage = extractDateNumber(documentData.file);
-        console.log(
-          `Deleting existing Document related to this event from S3: ${identifierForImage}`
-        );
+        // console.log(
+        //   `Deleting existing Document related to this event from S3: ${identifierForImage}`
+        // );
         deletePromises.push(deleteObjectByDateKeyNumber(identifierForImage));
       }
     }
@@ -759,7 +759,6 @@ module.exports = {
     // Generate notifications for participants
     for (const participantId of event.eventParticipantIds) {
       const participant = await EventParticipant.findById(participantId);
-      console.log("bune", participant);
 
       await Notification.generate(
         participant.userId,

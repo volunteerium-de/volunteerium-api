@@ -363,7 +363,7 @@ module.exports = {
 
     // Delete document from AWS-S3 Bucket
     const identifierForImage = extractDateNumber(documentData.fileUrl);
-    console.log(`Deleting existing Document related to this document from S3`);
+    // console.log(`Deleting existing Document related to this document from S3`);
     await deleteObjectByDateKeyNumber(identifierForImage);
 
     const data = await Document.deleteOne({ _id: req.params.id });

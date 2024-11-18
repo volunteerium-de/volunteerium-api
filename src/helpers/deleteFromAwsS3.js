@@ -24,7 +24,7 @@ async function deleteObjectByDateKeyNumber(keyNumber) {
     const objectToDelete = objects.find((obj) => obj.Key.includes(keyNumber));
 
     if (!objectToDelete) {
-      console.log(`No object found with key number: ${keyNumber}`);
+      // console.log(`No object found with key number: ${keyNumber}`);
       return;
     }
 
@@ -37,9 +37,9 @@ async function deleteObjectByDateKeyNumber(keyNumber) {
     });
     const deleteResponse = await client.send(deleteCommand);
 
-    console.log("Delete Response:", deleteResponse);
+    // console.log("Delete Response:", deleteResponse);
   } catch (error) {
-    console.error("Error:", error);
+    // console.error("Error:", error);
   }
 }
 
@@ -59,7 +59,7 @@ async function deleteObjectsByDateKeyNumbers(keyNumbers) {
     );
 
     if (objectsToDelete.length === 0) {
-      console.log("No objects found with the provided key numbers.");
+      // console.log("No objects found with the provided key numbers.");
       return;
     }
 
@@ -75,9 +75,9 @@ async function deleteObjectsByDateKeyNumbers(keyNumbers) {
     const deleteCommand = new DeleteObjectsCommand(deleteParams);
     const deleteResponse = await client.send(deleteCommand);
 
-    console.log("Delete Response:", deleteResponse);
+    // console.log("Delete Response:", deleteResponse);
   } catch (error) {
-    console.error("Error:", error);
+    // console.error("Error:", error);
   }
 }
 

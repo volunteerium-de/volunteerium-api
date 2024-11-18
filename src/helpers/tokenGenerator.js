@@ -12,6 +12,10 @@ const {
   VERIFY_EMAIL_EXP,
   RESET_PASSWORD_KEY,
   RESET_PASSWORD_EXP,
+  ADMIN_ID,
+  ADMIN_EMAIL,
+  RESET_DATABASE_KEY,
+  RESET_DATABASE_EXP,
 } = require("../../setups");
 
 // Generate Simple Token
@@ -23,7 +27,6 @@ const generateSimpleToken = async (user) => {
   });
 
   const simpleToken = tokenData.token;
-  console.log("Simple Token generated: ", simpleToken);
   return simpleToken;
 };
 
@@ -42,11 +45,12 @@ const generateAccessToken = (user) => {
     },
   };
 
-  const accessToken = jwt.sign(accessInfo.data, accessInfo.key, {
-    expiresIn: accessInfo.time,
+  const { key, time, data } = accessInfo;
+
+  const accessToken = jwt.sign(data, key, {
+    expiresIn: time,
   });
 
-  console.log("AccessToken generated: ", accessToken);
   return accessToken;
 };
 
@@ -60,11 +64,12 @@ const generateRefreshToken = (user) => {
     },
   };
 
-  const refreshToken = jwt.sign(refreshInfo.data, refreshInfo.key, {
-    expiresIn: refreshInfo.time,
+  const { key, time, data } = refreshInfo;
+
+  const refreshToken = jwt.sign(data, key, {
+    expiresIn: time,
   });
 
-  console.log("RefreshToken generated: ", refreshToken);
   return refreshToken;
 };
 
@@ -88,11 +93,12 @@ const generateVerifyEmailToken = (user) => {
     },
   };
 
-  const verifyEmailToken = jwt.sign(verifyEmailInfo.data, verifyEmailInfo.key, {
-    expiresIn: verifyEmailInfo.time,
+  const { key, time, data } = verifyEmailInfo;
+
+  const verifyEmailToken = jwt.sign(data, key, {
+    expiresIn: time,
   });
 
-  console.log("VerifyEmailToken generated: ", verifyEmailToken);
   return verifyEmailToken;
 };
 
@@ -111,17 +117,38 @@ const generateResetPasswordCode = (user) => {
     },
   };
 
-  // resetPasswordToken will be used for navigation in the frontend
-  const resetPasswordToken = jwt.sign(
-    resetPasswordInfo.data,
-    resetPasswordInfo.key,
-    {
-      expiresIn: resetPasswordInfo.time,
-    }
-  );
+  const { key, time, data } = resetPasswordInfo;
 
-  console.log("ResetPasswordCode generated: ", resetCode);
+  // resetPasswordToken will be used for navigation in the frontend
+  const resetPasswordToken = jwt.sign(data, key, {
+    expiresIn: time,
+  });
+
   return { resetCode, resetPasswordToken };
+};
+
+const generateResetDatabaseCode = () => {
+  // resetCode will be sent to user via Email
+  const resetCode = Math.floor(100000 + Math.random() * 900000).toString(); // Generate a 6-digit random number
+
+  const resetDatabaseInfo = {
+    key: RESET_DATABASE_KEY,
+    time: RESET_DATABASE_EXP,
+    data: {
+      userId: ADMIN_ID,
+      email: ADMIN_EMAIL,
+      code: resetCode,
+    },
+  };
+
+  const { key, time, data } = resetDatabaseInfo;
+
+  // resetDatabaseToken will be used for navigation in the frontend
+  const resetDatabaseToken = jwt.sign(data, key, {
+    expiresIn: time,
+  });
+
+  return { resetCode, resetDatabaseToken };
 };
 
 module.exports = {
@@ -131,4 +158,5 @@ module.exports = {
   generateAuthTokens,
   generateVerifyEmailToken,
   generateResetPasswordCode,
+  generateResetDatabaseCode,
 };

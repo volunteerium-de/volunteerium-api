@@ -207,5 +207,11 @@
   "yup-password-specialChar": "Das Passwort muss mindestens ein Sonderzeichen enthalten (@$?!%&*)!",
   "yup-oneOf-userType": "Der Benutzertyp muss einer der folgenden sein: admin, organisation, individuel",
   "yup-oneOf-gender": "Das Geschlecht muss eines der folgenden sein: männlich, weiblich, n/a",
-  "yup-oneOf-ageRange": "Der Altersbereich muss einer der folgenden sein: 16-25, 26-35, 35+"
+  "yup-oneOf-ageRange": "Der Altersbereich muss einer der folgenden sein: 16-25, 26-35, 35+",
+  "resetDatabase-failed": "Datenbank-Rücksetzung fehlgeschlagen. Bitte versuche es erneut.",
+  "resetDatabase-success": "Datenbank erfolgreich zurückgesetzt.",
+  "resetDatabase-request": "Datenbank-Rücksetzungsanfrage erhalten. Bitte überprüfe deine E-Mail für weitere Anweisungen.",
+  "resetDatabase-unauthorized": "Unbefugte Anfrage. Bitte kontaktiere den Support.",
+  "resetDatabase-badRequest": "Ungültige Anfrage. Bitte versuche es erneut.",
+  "resetDatabase-invalidToken": "Ungültiges Token. Bitte versuche es erneut."
 }

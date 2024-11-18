@@ -33,7 +33,7 @@ module.exports = async (req, res, next) => {
         if (data) {
           req.user = data;
         } else {
-          console.log("JWT failed to verify:", error);
+          // console.log("JWT failed to verify:", error);
           req.user = null;
         }
       });
