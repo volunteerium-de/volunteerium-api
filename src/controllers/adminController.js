@@ -10,14 +10,15 @@ const jwt = require("jsonwebtoken");
 const translations = require("../../locales/translations");
 
 const models = {
-  User: require("../models/userModel"),
   Event: require("../models/eventModel"),
-  Address: require("../models/addressModel"),
+  User: require("../models/userModel"),
   Interest: require("../models/interestModel"),
-  EventParticipant: require("../models/eventParticipantModel"),
+  Contact: require("../models/contactModel"),
+  Address: require("../models/addressModel"),
   EventFeedback: require("../models/eventFeedbackModel"),
-  Subscription: require("../models/subscriptionModel"),
+  EventParticipant: require("../models/eventParticipantModel"),
   EventReport: require("../models/eventReportModel"),
+  Subscription: require("../models/subscriptionModel"),
   Conversation: require("../models/conversationModel"),
   Message: require("../models/messageModel"),
   Document: require("../models/documentModel"),
@@ -39,6 +40,7 @@ module.exports = {
             eventsCount: 150,
             addressesCount: 200,
             interestsCount: 50,
+            contactsCount: 300,
             eventParticipantsCount: 500,
             eventFeedbackCount: 120,
             subscriptionsCount: 300,
