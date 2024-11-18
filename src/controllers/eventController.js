@@ -328,6 +328,13 @@ module.exports = {
 
     const validationError = await validateEventPayload(req.t, req.body);
 
+    if (
+      new Date(req.body.startDate).toDateString() !==
+      new Date(req.body.endDate).toDateString()
+    ) {
+      throw new CustomError(req.t(translations.yup.sameDate), 400);
+    }
+
     if (validationError) {
       throw new CustomError(validationError, 400);
     }

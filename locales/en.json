@@ -199,6 +199,7 @@
   "yup-language": "Invalid language code",
   "yup-interest": "Invalid interest",
   "yup-url": "Invalid URL format.",
+  "yup-sameDate": "Start date and end date must be on the same day",
   "yup-address": "Invalid address.",
   "yup-isMongoId": "Invalid MongoDB ID",
   "yup-validCountryCode": "Invalid country code",

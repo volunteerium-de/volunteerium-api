@@ -311,6 +311,7 @@ const translations = {
     language: "yup-language",
     interest: "yup-interest",
     url: "yup-url",
+    sameDate: "yup-sameDate",
     address: "yup-address",
     isMongoId: "yup-isMongoId",
     validCountryCode: "yup-validCountryCode",
