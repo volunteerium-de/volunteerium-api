@@ -328,15 +328,15 @@ module.exports = {
 
     const validationError = await validateEventPayload(req.t, req.body);
 
+    if (validationError) {
+      throw new CustomError(validationError, 400);
+    }
+
     if (
       new Date(req.body.startDate).toDateString() !==
       new Date(req.body.endDate).toDateString()
     ) {
       throw new CustomError(req.t(translations.yup.sameDate), 400);
-    }
-
-    if (validationError) {
-      throw new CustomError(validationError, 400);
     }
 
     if (req.user.userType !== "admin") {
@@ -603,6 +603,13 @@ module.exports = {
 
     if (validationError) {
       throw new CustomError(validationError, 400);
+    }
+
+    if (
+      new Date(req.body.startDate).toDateString() !==
+      new Date(req.body.endDate).toDateString()
+    ) {
+      throw new CustomError(req.t(translations.yup.sameDate), 400);
     }
 
     if (req.body.eventParticipantIds) {
