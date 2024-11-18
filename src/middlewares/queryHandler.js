@@ -162,14 +162,6 @@ module.exports = async (req, res, next) => {
 
   // Run for output:
   res.getModelList = async (Model, customFilter = {}, populate = null) => {
-    if (Model.modelName === "Interest") {
-      return await Model.find({
-        ...filterCriteria,
-        ...searchCriteria,
-        ...customFilter,
-      }).populate(populate);
-    }
-
     return await Model.find({
       ...filterCriteria,
       ...searchCriteria,
@@ -191,34 +183,25 @@ module.exports = async (req, res, next) => {
 
     let details = {};
 
-    if (Model.modelName === "Interest") {
-      details = {
-        filter,
-        search,
-        sort,
-        totalRecords: data.length,
-      };
-    } else {
-      details = {
-        filter,
-        search,
-        sort,
-        skip,
-        limit,
-        page,
-        pages: {
-          previous: page > 0 ? page : false,
-          current: page + 1,
-          next: page + 2,
-          total: Math.ceil(data.length / limit),
-        },
-        totalRecords: data.length,
-      };
+    details = {
+      filter,
+      search,
+      sort,
+      skip,
+      limit,
+      page,
+      pages: {
+        previous: page > 0 ? page : false,
+        current: page + 1,
+        next: page + 2,
+        total: Math.ceil(data.length / limit),
+      },
+      totalRecords: data.length,
+    };
 
-      details.pages.next =
-        details.pages.next > details.pages.total ? false : details.pages.next;
-      if (details.totalRecords <= limit) details.pages = false;
-    }
+    details.pages.next =
+      details.pages.next > details.pages.total ? false : details.pages.next;
+    if (details.totalRecords <= limit) details.pages = false;
 
     return details;
   };

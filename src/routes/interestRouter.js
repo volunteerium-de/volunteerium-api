@@ -15,6 +15,8 @@ router
   .get(interestController.list)
   .post(isAdmin, interestController.create);
 
+router.get("/pagination", interestController.listPagination);
+
 router
   .route("/:id")
   .all(idValidation, isAdmin)

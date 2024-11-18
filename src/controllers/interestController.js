@@ -9,7 +9,25 @@ module.exports = {
   list: async (req, res) => {
     /*
       #swagger.tags = ['Interest']
-      #swagger.summary = 'Get all interests'
+      #swagger.summary = 'Get all interests without pagination'
+      #swagger.responses[200] = {
+        description: 'List of interests retrieved successfully',
+        schema: {
+          error: false,
+          data: [{ _id: 'interest-id', name: 'interest-name' }]
+        }
+      }
+    */
+    const data = await Interest.find();
+    res.status(200).send({
+      error: false,
+      data,
+    });
+  },
+  listPagination: async (req, res) => {
+    /*
+      #swagger.tags = ['Interest']
+      #swagger.summary = 'Get all interests with pagination'
       #swagger.description = `
         You can send query parameters for search[], sort[], page, and limit.
         <ul>
