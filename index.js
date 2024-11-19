@@ -80,8 +80,8 @@ app.use(express.urlencoded({ extended: true }));
 // Middlewares
 
 // Limit requests from same IP
-// const { generalRateLimiter } = require("./src/middlewares/rateLimiters");
-// app.use("/", generalRateLimiter);
+const { generalRateLimiter } = require("./src/middlewares/rateLimiters");
+app.use("/", generalRateLimiter);
 
 // - Logger
 app.use(require("./src/middlewares/logger"));

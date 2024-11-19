@@ -16,7 +16,7 @@ const emailLimiterHandler = (req, res, next) => {
 
 module.exports = {
   generalRateLimiter: rateLimit({
-    max: 500,
+    max: 5000,
     windowMs: 60 * 60 * 1000, // 1 hour
     handler: generalRateLimiterHandler,
   }),
