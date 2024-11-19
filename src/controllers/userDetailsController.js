@@ -149,7 +149,6 @@ module.exports = {
           "city",
           "country",
           "zipCode",
-          "state",
           "streetName",
           "streetNumber",
         ];
