@@ -6,6 +6,8 @@ const {
   getReminderEmailHtml,
 } = require("../utils/email/eventReminder/eventReminder");
 const { sendEmail } = require("../utils/email/emailService");
+const axios = require("axios");
+const { BACKEND_URL } = require("../../setups");
 
 module.exports = {
   reminderCronJob: cron.schedule("*/60 * * * *", async () => {
@@ -90,6 +92,22 @@ module.exports = {
       }
     } catch (error) {
       console.error("Error finding events or sending emails:", error);
+    }
+  }),
+  job: cron.schedule("*/1 * * * *", async function () {
+    // This function will be executed every 14 minutes
+    console.log(`server running on ${BACKEND_URL}`);
+
+    // Perform an HTTPS GET request to hit any backend api.
+    try {
+      const response = await axios.get(BACKEND_URL);
+      if (!response.status === 200) {
+        console.error(
+          `Failed to listen server with status code: ${response.status}`
+        );
+      }
+    } catch (error) {
+      console.error("Error during listening:", error.message);
     }
   }),
 };

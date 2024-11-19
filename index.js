@@ -20,8 +20,9 @@ const {
 const { Server } = require("socket.io");
 
 // Cron Job
-const { reminderCronJob } = require("./src/helpers/cronJobs");
+const { reminderCronJob, job } = require("./src/helpers/cronJobs");
 reminderCronJob.start();
+job.start();
 
 // Connect to DB:
 const { dbConnection } = require("./src/configs/dbConnection");
