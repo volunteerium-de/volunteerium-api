@@ -37,11 +37,14 @@ const EventSchema = new mongoose.Schema(
       trim: true,
       required: true,
       index: true,
+      maxlength: [60, "Title cannot be more than 100 characters."],
+      minlength: [10, "Title must be at least 5 characters."],
     },
     description: {
       type: String,
       trim: true,
       required: true,
+      maxlength: [2000, "Description cannot be more than 500 characters."],
     },
     addressId: {
       type: mongoose.Schema.Types.ObjectId,
