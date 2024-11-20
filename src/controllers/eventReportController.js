@@ -81,9 +81,9 @@ module.exports = {
         }
       }
     */
-    const { eventId, reportType, content } = req.body;
+    const { eventId, reportType } = req.body;
 
-    if (!eventId || !reportType || !content) {
+    if (!eventId || !reportType) {
       throw new CustomError(req.t(translations.eventReport.failed), 400);
     }
 

@@ -161,6 +161,11 @@ module.exports = {
           updateData[field] = req.body[field];
         }
 
+        // Include optional 'state' field if provided
+        if (req.body.state && req.body.state.trim() !== "") {
+          updateData.state = req.body.state;
+        }
+
         if (userDetails.addressId) {
           await Address.findOneAndUpdate(
             { _id: userDetails.addressId },

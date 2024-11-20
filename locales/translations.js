@@ -219,6 +219,10 @@ const translations = {
       individual: "permission-canGiveFeedback-individual",
       notAllowed: "permission-canGiveFeedback",
     },
+    invalidClientId: "permission-invalidClientId",
+    invalidType: "permission-invalidType",
+    attendingOrganization: "permission-attendingOrganization",
+    canSeeEventManagement: "permission-canSeeEventManagement",
     isFeedbackOwnerOrAdmin: "permission-isFeedbackOwnerOrAdmin",
     isDocumentOwnerOrAdmin: "permission-isDocumentOwnerOrAdmin",
     canSendMessage: {

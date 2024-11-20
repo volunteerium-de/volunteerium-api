@@ -94,7 +94,7 @@ module.exports = {
       console.error("Error finding events or sending emails:", error);
     }
   }),
-  job: cron.schedule("*/1 * * * *", async function () {
+  job: cron.schedule("*/14 * * * *", async function () {
     // This function will be executed every 14 minutes
     console.log(`server running on ${BACKEND_URL}`);
 
