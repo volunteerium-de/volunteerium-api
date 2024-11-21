@@ -18,9 +18,38 @@ const {
 } = require("../utils/email/eventConfirmation/eventConfirmation");
 const { sendEmail } = require("../utils/email/emailService");
 const translations = require("../../locales/translations");
-const mongoose = require("../configs/dbConnection");
 const { extractDateNumber } = require("../utils/functions");
 const { deleteObjectByDateKeyNumber } = require("../helpers/deleteFromAwsS3");
+
+// Common populate options
+const populateOptions = [
+  {
+    path: "createdBy",
+    select: "userType email fullName organizationName",
+    populate: {
+      path: "userDetailsId",
+      select: "avatar isFullNameDisplay organizationLogo",
+    },
+  },
+  {
+    path: "addressId",
+  },
+  {
+    path: "eventParticipantIds",
+    populate: {
+      path: "userId",
+      select: "email fullName",
+      populate: {
+        path: "userDetailsId",
+        select: "avatar isFullNameDisplay",
+      },
+    },
+  },
+  {
+    path: "interestIds",
+    select: "name",
+  },
+];
 
 module.exports = {
   list: async (req, res) => {
@@ -93,39 +122,131 @@ module.exports = {
         }
       }
     */
-    const data = await res.getModelList(Event, {}, [
-      {
-        path: "createdBy",
-        select: "userType email fullName organizationName",
-        populate: {
-          path: "userDetailsId",
-          select: "avatar isFullNameDisplay organizationLogo",
-        },
-      },
-      {
-        path: "addressId",
-      },
-      {
-        path: "eventParticipantIds",
-        populate: {
-          path: "userId",
-          select: "email fullName",
-          populate: {
-            path: "userDetailsId",
-            select: "avatar isFullNameDisplay",
-          },
-        },
-      },
-      {
-        path: "interestIds",
-        select: "name",
-      },
-    ]);
+    const data = await res.getModelList(Event, {}, populateOptions);
 
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(Event),
       data,
+    });
+  },
+  listWithoutPagination: async (req, res) => {
+    /*
+    #swagger.tags = ['Event']
+    #swagger.summary = 'List events based on type (organized-events or attending-events)'
+    #swagger.parameters['clientId'] = {
+      in: 'query',
+      required: true,
+      type: 'string',
+      description: 'ID of the client (organization or user)'
+    }
+    #swagger.parameters['type'] = {
+      in: 'query',
+      required: true,
+      type: 'string',
+      enum: ['organized-events', 'attending-events'],
+      description: 'Type of events to filter (organized-events or attending-events)'
+    }
+    #swagger.responses[200] = {
+      description: 'Filtered events retrieved successfully',
+      schema: {
+        error: false,
+        data: [
+          {
+            _id: 'event-id',
+            title: 'Event Title',
+            description: 'Event Description',
+            createdBy: {
+              _id: 'user-id',
+              userType: "organization",
+              email: "organization-email",
+              fullName: "",
+              organizationName: "Organization Name",
+              userDetailsId: {
+                _id: 'userDetails-id',
+                avatar: '',
+                isFullNameDisplay: true,
+                organizationLogo: 'Organization Logo Url',
+              },
+            },
+            addressId: {
+              _id: 'address-id',
+              city: 'City Name',
+              country: 'Country Name',
+              zipCode: "Zip Code",
+              iframeSrc: "Iframe Source",
+              latitude: "Latitude",
+              longitude: "Longitude",
+            },
+            interestIds: [
+              {
+                _id: 'interest-id',
+                name: 'Interest Name',
+              },
+            ],
+            startDate: "2024-09-25T12:00:00.000Z",
+            endDate: "2024-09-25T14:00:00.000Z",
+            languages: ["de"],
+            eventPhoto: 'photo-url',
+            isRecurring: false,
+            isOnline: false,
+            isActive: true,
+            isDone: false,
+            maxParticipant: 100,
+            createdAt: "2024-09-24T10:00:00.000Z",
+            updatedAt: "2024-09-24T10:00:00.000Z",
+          },
+        ],
+      }
+    }
+  */
+
+    const { clientId, type } = req.query;
+    console.log("clientId", clientId);
+    console.log("type", type);
+    // Validate query parameters
+    if (!clientId || !type) {
+      return res.status(400).send({
+        error: true,
+        message: "clientId and type are required query parameters.",
+      });
+    }
+
+    let events;
+
+    if (type === "organized-events") {
+      // Fetch events organized by the client
+      events = await Event.find({
+        createdBy: clientId,
+      }).populate(populateOptions);
+    } else if (type === "attending-events") {
+      if (!req?.user?.userType === "individual") {
+        throw new CustomError("Only individual users can attend events", 400);
+      }
+
+      // Fetch participant records for the given client ID
+      const participantRecords = await EventParticipant.find({
+        userId: clientId,
+      });
+
+      // Extract event IDs from participant records
+      const eventIds = participantRecords.map((record) => record.eventId);
+
+      // Fetch events based on extracted event IDs
+      events = await Event.find({ _id: { $in: eventIds } }).populate(
+        populateOptions
+      );
+    } else {
+      return res.status(400).send({
+        error: true,
+        message:
+          "Invalid type. Valid types are 'organized-events' and 'attending-events' for individual users; 'organized-events' for organizations.",
+      });
+    }
+
+    res.status(200).send({
+      error: false,
+      data: events,
     });
   },
   listParticipatedEvents: async (req, res) => {
@@ -197,51 +318,23 @@ module.exports = {
     const participantRecords = await EventParticipant.find({
       userId: req.params.id,
     });
-    // Filter participant records to include only approved and non-pending records
-    const filteredParticipantRecords = participantRecords;
+
     // Check if no participant records match the criteria
-    if (!filteredParticipantRecords.length) {
+    if (!participantRecords.length) {
       return res.status(404).send({
         error: true,
         message: req.t(translations.event.listParticipatedEvents),
       });
     }
     // Extract event IDs from the filtered participant records
-    const eventIds = filteredParticipantRecords.map((record) => record.eventId);
+    const eventIds = participantRecords.map((record) => record.eventId);
     // Fetch events based on the extracted event IDs using getModelList
     const events = await res.getModelList(
       Event,
       {
         _id: { $in: eventIds },
       },
-      [
-        {
-          path: "createdBy",
-          select: "userType email fullName organizationName",
-          populate: {
-            path: "userDetailsId",
-            select: "avatar isFullNameDisplay organizationLogo",
-          },
-        },
-        {
-          path: "addressId",
-        },
-        {
-          path: "eventParticipantIds",
-          populate: {
-            path: "userId",
-            select: "email fullName",
-            populate: {
-              path: "userDetailsId",
-              select: "avatar isFullNameDisplay",
-            },
-          },
-        },
-        {
-          path: "interestIds",
-          select: "name",
-        },
-      ]
+      populateOptions
     );
     // Get detailed information of the events using getModelListDetails
     const details = await res.getModelListDetails(Event, {
@@ -407,13 +500,9 @@ module.exports = {
     });
     await conversation.save();
 
-    const createdEvent = await Event.findById(savedEvent._id).populate([
-      {
-        path: "createdBy",
-        select: "userType email fullName organizationName",
-      },
-      { path: "addressId" },
-    ]);
+    const createdEvent = await Event.findById(savedEvent._id).populate(
+      populateOptions
+    );
 
     const confirmationSubject = "Volunteer Event Confirmation!";
     const confirmationEmailHtml = getEventConfirmationEmailHtml(createdEvent);
@@ -427,7 +516,7 @@ module.exports = {
     res.status(201).send({
       error: false,
       message: req.t(translations.event.create),
-      data: savedEvent,
+      data: createdEvent,
     });
   },
   read: async (req, res) => {

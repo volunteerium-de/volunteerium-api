@@ -12,6 +12,7 @@ const {
   checkEmailVerification,
   isEventOwnerOrAdmin,
   isActiveEvent,
+  canSeeEventManagement,
 } = require("../middlewares/permissions");
 
 // URL: /events
@@ -29,6 +30,15 @@ router
     eventController.create
   );
 
+router
+  .route("/management")
+  .get(
+    isLogin,
+    isActive,
+    checkEmailVerification,
+    canSeeEventManagement,
+    eventController.listWithoutPagination
+  );
 router.route("/participant/:id").get(eventController.listParticipatedEvents);
 router.route("/languages").get(eventController.listEventLanguages);
 

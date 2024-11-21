@@ -179,6 +179,41 @@ module.exports = {
     }
   },
 
+  canSeeEventManagement: async (req, res, next) => {
+    // if (!NODE_ENV) return next();
+    const { clientId, type } = req.query;
+
+    if (!clientId || clientId !== req.user._id) {
+      throw new CustomError(
+        req.t(translations.permission.invalidClientId),
+        400
+      );
+    }
+
+    if (!type) {
+      throw new CustomError(req.t(translations.permission.invalidType), 400);
+    }
+
+    if (type === "attending-events" && req.user.userType === "organization") {
+      throw new CustomError(
+        req.t(translations.permission.attendingOrganization),
+        403
+      );
+    }
+
+    if (
+      req.user.userType === "admin" ||
+      String(clientId) === String(req.user._id)
+    ) {
+      return next(); // Only admin and the owner can see his event management details
+    } else {
+      throw new CustomError(
+        req.t(translations.permission.canSeeEventManagement),
+        403
+      );
+    }
+  },
+
   /* ---------------------------------- */
   /*           EventFeedback            */
   /* ---------------------------------- */

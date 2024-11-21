@@ -9,6 +9,11 @@ const generalRateLimiterHandler = (req, res, next) => {
   next(new CustomError(message, 429));
 };
 
+const specificRateLimiterHandler = (req, res, next) => {
+  const message = req.t(translations.limiter.general);
+  next(new CustomError(message, 429));
+};
+
 const emailLimiterHandler = (req, res, next) => {
   const message = req.t(translations.limiter.email);
   next(new CustomError(message, 429));
@@ -19,6 +24,11 @@ module.exports = {
     max: 5000,
     windowMs: 60 * 60 * 1000, // 1 hour
     handler: generalRateLimiterHandler,
+  }),
+  spesificRateLimiter: rateLimit({
+    max: 60,
+    windowMs: 60 * 1000, // 1 minute
+    handler: specificRateLimiterHandler,
   }),
   emailLimiter: rateLimit({
     windowMs: 24 * 60 * 60 * 1000, // 24h
