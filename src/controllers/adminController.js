@@ -10,15 +10,15 @@ const jwt = require("jsonwebtoken");
 const translations = require("../../locales/translations");
 
 const models = {
-  User: require("../models/userModel"),
   Event: require("../models/eventModel"),
-  Address: require("../models/addressModel"),
-  Contact: require("../models/contactModel"),
+  User: require("../models/userModel"),
   Interest: require("../models/interestModel"),
-  EventParticipant: require("../models/eventParticipantModel"),
+  Contact: require("../models/contactModel"),
   EventFeedback: require("../models/eventFeedbackModel"),
-  Subscription: require("../models/subscriptionModel"),
   EventReport: require("../models/eventReportModel"),
+  Subscription: require("../models/subscriptionModel"),
+  Address: require("../models/addressModel"),
+  EventParticipant: require("../models/eventParticipantModel"),
   Conversation: require("../models/conversationModel"),
   Message: require("../models/messageModel"),
   Document: require("../models/documentModel"),
